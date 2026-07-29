@@ -298,9 +298,10 @@ What files will the Python converter accept, how will it validate them, and
 what intermediate outputs will it create?
 
 9.8
-Sheet 8 shows the planned forward, backward, and parameter inputs; file-length
-and data-type checks; matrix reshaping; direction alignment; raw-data
-preservation; and implementation record.
+Sheet 8 follows the approved sketch: a small input--conversion--matrix--output
+architecture figure at the top; a source-cited explanation and excerpt of the
+Teensy output code beside a raw-data-to-matrix example; and the matrix
+conversion mathematics beside a Python code excerpt.
 
 9.9
 Sheet 9, Surface Reconstruction and Visualization, answers:
@@ -313,7 +314,9 @@ calibration status, processing provenance, and final visual outputs.
 
 9.11
 Until the converter and real scan data exist, use clearly labeled placeholder
-frames rather than invented code screenshots, matrices, or surface maps.
+frames for the architecture figure, raw-data example, matrix output, Python
+snippet, calibration value, and surface maps. Do not invent code screenshots,
+matrices, calibration values, or results.
 
 9.12
 Keep the center-panel narrative in this order:

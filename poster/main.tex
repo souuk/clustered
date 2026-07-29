@@ -814,85 +814,123 @@ if (pointcounter >= (2 * numpoints)) {
 \section{Data Output and Python Conversion}
 
 \begin{spacing}{0.98}
-\small
-
-\noindent
-\textbf{Current status:} The Python conversion program has not yet been
-written, and complete STM scan files are not yet available. This sheet defines
-the intended inputs, validation steps, and outputs; every visual and file path
-below is a placeholder for the finished implementation.
-
-\vspace{5pt}
+\footnotesize
 
 \begin{center}
   \fbox{\parbox[c][0.72in][c]{0.92\linewidth}{
     \centering
     \textbf{SMALL ARCHITECTURE IMAGE PLACEHOLDER}\\[3pt]
-    Forward scan + backward scan + parameter file
-    \(\longrightarrow\) Python converter
-    \(\longrightarrow\) validated matrices + metadata
+    Teensy output files \textit{(input)}
+    \(\longrightarrow\) Python conversion
+    \(\longrightarrow\) matrix
+    \(\longrightarrow\) Matplotlib figure \textit{(output)}
   }}
   \captionsetup{font=footnotesize}
-  \captionof{figure}{Placeholder for the final input--processing--output
-  architecture diagram. Replace it only after the converter's actual file
-  names, checks, and outputs are fixed.}
+  \captionof{figure}{Placeholder for the final data-conversion architecture
+  figure. Replace it after the converter's actual inputs, processing stages,
+  and outputs are fixed.}
 \end{center}
 
-\vspace{4pt}
+\vspace{3pt}
 
 \noindent
-\begin{minipage}[t]{0.39\linewidth}
+\begin{minipage}[t]{0.52\linewidth}
   \vspace{0pt}
-  \subsubsection{Planned Inputs}
+  \subsubsection{What the Teensy Outputs}
 
-  The converter is expected to accept three firmware outputs:
-  \begin{itemize}
-    \item a signed 16-bit forward-scan file;
-    \item a signed 16-bit backward-scan file; and
-    \item a parameter file containing scan dimensions and settings.
-  \end{itemize}
-  The exact filenames, byte order, header structure, and completion indicator
-  remain to be confirmed from real files. The Teensy write operations and
-  parameter fields are documented at lines 1188--1198 and
-  1248--1262.\textsuperscript{[2]}
+  The firmware declares separate signed 16-bit arrays for forward and backward
+  samples. During scanning, it casts the feedback output to
+  \texttt{int16\_t} and writes two bytes for each stored value. A separate
+  text parameter file records the requested point and line counts, completion
+  counters, sample bias, and tunneling-current setting.\textsuperscript{[2]}
 
-  \subsubsection{Planned Conversion Logic}
+  \begin{lstlisting}[basicstyle=\ttfamily\tiny]
+DataArray1F[linenumber][pointcounter] =
+    (int16_t)Output;
+dataFileF.write(
+    &(DataArray1F[linenumber][pointcounter]), 2);
 
-  \begin{enumerate}
-    \item Read and validate the parameter values.
-    \item Load both binary scans with an explicit signed data type.
-    \item Compare each file length with \(N_xN_y\) expected samples.
-    \item Reshape each sequence into an \(N_y\times N_x\) matrix.
-    \item Reverse the backward direction for spatial comparison.
-    \item Preserve untouched raw matrices before further processing.
-  \end{enumerate}
+DataArray1B[linenumber][pointcounter] =
+    (int16_t)Output;
+dataFileB.write(
+    &(DataArray1B[linenumber][pointcounter]), 2);
+  \end{lstlisting}
+  \noindent{\tiny\textit{Source:}
+  \nolinkurl{Teensy_STM11A_July_29_2025.ino}, array declarations at lines
+  155--157, data writes at lines 1188--1198, and parameter output at lines
+  1248--1262.\textsuperscript{[2]}\par}
+
+  \vspace{3pt}
+  \noindent\fbox{\parbox[c][0.42in][c]{0.92\linewidth}{
+    \centering
+    \textbf{PENDING FILE-SCHEMA CHECK:} confirm actual filenames, byte order,
+    completed-scan lengths, and a valid backward file before implementing the
+    reader.
+  }}
 \end{minipage}
 \hfill
-\begin{minipage}[t]{0.58\linewidth}
+\begin{minipage}[t]{0.45\linewidth}
   \vspace{0pt}
   \begin{center}
-    \fbox{\parbox[c][2.35in][c]{0.92\linewidth}{
+    \fbox{\parbox[c][2.28in][c]{0.90\linewidth}{
       \centering
-      \textbf{LARGE IMAGE PLACEHOLDER 1}\\[5pt]
-      Future Python-code excerpt and example of a successfully parsed raw
-      matrix\\[5pt]
-      \textit{No converter or example output exists yet.}
+      \textbf{RAW-DATA-TO-MATRIX IMAGE PLACEHOLDER}\\[5pt]
+      Future example showing a real Teensy output sequence translated into its
+      \(N_y\times N_x\) matrix\\[5pt]
+      \textit{No complete scan or converted matrix is available yet.}
     }}
     \captionsetup{font=footnotesize}
-    \captionof{figure}{Placeholder for the implemented conversion code and
-    its first verified intermediate output.}
+    \captionof{figure}{Placeholder for a verified example of raw scan values
+    before and after matrix conversion.}
   \end{center}
+\end{minipage}
 
-  \subsubsection{Implementation Record}
+\vspace{5pt}
 
-  \begin{tabular}{@{}>{\raggedright\arraybackslash}p{0.38\linewidth}
-                  p{0.56\linewidth}@{}}
-    Script and repository path & \rule{0.94\linewidth}{0.4pt} \\
-    Python and package versions & \rule{0.94\linewidth}{0.4pt} \\
-    Input data type / byte order & \rule{0.94\linewidth}{0.4pt} \\
-    Validation tests completed & \rule{0.94\linewidth}{0.4pt} \\
-    Saved intermediate outputs & \rule{0.94\linewidth}{0.4pt} \\
-  \end{tabular}
+\noindent
+\begin{minipage}[t]{0.48\linewidth}
+  \vspace{0pt}
+  \subsubsection{Mathematics of Matrix Conversion}
+
+  If \(q_k\) is the \(k\)-th stored correction and the scan contains \(N_x\)
+  points per line, the planned converter maps the one-dimensional sequence
+  into rows and columns using
+  \[
+    Q_{j,i}=q_{jN_x+i},
+    \qquad
+    0\leq i<N_x,\quad 0\leq j<N_y .
+  \]
+  A measured vertical calibration factor \(\alpha\) would later convert
+  relative controller counts into height differences:
+  \[
+    \Delta z_{j,i}
+      =\alpha\left(Q_{j,i}-Q_{\mathrm{ref}}\right).
+  \]
+  \noindent\fbox{\parbox[c][0.40in][c]{0.92\linewidth}{
+    \centering
+    \textbf{CALIBRATION PLACEHOLDER:}
+    \(\alpha=\rule{0.28\linewidth}{0.4pt}\)
+    distance/count; source and method:
+    \(\rule{0.25\linewidth}{0.4pt}\)
+  }}
+\end{minipage}
+\hfill
+\begin{minipage}[t]{0.48\linewidth}
+  \vspace{0pt}
+  \subsubsection{Python Conversion Code}
+
+  \begin{center}
+    \fbox{\parbox[c][1.62in][c]{0.91\linewidth}{
+      \centering
+      \textbf{PYTHON CODE-SNIPPET PLACEHOLDER}\\[5pt]
+      Insert the tested file reader, length check, matrix reshape, backward
+      alignment, and raw-matrix save steps here.\\[5pt]
+      \textit{The conversion program has not yet been written.}
+    }}
+    \captionsetup{font=footnotesize}
+    \captionof{figure}{Placeholder for a readable excerpt from the completed
+    and repository-linked Python converter.}
+  \end{center}
 \end{minipage}
 
 \end{spacing}
@@ -919,7 +957,7 @@ interpretable images.
 \begin{center}
   \fbox{\parbox[c][2.55in][c]{0.90\linewidth}{
     \centering
-    \textbf{LARGE IMAGE PLACEHOLDER 2}\\[6pt]
+    \textbf{SURFACE-RECONSTRUCTION IMAGE PLACEHOLDER}\\[6pt]
     Future side-by-side forward and backward maps, followed by the final
     reconstructed surface visualization\\[5pt]
     \textit{Add axes, units, color scale, scan direction, and processing
@@ -1083,8 +1121,8 @@ until it is supported by saved raw data and documented processing.
 
     \item S. Chiang, \textit{Teensy STM11A}, STM controller source file
     \nolinkurl{Teensy_STM11A_July_29_2025.ino}, University of California,
-    Davis, 2025. Cited portions include lines 838--857, 1119--1239, and
-    1248--1262.
+    Davis, 2025. Cited portions include lines 155--157, 838--857,
+    1119--1239, and 1248--1262.
 
     \item B. Beauregard, \textit{Arduino PID Library}, version 1.1.1,
     timer-interrupt modification by S. Chiang, source file
