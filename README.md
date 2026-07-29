@@ -10,11 +10,11 @@ future measurement output, and surface-reconstruction work.
   are documented.
 - The Teensy controller firmware defines forward-scan, backward-scan, and
   parameter-file output.
-- The surface-reconstruction workflow has been drafted for the poster.
+- The planned Teensy-output and Python-conversion workflow is outlined on the
+  poster using explicit placeholders.
 - Complete STM scan files and a tested reconstruction program still need to be
   added.
-- `process_stm_input.py` remains a placeholder and does not currently generate
-  a surface model.
+- No Python converter or plotter has been implemented yet.
 
 ## Data and visualization
 
@@ -24,6 +24,24 @@ measurements, not a direct photograph from the instrument. When complete data
 become available, this repository will keep the raw files, processing code,
 processing settings, and generated figures together so the transformation can
 be checked and reproduced.
+
+The planned converter will use the three files produced for one scan:
+`STMF*.hex` for forward binary values, `STMB*.hex` for backward binary values,
+and `STMP*.txt` for scan dimensions and parameters. The two `.hex` files contain
+raw signed 16-bit values rather than human-readable hexadecimal text.
+
+## Repository layout
+
+- `poster/main.tex`: authoritative poster source.
+- `poster/software-control-flow-large.png`: software-architecture figure used
+  by the poster.
+- `poster/software-state-sequence.png`: control-state figure used by the
+  poster.
+- `animate_scan_pattern.py`: firmware-derived scan-order animation.
+- `scan-pattern-preview.gif`: rendered preview of that animation.
+- `requirements-animation.txt`: Python dependencies for the animation.
+- `CITATION_SOURCE_PATHS.txt`: exact locations of cited course sources.
+- `POSTER_FORMATTING_AND_WORKFLOW_RULES.txt`: poster layout and content rules.
 
 ### Teensy scanning-pattern animation
 
