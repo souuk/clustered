@@ -1,15 +1,44 @@
 # Clustered STM Project
 
-This repository is a temporary workspace for the COSMOS 2026 scanning tunneling microscope project. The project files and documentation are still being organized.
+This repository organizes materials for the COSMOS 2026 scanning tunneling
+microscope project, including source locations, controller-related files,
+future measurement output, and surface-reconstruction work.
 
-Planned contents include:
+## Current status
 
-- original measurement output recorded by the STM;
-- processed surface models and visualizations;
-- the Python program used to convert recorded measurements into a model;
-- controller and supporting source code; and
-- citation-source locations for the project poster.
+- The poster's course-source citations and their locations in the supplied ZIP
+  are documented.
+- The Teensy controller firmware defines forward-scan, backward-scan, and
+  parameter-file output.
+- The surface-reconstruction workflow has been drafted for the poster.
+- Complete STM scan files and a tested reconstruction program still need to be
+  added.
+- `process_stm_input.py` remains a placeholder and does not currently generate
+  a surface model.
 
-The STM's original data and any processed visualization are different artifacts. A generated image or three-dimensional model is a representation produced from the recorded measurements, not a direct photograph from the instrument.
+## Data and visualization
 
-For the current citation index, see [`CITATION_SOURCE_PATHS.txt`](CITATION_SOURCE_PATHS.txt). The placeholder processing interface is in [`process_stm_input.py`](process_stm_input.py).
+The STM's recorded values are the original measurement output. A two-dimensional
+map or three-dimensional surface is a processed representation made from those
+measurements, not a direct photograph from the instrument. When complete data
+become available, this repository will keep the raw files, processing code,
+processing settings, and generated figures together so the transformation can
+be checked and reproduced.
+
+## Poster citations
+
+The poster currently uses four numbered references. References `[1]` through
+`[3]` are course materials found in the supplied course-material ZIP. Reference
+`[4]` is this repository itself, so it does not have a path inside that ZIP.
+
+See [`CITATION_SOURCE_PATHS.txt`](CITATION_SOURCE_PATHS.txt) for the full
+citation-to-source-path index.
+
+## Files still to add
+
+- complete forward- and backward-scan files;
+- the matching parameter file;
+- the tested Python reconstruction program;
+- vertical-piezo calibration information;
+- final 2D and optional 3D surface figures; and
+- processing notes and settings used to generate those figures.
