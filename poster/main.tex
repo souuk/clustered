@@ -521,18 +521,8 @@ card.\textsuperscript{[2,3]}
 \clearpage
 
 % -------------------------------------------------
-% CENTER ROW 2, HARDWARE COLUMN
-% SHEET 6 OF 12 -- RESERVED
-% -------------------------------------------------
-% Intentionally blank until the group chooses the final topic and content.
-\thispagestyle{empty}
-\null
-
-\clearpage
-
-% -------------------------------------------------
 % CENTER ROW 2, SOFTWARE COLUMN
-% SHEET 7 OF 12 -- STM CONTROL LOGIC AND SCAN EXECUTION
+% SHEET 6 OF 12 -- STM CONTROL LOGIC AND SCAN EXECUTION
 % -------------------------------------------------
 \section{STM Control Logic and Scan Execution}
 
@@ -738,7 +728,7 @@ if (pointcounter >= (2 * numpoints)) {
 
 % -------------------------------------------------
 % CENTER ROW 3, DATA PROCESSING -- PART 1
-% SHEET 8 OF 12 -- DATA OUTPUT AND PYTHON CONVERSION
+% SHEET 7 OF 12 -- DATA OUTPUT AND PYTHON CONVERSION
 % -------------------------------------------------
 \section{Data Output and Python Conversion}
 
@@ -828,6 +818,106 @@ dataFileB.write(
   converting controller counts into physical height.\\[6pt]
   \textit{The conversion software, calibration value, and verified example
   output do not yet exist.}
+}}
+
+\end{spacing}
+
+\clearpage
+
+% -------------------------------------------------
+% CENTER ROW 3, DATA PROCESSING -- PART 2
+% SHEET 8 OF 12 -- PYTHON CONVERSION RESULTS
+% -------------------------------------------------
+\section{Python Conversion Results and Generated Visualizations}
+
+\begin{spacing}{0.96}
+\footnotesize
+
+After validating the file lengths and reshaping the samples, the Python
+plotter can render four separate, printer-friendly heatmaps. Each panel below
+reserves one verified output from the same scan. Until real tunneling data are
+available, any inserted development figure must remain labeled
+\textbf{SYNTHETIC -- NOT EXPERIMENTAL}.
+
+\vspace{5pt}
+
+\noindent
+\begin{minipage}[t]{0.49\linewidth}
+  \vspace{0pt}
+  \begin{center}
+    \fbox{\parbox[c][1.72in][c]{0.92\linewidth}{
+      \centering
+      \textbf{FORWARD-SCAN HEATMAP PLACEHOLDER}\\[6pt]
+      Primary image generated with \texttt{--view forward}.\\[4pt]
+      Insert the validated \(N_y\times N_x\) matrix with \(x\)-point and
+      \(y\)-line axes and a controller-count color scale.
+    }}
+  \end{center}
+\end{minipage}
+\hfill
+\begin{minipage}[t]{0.49\linewidth}
+  \vspace{0pt}
+  \begin{center}
+    \fbox{\parbox[c][1.72in][c]{0.92\linewidth}{
+      \centering
+      \textbf{BACKWARD-SCAN HEATMAP PLACEHOLDER}\\[6pt]
+      Spatially aligned image generated with \texttt{--view backward}.\\[4pt]
+      Use only after the firmware indexing defect is corrected and the
+      backward file passes length and orientation checks.
+    }}
+  \end{center}
+\end{minipage}
+
+\vspace{7pt}
+
+\noindent
+\begin{minipage}[t]{0.49\linewidth}
+  \vspace{0pt}
+  \begin{center}
+    \fbox{\parbox[c][1.72in][c]{0.92\linewidth}{
+      \centering
+      \textbf{FORWARD/BACKWARD AVERAGE PLACEHOLDER}\\[6pt]
+      Combined image generated with \texttt{--view average}.\\[4pt]
+      Compare this result with both directional scans before interpreting
+      repeated surface features.
+    }}
+  \end{center}
+\end{minipage}
+\hfill
+\begin{minipage}[t]{0.49\linewidth}
+  \vspace{0pt}
+  \begin{center}
+    \fbox{\parbox[c][1.72in][c]{0.92\linewidth}{
+      \centering
+      \textbf{FORWARD-MINUS-BACKWARD PLACEHOLDER}\\[6pt]
+      Diagnostic image generated with \texttt{--view difference}.\\[4pt]
+      A near-uniform result supports directional agreement; structured
+      residuals can reveal drift, hysteresis, or alignment errors.
+    }}
+  \end{center}
+\end{minipage}
+
+\vspace{4pt}
+
+\begin{center}
+  \captionsetup{font=footnotesize}
+  \captionof{figure}{Reserved layout for the four heatmap views currently
+  supported by \nolinkurl{notunnelpy/plot_stm.py}. Replace all four panels with
+  outputs from one verified scan and state every processing option used.}
+\end{center}
+
+\vspace{4pt}
+
+\noindent
+\fbox{\parbox[c][0.78in][c]{0.96\linewidth}{
+  \textbf{RESULTS SUMMARY PLACEHOLDER}\hfill
+  \texttt{Input type: [pending]}\quad
+  \texttt{Matrix: [\(N_y\times N_x\)]}\quad
+  \texttt{Bytes/direction: [pending]}\\[4pt]
+  Record the selected leveling mode, display limits, backward-file validation
+  status, and a forward/backward difference metric. Report vertical values as
+  controller counts until a measured piezo calibration supports conversion to
+  physical height.
 }}
 
 \end{spacing}
