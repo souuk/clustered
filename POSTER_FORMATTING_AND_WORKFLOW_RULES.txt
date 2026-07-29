@@ -55,9 +55,9 @@ Sheet 3: Instrument Design and Construction.
 2.3
 The center panel uses landscape sheets in two columns:
 
-Hardware column:
+Hardware and validation column:
 Sheet 4: Hardware Architecture.
-Sheet 6: STM Operating Principles and Procedure.
+Sheet 6: Software Verification and Data Integrity.
 Sheet 8: Subsystem Testing and Calibration.
 
 Software column:
@@ -66,9 +66,9 @@ Sheet 7: STM Control Logic and Scan Execution.
 Sheet 9: Data Output and Surface Reconstruction.
 
 2.4
-The software column should read from top to bottom as:
+Across the center panel, the software narrative should read:
 
-Architecture >> Execution >> Output
+Architecture >> Verification >> Execution >> Output
 
 2.5
 The right panel contains:
@@ -258,7 +258,10 @@ Subsystem Testing and Calibration explains how the individual parts were
 checked before or during integration.
 
 8.7
-Operating Principles explains the physical sequence from approach to imaging.
+Software Verification and Data Integrity traces claims to exact firmware
+locations, distinguishes executable behavior from source comments, documents
+the binary file contract, and identifies unresolved defects without implying
+that they have been fixed.
 
 
 9. SOFTWARE COLUMN
@@ -278,33 +281,48 @@ Do not crowd Sheet 5 with the full approach algorithm, PID sequence, raster
 logic, or long pseudocode. Those belong on Sheet 7.
 
 9.4
+Sheet 6, Software Verification and Data Integrity, answers:
+
+How was the scan behavior checked, and which data-integrity risks remain?
+
+9.5
+Sheet 6 includes firmware-to-model traceability, the literal DAC update order,
+the intended signed 16-bit file contract, expected file lengths, the
+backward-array indexing defect, and a verification matrix.
+
+9.6
+Do not state that the firmware is corrected unless the Teensy source itself
+has been changed and tested. Keep modeled scan behavior separate from actual
+instrument measurements.
+
+9.7
 Sheet 7, STM Control Logic and Scan Execution, answers:
 
 How does the program operate the STM?
 
-9.5
+9.8
 Sheet 7 includes automated approach, the repeated current-threshold check,
 the no-signal retract/motor/retry path, the 100 microsecond feedback loop, PID
 output limiting, raster movement, forward and backward scans, y increments,
 completion, and file closing.
 
-9.6
+9.9
 Sheet 7 may use readable pseudocode instead of long direct code quotations.
 
-9.7
+9.10
 Sheet 9, Data Output and Surface Reconstruction, answers:
 
 What does the STM save, and how does the program turn it into a surface?
 
-9.8
+9.11
 Sheet 9 explains the signed 16-bit correction values, separate forward and
 backward files, parameter information, matrix reshaping, direction alignment,
 calibration, comparison, and visualization.
 
-9.9
-Keep the software-column narrative in this order:
+9.12
+Keep the center-panel software narrative in this order:
 
-Architecture >> Execution >> Output
+Architecture >> Verification >> Execution >> Output
 
 
 10. CODE AND PSEUDOCODE
@@ -356,14 +374,19 @@ Captions should say what the reader is seeing and should include a citation
 when the figure is based on a supplied source.
 
 11.7
+Reserve the supplementary-evidence sheet for measured outputs such as
+calibration plots, oscilloscope captures, and forward/backward scan
+comparisons. Do not insert synthetic results merely to fill the page.
+
+11.8
 Use actual local filenames in \includegraphics and keep those files beside
 main.tex.
 
-11.8
+11.9
 Do not insert an invented STM scan, fabricated dataset, or simulated image as
 if it were an experimental result.
 
-11.9
+11.10
 When real figures are added, keep axes, units, scales, legends, and captions
 readable at printed size.
 

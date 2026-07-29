@@ -3,10 +3,10 @@
 % =================================================
 % Justin: content sharing one printed page can still use separate sections.
 %
-% We still need to completely write the operating principles page.
-% That means tunneling current, coarse and fine positioning,
-% constant-current imaging, and the actual measurement procedure.
-% - Justin
+% Page 6 now documents software verification and data integrity.
+% Keep its firmware line references synchronized with the supplied source and
+% do not describe the backward-array indexing defect as fixed until the
+% Teensy code itself has been corrected and tested.
 %
 % Someone needs to check the components and materials table against
 % what we actually used. Do not leave guessed quantities in there.
@@ -32,13 +32,14 @@
 % and Kd values we actually use. Do not leave the supplied defaults there
 % if we end up changing them.
 %
-% Someone needs to check the Timer 2 backward-array index before we trust
-% the scan files. pointcounter keeps counting past numpoints, but
-% DataArray1B is only MAXNUMPTS wide, so this could be an actual bug.
+% The Timer 2 backward-array index has been checked and is unsafe at the
+% default size: pointcounter begins the backward pass at 512, but each
+% DataArray1B row is only 512 elements wide. Correct and test the firmware
+% before trusting backward files.
 %
-% We also need to confirm the saved data format. The firmware casts Output
-% to int16_t and writes 2 bytes even though one comment says 18 bits and
-% 4 bytes. The reconstruction code has to follow what is really written.
+% The executable file writes use signed int16_t values and two bytes per
+% sample, although the adjacent source comment says 18 bits and four bytes.
+% Resolve that documentation conflict and define one explicit file schema.
 %
 % For data output, we still need a complete forward file, backward file,
 % and parameter file from a real scan. A Serial Monitor picture is not
@@ -138,9 +139,9 @@
 % CENTER PANEL
 %   The top-center row remains empty in the assembled poster.
 %
-%   HARDWARE COLUMN             SOFTWARE COLUMN
+%   HARDWARE/VALIDATION COLUMN  SOFTWARE COLUMN
 %   4. Hardware Architecture    5. Control Software Architecture
-%   6. Operating Principles     7. Control Logic and Scan Execution
+%   6. Software Verification    7. Control Logic and Scan Execution
 %   8. Testing and Calibration  9. Data Output and Surface Reconstruction
 %
 % RIGHT PANEL
@@ -264,12 +265,12 @@ measured and used by a feedback system to adjust the vertical position of the
 tip. By maintaining a nearly constant current while scanning laterally, the
 system can relate the required tip motion to changes in surface height.
 
-Subsystem testing confirmed the operation of the power supply, preamplifier,
-and analog-to-digital conversion stages. The final performance of the STM is
-limited by mechanical vibration, electrical noise, thermal drift, tip
-sharpness, and calibration accuracy. These tests establish the operating
-principles of the instrument and identify the improvements needed to achieve
-stable, repeatable nanoscale imaging.
+The firmware's control flow and raster order have been traced to the supplied
+source and reproduced in a separate Python model. Quantitative power-supply,
+signal-chain, ADC, DAC, and complete-scan measurements have not yet been
+recorded in the project archive. The present work therefore establishes the
+instrument design, software behavior, and remaining validation requirements;
+it does not yet demonstrate calibrated nanoscale surface imaging.
 
 \categorygap
 
@@ -301,10 +302,11 @@ The values recorded by the STM are the instrument's original measurement
 output. Any surface image or three-dimensional rendering shown later is a
 processed visualization produced by passing those measurements through a
 separate modeling program; it is not a direct photograph from the STM. The
-original STM data, the processed output, and the code used to convert the
-measurements into a model will be added to the
-\href{https://github.com/souuk/clustered}{clustered GitHub repository} as they
-become available.
+scan-order verification code is available in the
+\href{https://github.com/souuk/clustered}{clustered GitHub repository} as
+\nolinkurl{animate_scan_pattern.py}, with its rendered preview stored as
+\nolinkurl{scan-pattern-preview.gif}. Complete raw STM measurements and a
+tested surface-reconstruction program have not yet been added.
 
 \clearpage
 
@@ -395,30 +397,14 @@ compared.\textsuperscript{[2]}
 % Talk about what we physically built and how we put it together here.
 % Save the testing stuff for Sheet 8.
 
-\subsection{Components and Materials}
+\subsection{Physical Construction Scope}
 
-% This is only a selected list right now. Insert the full final parts list here
-% for future once everyone agrees on what was actually used.
-\begin{table}[H]
-  \centering
-  \small
-  \begin{tabular}{>{\raggedright\arraybackslash}p{0.78\textwidth}r}
-    \toprule
-    Component & Quantity \\
-    \midrule
-    Positive (LM317) and negative (LM337) adjustable voltage regulators & 1 each \\
-    \(2200\,\mu\mathrm{F}\), 35 V capacitors & 2 \\
-    \(1\,\mu\mathrm{F}\), 35 V tantalum capacitors & 2 \\
-    General-purpose rectifier diodes & 4 \\
-    \(1\,\mathrm{k}\Omega\) and \(180\,\Omega\) resistors & 1 and 2 \\
-    \(2.5\,\mathrm{k}\Omega\) trimmer potentiometers & 2 \\
-    12.6 V center-tapped transformer & 1 \\
-    TO-220 heat sinks & 2 \\
-    Machine screws, lock washers, and hex nuts & As required \\
-    \bottomrule
-  \end{tabular}
-  \caption{Selected power-supply and mechanical components.}
-\end{table}
+The physical build consists of the dual-rail supply, piezoelectric scanner,
+coarse-approach mechanism, tip and sample mount, and vibration-isolation
+platform. Routine wiring is omitted here so the poster can emphasize the
+signal path and control software. A complete bill of materials should be
+restored only after every component and quantity has been checked against the
+finished instrument.
 
 \subsubsection{Dual-Rail Power Supply}
 
@@ -437,8 +423,9 @@ reached their target voltages relative to ground.
 The piezoelectric scanner provides fine \(x\), \(y\), and \(z\) positioning
 of the tip. A voltage bias between the metallic tip and conductive sample
 allows a tunneling current to form when their separation becomes sufficiently
-small. During scanning, the lateral piezo signals move the tip across the
-sample while feedback controls its vertical position.
+small. During scanning, the \(x\)- and \(y\)-piezo signals move the tip
+laterally while feedback changes the \(z\)-piezo command to keep the measured
+current near its setpoint.
 
 \subsubsection{Coarse-Approach Mechanism}
 
@@ -447,7 +434,9 @@ sample while feedback controls its vertical position.
 The stepper-motor mechanism provides coarse positioning so the tip can be
 brought into the operating range of the piezoelectric scanner. The mechanism
 was assembled from metal plates, screws, and a geared stepper motor. The
-piezoelectric scanner was mounted at the center of the mechanism.
+piezoelectric scanner was mounted at the center of the mechanism. The motor
+closes most of the initial gap; the \(z\)-piezo then supplies the much smaller
+fine-positioning corrections used during approach and imaging.
 
 \subsubsection{Vibration-Isolation System}
 
@@ -478,34 +467,51 @@ of the magnets. The stepper-motor assembly was then placed on the platform.
 
 % Explain what each electronic part does here. Keep the building details
 % on Sheet 3 and the measurements on Sheet 8.
-% Insert one hardware block diagram here for future if this page has room.
-% It should go current -> preamp -> ADC -> Teensy -> DAC -> piezo.
+\begin{spacing}{1.0}
+\small
 
-\subsection{Tunneling-Current Preamplifier}
+\begin{figure}[H]
+  \centering
+  \includegraphics[width=0.90\linewidth]{hardware-signal-chain.png}
+  \captionsetup{font=footnotesize}
+  \caption{Critical measurement and control paths. Routine wiring is omitted;
+  the diagram follows the preamplifier, ADC, DAC, and channel assignments
+  documented by the controller source.\textsuperscript{[2]}}
+\end{figure}
+
+\noindent
+\begin{minipage}[t]{0.48\linewidth}
+  \vspace{0pt}
+  \subsubsection{Tunneling-Current Preamplifier}
 
 The current preamplifier converts the extremely small tunneling current
 (typically picoamperes to nanoamperes) into a measurable voltage using a
 transimpedance configuration. Its large feedback resistance provides the gain
 needed for the ADC and feedback controller to detect nanoampere-scale changes.
 
-\subsection{Piezoelectric Drive Amplifier}
-
-The amplifier board accepts the controller's \(x\), \(y\), and \(z\) command
-signals and produces the higher-voltage outputs required by the piezoelectric
-scanner. Its summing and subtracting stages combine the control channels used
-to bend or extend the scanner.
-
-\subsection{Analog-to-Digital Converter}
+  \subsubsection{Analog-to-Digital Converter}
 
 The ADS8691 analog-to-digital converter digitizes the preamplifier voltage
 with 18-bit resolution. The Teensy reads this value over SPI and supplies it
 to the feedback controller as the measured tunneling-current signal.
+\end{minipage}
+\hfill
+\begin{minipage}[t]{0.48\linewidth}
+  \vspace{0pt}
+  \subsubsection{Digital-to-Analog Converter}
 
-\subsection{Digital-to-Analog Converter}
+The four-channel 16-bit DAC8734 converts Teensy commands into analog outputs:
+channel~0 supplies vertical correction, channels~1 and~2 control lateral
+motion, and channel~3 supplies sample bias.\textsuperscript{[2]}
 
-The four-channel DAC8734 converts digital commands from the Teensy into analog
-voltages for the \(x\), \(y\), and \(z\) piezo controls and the sample-bias
-voltage.
+  \subsubsection{Piezoelectric Drive Amplifier}
+
+The drive amplifier accepts the \(x\), \(y\), and \(z\) DAC commands and
+produces the higher-voltage outputs required by the scanner. Its summing and
+subtracting stages bend the tube laterally or extend it vertically.
+\end{minipage}
+
+\end{spacing}
 
 \clearpage
 
@@ -591,57 +597,98 @@ card.\textsuperscript{[2,3]}
 \clearpage
 
 % -------------------------------------------------
-% CENTER ROW 2, HARDWARE COLUMN
-% SHEET 6 OF 12 -- STM OPERATING PRINCIPLES AND PROCEDURE
+% CENTER ROW 2, VALIDATION COLUMN
+% SHEET 6 OF 12 -- SOFTWARE VERIFICATION AND DATA INTEGRITY
 % -------------------------------------------------
-\section{STM Operating Principles and Procedure}
+\section{Software Verification and Data Integrity}
 
-% Explain the physical process from approach to imaging here.
-% Keep the detailed code setup on Sheet 5.
-% Insert a simple tip/sample drawing here for future if we get too much blank
-% space. It should show coarse motion, piezo motion, and the tunneling gap.
+\begin{spacing}{0.94}
+\footnotesize
 
-\subsection{Quantum-Tunneling Signal}
+The Python model was derived from the supplied Teensy source rather than from
+an assumed raster pattern. It preserves the firmware's order of operations so
+that scan motion, point counters, file expectations, and boundary behavior can
+be checked independently.\textsuperscript{[2,4]}
 
-% Add why the current changes so much with tip--sample distance and why we
-% need a conductive sample and a sharp metal tip.
-The tunneling signal is the physical basis of STM operation. A voltage bias
-between a conductive sample and a sharp metallic tip allows electrons to
-quantum-mechanically tunnel across the small gap. The resulting current varies
-approximately exponentially with tip--sample separation, so even a very small
-change in distance produces a measurable change in signal. The sample must be
-conductive to complete the tunneling circuit, and the tip must be extremely
-sharp so that the measurement is localized to a very small region of the
-surface.
+\vspace{3pt}
 
-\subsection{Coarse and Fine Positioning}
+\noindent
+\begin{minipage}[t]{0.43\linewidth}
+  \vspace{0pt}
+  \subsubsection{Firmware-to-Model Traceability}
 
-% Add how the coarse motor, z piezo, and x-y movement each work.
-The coarse motor, located above the piezoelectric scanner, moves the tip toward
-the sample until the separation is within the fine-positioning range. The
-\(z\)-piezo then adjusts the vertical tip position in response to the measured
-tunneling current, while the \(x\)- and \(y\)-piezo signals move the tip
-laterally across the sample. Piezoelectric materials expand or contract by
-sub-nanometer amounts when voltage is applied, allowing the feedback system to
-make the small corrections needed during a scan.
+  The image command clears the counters, selects the forward direction,
+  restores the initial \(x,y\) values, opens forward, backward, and parameter
+  files, and starts Timer~2 (lines 838--857). Timer~2 then commands the current
+  \(x\) position, updates the next \(x\), stores the feedback output, changes
+  direction, steps \(y\), and advances the line number (lines
+  1178--1219).\textsuperscript{[2]}
 
-% Justin: add more detail on the coarse-motor mechanism.
+  Because the DAC receives the current \(x\) before \(x\) is updated, an
+  \(N\)-point line samples \(x_0\) through \(x_0+(N-1)\Delta x\) forward and
+  \(x_0+N\Delta x\) through \(x_0+\Delta x\) backward. The companion animation
+  reproduces this endpoint offset instead of drawing an idealized
+  raster.\textsuperscript{[2,4]}
 
-\subsection{Constant-Current Imaging}
+  \subsubsection{Intended Binary File Contract}
 
-% Add how keeping the current steady lets the z correction represent the
-% relative surface height.
-During constant-current imaging, the feedback loop adjusts the \(z\)-piezo to
-hold the tunneling current near its setpoint as the tip moves across the
-surface. At each lateral position, the required \(z\) correction records the
-relative vertical response needed to preserve the current. Before a
-vertical-piezo calibration is measured, these values are reported as relative
-correction or DAC counts rather than absolute surface height.
+  The forward and backward arrays are declared as signed
+  \texttt{int16\_t} values (lines 155--157), and each file write explicitly
+  writes two bytes (lines 1188--1198). A valid completed pass is therefore
+  intended to contain \(N_xN_y\) values, or \(2N_xN_y\) bytes, in each
+  direction file. The parameter file records \(N_x\), \(N_y\), completion
+  counters, bias, and current (lines 1248--1262).\textsuperscript{[2]}
 
-\subsection{Measurement Procedure}
+  \subsubsection{Unresolved Backward-Index Defect}
 
-% Put the final steps here: initialize, set bias/current, approach, turn on
-% feedback, set up the scan, collect the data, and pull the tip back.
+  The arrays are only 512 points wide (lines 105--108 and 155--157), but the
+  backward pass uses raw \texttt{pointcounter} values from \(N_x\) through
+  \(2N_x-1\) as its second array index (lines 1194--1203). At the default
+  \(N_x=512\), the first backward index is already outside the array. The
+  Python model flags this defect; it does not claim the firmware is
+  corrected.\textsuperscript{[2,4]}
+\end{minipage}
+\hfill
+\begin{minipage}[t]{0.54\linewidth}
+  \vspace{0pt}
+  \centering
+  \includegraphics[width=\linewidth]{scan-pattern-sequence.png}
+  \captionsetup{font=scriptsize}
+  \captionof{figure}{Four verified states of the literal Timer~2 scan order.
+  Filled points show forward samples, open points show backward samples, and
+  the diamond marks the commanded tip position.\textsuperscript{[2,4]}}
+\end{minipage}
+
+\vspace{4pt}
+\subsubsection{Verification Matrix}
+
+\begin{center}
+\scriptsize
+\renewcommand{\arraystretch}{1.08}
+\begin{tabular}{@{}>{\raggedright\arraybackslash}p{0.22\linewidth}
+                >{\raggedright\arraybackslash}p{0.25\linewidth}
+                >{\raggedright\arraybackslash}p{0.36\linewidth}
+                p{0.10\linewidth}@{}}
+  \toprule
+  Behavior & Source evidence & Independent check & Status \\
+  \midrule
+  Scan initialization & Lines 838--857 & Counters, direction, files, and
+    initial coordinates represented & Matched \\
+  Forward/backward order & Lines 1183--1203 & Literal DAC-before-update order
+    and \(2N_x\) ticks per line & Matched \\
+  Line transition & Lines 1203--1219 & Reset \(x\), increment \(y\), trigger,
+    and advance line & Matched \\
+  Completion and metadata & Lines 1225--1262 & Stop and parameter fields
+    traced directly; not simulated & Source-traced \\
+  Two-byte sample width & Lines 1188--1198 & Declarations and write length
+    agree; adjacent comment conflicts & Conflict noted \\
+  Backward array bounds & Lines 105--108, 155--157, 1194--1203 &
+    Default first backward index \(=512\) & Unresolved \\
+  \bottomrule
+\end{tabular}
+\end{center}
+
+\end{spacing}
 
 \clearpage
 
@@ -709,12 +756,13 @@ required conditions have been satisfied.\textsuperscript{[2,3]}
 
   \subsubsection{Timer 2: Raster-Scan Execution}
 
-  Timer~2 advances \(x\) by one DAC step and stores the current feedback output
-  at each point. After the forward line reaches the selected number of points,
-  the direction reverses and a backward line is collected. Completing both
-  passes resets \(x\), increments \(y\), and starts the next line. When the
-  selected number of lines is reached, the timer stops, writes the parameters,
-  and closes all files.\textsuperscript{[2]}
+  Timer~2 writes the current \(x\) command to the DAC, updates \(x\) for the
+  next timer tick, and stores the current feedback output. After the forward
+  line reaches the selected number of points, the direction reverses and a
+  backward line is collected. Completing both passes resets \(x\), increments
+  \(y\), and starts the next line. When the selected number of lines is
+  reached, the timer stops, writes the parameters, and closes all
+  files.\textsuperscript{[2]}
 
   \noindent{\tiny\textit{Code:}
   \nolinkurl{Teensy_STM11A_July_29_2025.ino}, lines
@@ -831,19 +879,6 @@ if (pointcounter >= (2 * numpoints)) {
   \nolinkurl{Teensy_STM11A_July_29_2025.ino}, lines
   1201--1210.\textsuperscript{[2]}\par}
 
-  \vspace{2pt}
-  \noindent{\tiny\textit{Implementation check:} During the backward pass,
-  \texttt{pointcounter} runs from \texttt{numpoints} through
-  \texttt{2*numpoints-1}, while lines 1194--1198 use it directly as the second
-  index of \texttt{DataArray1B}. The index should be made zero-based before
-  relying on the default 512-point scan data.\textsuperscript{[2]}\par}
-
-  \vspace{2pt}
-  \noindent{\tiny\textit{Companion animation:}
-  \href{https://github.com/souuk/clustered/blob/main/animate_scan_pattern.py}
-  {\nolinkurl{animate_scan_pattern.py}} reproduces the firmware's forward
-  pass, backward pass, \(x\) reset, and \(y\) step using the cited timer
-  sequence.\textsuperscript{[2,4]}\par}
 \end{minipage}
 
 \end{spacing}
@@ -857,41 +892,56 @@ if (pointcounter >= (2 * numpoints)) {
 % -------------------------------------------------
 \section{Subsystem Testing and Calibration}
 
-% Put how we tested each part before connecting everything together here.
-% Insert a small results table here for future with test value, expected value,
-% difference, and whether the part passed.
+\begin{spacing}{1.0}
+\small
 
-\subsection{Power-Rail Verification}
+The procedures required to validate the hardware are defined below, but the
+project archive does not yet contain the corresponding readings, instrument
+settings, or screenshots. No subsystem is assigned a pass/fail result until
+those measurements are recorded.
 
-% Insert the actual multimeter readings and a board photo here for future.
-The positive and negative rails were measured relative to ground with a
-multimeter. The trimmer potentiometers were adjusted until the outputs were
-\(+15\) V and \(-15\) V.
+\vspace{6pt}
 
-\subsection{Analog Signal-Chain Verification}
+\begin{center}
+\footnotesize
+\renewcommand{\arraystretch}{1.20}
+\setlength{\tabcolsep}{2pt}
+\begin{tabular}{@{}>{\raggedright\arraybackslash}p{0.14\linewidth}
+                >{\raggedright\arraybackslash}p{0.25\linewidth}
+                >{\raggedright\arraybackslash}p{0.19\linewidth}
+                >{\raggedright\arraybackslash}p{0.16\linewidth}
+                >{\raggedright\arraybackslash}p{0.12\linewidth}
+                p{0.08\linewidth}@{}}
+  \toprule
+  Subsystem & Procedure & Expected value or behavior & Measured & Difference
+    & Status \\
+  \midrule
+  Positive rail & Multimeter from \(+V\) to ground & \(+15\) V target &
+    Not recorded & --- & Pending \\
+  Negative rail & Multimeter from \(-V\) to ground & \(-15\) V target &
+    Not recorded & --- & Pending \\
+  Analog chain & Known function-generator input; record input and output
+    scope channels & Gain and phase predicted from the tested circuit &
+    Not recorded & --- & Pending \\
+  ADS8691 ADC & Apply known voltage; compare count conversion with multimeter &
+    Converted voltage agrees with applied voltage & Not recorded & --- &
+    Pending \\
+  DAC8734 & Command fixed values or waveform; measure output on oscilloscope &
+    Output corresponds to requested code and waveform & Not recorded & --- &
+    Pending \\
+  \bottomrule
+\end{tabular}
+\end{center}
 
-% Insert the oscilloscope screenshots and their input/output settings here for
-% future. Make sure the axes and volts-per-division can be read.
-The amplifier electronics were driven with a function generator and observed
-on an oscilloscope. Input, individual axis, and combined-operation channels
-were compared. Summing stages produced the expected combined amplitudes,
-while subtraction of matched signals produced an output near zero.
+\subsection{Required Test Record}
 
-\subsection{ADC Characterization}
+For every row, the final record must include the date, wiring configuration,
+instrument model, range or volts-per-division, commanded or applied value,
+measured value with units, calculated difference, and an explicit acceptance
+criterion. Oscilloscope captures and calibration plots belong on the
+supplementary-evidence sheet.
 
-% Insert the applied voltage, ADC counts, converted voltage, and percent
-% difference here for future. A short calibration graph would work well too.
-The ADC was connected to the dual-rail supply and a variable test voltage.
-The Teensy 4.1 read the converted value through the Arduino development
-environment. The calculated voltage was compared with the applied voltage to
-confirm the conversion stage.
-
-\subsection{DAC Characterization}
-
-% Insert the requested DAC value and measured waveform here for future.
-The Teensy commanded the DAC to generate a test waveform. The output was
-observed on an oscilloscope to verify that the digital commands produced the
-expected analog signal.
+\end{spacing}
 
 \clearpage
 
@@ -1040,28 +1090,73 @@ values into an \(x,y\) matrix; and converts the result into a surface map.
 % -------------------------------------------------
 \section{Results and Uncertainty Analysis}
 
-% Put the main results here, along with the limits we can actually support.
-% Insert the final headline result here for future. This should be the one or
-% two things we would tell someone if they only read this page.
+\begin{spacing}{1.0}
+\small
 
 \subsection{Key Findings}
 
-% Only add results that our final tests and data actually show.
-% Insert a small table or figure here for future if numbers explain the result
-% better than another paragraph.
+\begin{center}
+\footnotesize
+\renewcommand{\arraystretch}{1.18}
+\begin{tabular}{@{}>{\raggedright\arraybackslash}p{0.35\textwidth}
+                >{\raggedright\arraybackslash}p{0.46\textwidth}
+                p{0.12\textwidth}@{}}
+  \toprule
+  Finding & Evidence & Status \\
+  \midrule
+  Firmware scan order is traceable & Teensy lines 838--857 and 1178--1239;
+    independently reproduced by the Python animation & Verified \\
+  Executable storage path is signed 16-bit & Array declarations and explicit
+    two-byte writes at lines 155--157 and 1188--1198; adjacent comment
+    conflicts & Code traced \\
+  Default backward storage is unsafe & Raw backward indices begin at
+    \(N_x=512\) for a 512-wide array & Unresolved \\
+  Quantitative subsystem performance & No complete readings, settings, or
+    acceptance criteria are stored in the project archive & Pending \\
+  Calibrated surface imaging & No complete scan files or measured
+    vertical-piezo calibration are available & Pending \\
+  \bottomrule
+\end{tabular}
+\end{center}
 
 \subsection{Sources of Uncertainty}
 
-% Things to check: vibration, electrical noise, thermal drift, piezo
-% hysteresis/creep, tip shape, calibration, feedback tuning, and scan speed.
-% For the final version, say which of these we actually observed instead of
-% listing every possible STM problem.
+\noindent
+\begin{minipage}[t]{0.47\textwidth}
+  \subsubsection{Demonstrated Software Risks}
+
+  The backward-array index can address memory outside the declared row. The
+  source also describes a stored value as ``18 bit'' and ``4 bytes'' while
+  declaring \texttt{int16\_t} arrays and writing two bytes. These
+  inconsistencies must be resolved before backward files are treated as valid
+  measurements.\textsuperscript{[2]}
+\end{minipage}
+\hfill
+\begin{minipage}[t]{0.47\textwidth}
+  \subsubsection{Experimental Factors to Quantify}
+
+  Vibration, electrical noise, thermal drift, piezo hysteresis and creep, tip
+  condition, feedback tuning, and scan speed may affect an STM measurement.
+  The available records do not yet show which factor dominates, so none is
+  presented as an observed limitation or assigned a numerical uncertainty.
+\end{minipage}
 
 \subsection{Recommended Improvements}
 
-% For each improvement, say which problem we actually saw that it would fix.
-% Insert the highest-priority fix first for future, then explain what measurement
-% would show that the fix worked.
+\begin{enumerate}
+  \item Correct the backward index to use a zero-based column and test the
+  first, direction-change, and final indices at \(N_x=1\) and \(N_x=512\).
+  \item Define one binary file schema with sample width, signedness,
+  dimensions, byte order, firmware version, and completion status.
+  \item Record the hardware table's measurements and acceptance criteria
+  before restoring any claim of confirmed subsystem performance.
+  \item Acquire complete forward, backward, and parameter files; verify their
+  lengths; compare the two scan directions; and retain the raw matrices.
+  \item Measure the vertical-piezo calibration before converting correction
+  counts into physical height.
+\end{enumerate}
+
+\end{spacing}
 
 \clearpage
 
@@ -1070,35 +1165,41 @@ values into an \(x,y\) matrix; and converts the result into a surface map.
 % -------------------------------------------------
 \section{Supplementary Figures}
 
-% Put any extra graphs that do not fit on Sheet 9 here.
-% Every graph still needs labeled axes, units, a caption, and a quick
-% explanation of what it shows.
+\subsection{Reserved Experimental Evidence}
 
-\subsection{Firmware Scan-Pattern Sequence}
+This sheet is intentionally reserved for measured outputs rather than
+synthetic or decorative figures. Each item below remains pending until its
+source values, axes, units, and acquisition settings are available.
 
-\begin{figure}[H]
-  \centering
-  \includegraphics[width=0.96\textwidth]{scan-pattern-sequence.png}
-  \caption{Selected frames from the Python scan-pattern animation. The
-  sequence follows the firmware's Timer~2 routine: sample while stepping in
-  \(+x\), sample while returning in \(-x\), reset \(x\), increment \(y\), and
-  begin the next line. The displayed \texttt{pointcounter} values follow the
-  source literally.\textsuperscript{[2,4]}}
-\end{figure}
+\begin{center}
+\renewcommand{\arraystretch}{1.25}
+\begin{tabular}{@{}>{\raggedright\arraybackslash}p{0.30\textwidth}
+                >{\raggedright\arraybackslash}p{0.52\textwidth}
+                p{0.11\textwidth}@{}}
+  \toprule
+  Planned figure & Required content & Status \\
+  \midrule
+  Power-rail verification & Positive and negative readings, meter range,
+    ground reference, and difference from target & Pending \\
+  Analog signal-chain capture & Input and output waveforms with frequency,
+    amplitude, coupling, and volts-per-division & Pending \\
+  ADC calibration curve & Applied voltage, ADC counts, converted voltage,
+    residuals, and fitted relationship & Pending \\
+  DAC response & Requested code or waveform compared with measured output &
+    Pending \\
+  Direction comparison & Forward and spatially reversed backward matrices
+    plotted on identical scales & Pending \\
+  Surface reconstruction & Final 2D map with raw-data path, processing
+    version, units, and calibration status & Pending \\
+  \bottomrule
+\end{tabular}
+\end{center}
 
+\vspace{1cm}
 \noindent
-The complete animation and its reproducible Python source are available as
-\href{https://github.com/souuk/clustered/blob/main/animate_scan_pattern.py}
-{\nolinkurl{animate_scan_pattern.py}} and
-\href{https://github.com/souuk/clustered/blob/main/scan-pattern-preview.gif}
-{\nolinkurl{scan-pattern-preview.gif}}. The model is based on scan
-initialization at lines 838--857 and raster execution at lines
-1178--1229 of the Teensy source.\textsuperscript{[2,4]}
-
-% Add the extra graphs and number comparisons here.
-% Insert figure 2 here for future if it adds something different.
-% If we only have one useful extra graph, leave the rest of the page open
-% instead of stretching it or adding filler.
+No placeholder graph is inserted because doing so could be mistaken for an
+instrument result. The scan-order animation has moved to the software
+verification sheet, where it is explicitly identified as a firmware model.
 
 \clearpage
 
@@ -1120,8 +1221,8 @@ initialization at lines 838--857 and raster execution at lines
 
     \item S. Chiang, \textit{Teensy STM11A}, STM controller source file
     \nolinkurl{Teensy_STM11A_July_29_2025.ino}, University of California,
-    Davis, 2025. Cited portions include lines 838--857, 1119--1239, and
-    1248--1262.
+    Davis, 2025. Cited portions include lines 105--180, 838--857, and
+    1119--1262.
 
     \item B. Beauregard, \textit{Arduino PID Library}, version 1.1.1,
     timer-interrupt modification by S. Chiang, source file
