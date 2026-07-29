@@ -55,10 +55,10 @@ Sheet 3: Instrument Design and Construction.
 2.3
 The center panel uses landscape sheets in two columns:
 
-Hardware and validation column:
+Hardware column:
 Sheet 4: Hardware Architecture.
-Sheet 6: Software Verification and Data Integrity.
-Sheet 8: Subsystem Testing and Calibration.
+Sheet 6: Reserved and intentionally blank.
+Sheet 8: Reserved and intentionally blank.
 
 Software column:
 Sheet 5: Control Software Architecture.
@@ -66,15 +66,15 @@ Sheet 7: STM Control Logic and Scan Execution.
 Sheet 9: Data Output and Surface Reconstruction.
 
 2.4
-Across the center panel, the software narrative should read:
+The populated software column should read from top to bottom as:
 
-Architecture >> Verification >> Execution >> Output
+Architecture >> Execution >> Output
 
 2.5
 The right panel contains:
 
-Sheet 10: Results and Uncertainty Analysis.
-Sheet 11: Supplementary Figures.
+Sheet 10: Reserved and intentionally blank.
+Sheet 11: Reserved and intentionally blank.
 Sheet 12: References and Acknowledgments.
 
 2.6
@@ -254,14 +254,11 @@ Instrument Design and Construction explains what was physically built and how
 it was assembled.
 
 8.6
-Subsystem Testing and Calibration explains how the individual parts were
-checked before or during integration.
+Sheets 6 and 8 remain blank until their final topics and contents are chosen.
 
 8.7
-Software Verification and Data Integrity traces claims to exact firmware
-locations, distinguishes executable behavior from source comments, documents
-the binary file contract, and identifies unresolved defects without implying
-that they have been fixed.
+Do not add headings, placeholder tables, or figures to reserved sheets until
+the group decides what those sheets should contain.
 
 
 9. SOFTWARE COLUMN
@@ -281,48 +278,33 @@ Do not crowd Sheet 5 with the full approach algorithm, PID sequence, raster
 logic, or long pseudocode. Those belong on Sheet 7.
 
 9.4
-Sheet 6, Software Verification and Data Integrity, answers:
-
-How was the scan behavior checked, and which data-integrity risks remain?
-
-9.5
-Sheet 6 includes firmware-to-model traceability, the literal DAC update order,
-the intended signed 16-bit file contract, expected file lengths, the
-backward-array indexing defect, and a verification matrix.
-
-9.6
-Do not state that the firmware is corrected unless the Teensy source itself
-has been changed and tested. Keep modeled scan behavior separate from actual
-instrument measurements.
-
-9.7
 Sheet 7, STM Control Logic and Scan Execution, answers:
 
 How does the program operate the STM?
 
-9.8
+9.5
 Sheet 7 includes automated approach, the repeated current-threshold check,
 the no-signal retract/motor/retry path, the 100 microsecond feedback loop, PID
 output limiting, raster movement, forward and backward scans, y increments,
 completion, and file closing.
 
-9.9
+9.6
 Sheet 7 may use readable pseudocode instead of long direct code quotations.
 
-9.10
+9.7
 Sheet 9, Data Output and Surface Reconstruction, answers:
 
 What does the STM save, and how does the program turn it into a surface?
 
-9.11
+9.8
 Sheet 9 explains the signed 16-bit correction values, separate forward and
 backward files, parameter information, matrix reshaping, direction alignment,
 calibration, comparison, and visualization.
 
-9.12
-Keep the center-panel software narrative in this order:
+9.9
+Keep the populated software-column narrative in this order:
 
-Architecture >> Verification >> Execution >> Output
+Architecture >> Execution >> Output
 
 
 10. CODE AND PSEUDOCODE
@@ -374,19 +356,14 @@ Captions should say what the reader is seeing and should include a citation
 when the figure is based on a supplied source.
 
 11.7
-Reserve the supplementary-evidence sheet for measured outputs such as
-calibration plots, oscilloscope captures, and forward/backward scan
-comparisons. Do not insert synthetic results merely to fill the page.
-
-11.8
 Use actual local filenames in \includegraphics and keep those files beside
 main.tex.
 
-11.9
+11.8
 Do not insert an invented STM scan, fabricated dataset, or simulated image as
 if it were an experimental result.
 
-11.10
+11.9
 When real figures are added, keep axes, units, scales, legends, and captions
 readable at printed size.
 
