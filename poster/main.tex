@@ -385,16 +385,10 @@ Sheet~4.
 \vspace{4pt}
 
 \begin{center}
-  \fbox{\parbox[c][2.05in][c]{0.92\textwidth}{
-    \centering
-    \textbf{INSTRUMENT-ASSEMBLY IMAGE PLACEHOLDER}\\[7pt]
-    Replace with a labeled overview of the completed instrument. Identify the
-    dual-rail supply enclosure, coarse-approach mechanism, piezoelectric
-    scanner, suspended platform, magnetic stabilizers, and added weights.
-  }}
+  \includegraphics[height=2.55in]{dual-rail-psu.png}
   \captionsetup{font=footnotesize}
-  \captionof{figure}{Reserved location for the final physical-construction
-  overview.}
+  \captionof{figure}{Functional overview of the dual-rail supply, simplified
+  from the supplied JE215 schematic and component-layout handouts.}
 \end{center}
 
 \end{spacing}
@@ -420,84 +414,26 @@ Sheet~4.
 \begin{spacing}{0.98}
 \small
 
-Sheet~3 describes the physical assembly; this continuation follows the
-measurement and control signals through the instrument. The Teensy 4.1 links
-the current-measurement path to the motion and bias outputs used during
-approach, feedback, and scanning.\textsuperscript{[2]}
+Sheet~3 describes the physical assembly and power supply. The remaining
+hardware path is
+sample and tip \(\longrightarrow\) preamplifier
+\(\longrightarrow\) ADS8691 ADC
+\(\longrightarrow\) Teensy 4.1
+\(\longrightarrow\) DAC8734
+\(\longrightarrow\) piezo drive amplifier
+\(\longrightarrow\) scanner and sample bias. The diagram below expands the
+controller's STM-specific interfaces, channel assignments, storage path, and
+separate power domains.\textsuperscript{[2]}
 
-\subsection{Signal and Control Paths}
+\vspace{5pt}
 
 \begin{center}
-  \fbox{\parbox[c][0.88in][c]{0.94\linewidth}{
-    \centering
-    \textbf{Measurement path}\\[4pt]
-    Sample and tip
-    \(\longrightarrow\) current preamplifier
-    \(\longrightarrow\) ADS8691 ADC
-    \(\longrightarrow\) Teensy 4.1\\[9pt]
-    \textbf{Control path}\\[4pt]
-    Teensy 4.1
-    \(\longrightarrow\) DAC8734
-    \(\longrightarrow\) piezo drive amplifier
-    \(\longrightarrow\) \(x\), \(y\), and \(z\) scanner commands and sample bias
-  }}
+  \includegraphics[width=0.94\linewidth]{teensy-interface.png}
+  \captionsetup{font=footnotesize}
+  \captionof{figure}{Teensy 4.1 controller connections extracted from the
+  supplied 2025 STM wiring list. Verify the diagram against the final assembled
+  instrument before publication.}
 \end{center}
-
-\vspace{4pt}
-
-\noindent
-\begin{minipage}[t]{0.51\linewidth}
-  \vspace{0pt}
-  \subsubsection{Tunneling-Signal Acquisition}
-
-  The transimpedance preamplifier converts picoampere- to nanoampere-scale
-  tunneling current into a measurable voltage. Its output is routed to the
-  ADS8691 and may also be observed on an oscilloscope, giving an independent
-  view of the signal during approach. The 18-bit ADC digitizes this voltage,
-  and the Teensy reads the result over SPI.\textsuperscript{[2]}
-
-  \subsubsection{Motion and Bias Actuation}
-
-  The Teensy compares the measured signal with the selected current setpoint
-  and calculates the required response. The four-channel DAC8734 converts its
-  digital commands into analog \(x\), \(y\), and \(z\) controls plus the
-  sample-bias command. The piezo drive amplifier raises the scanner commands
-  to the voltage range required for fine motion.\textsuperscript{[2]}
-
-  \subsubsection{Supporting Interfaces and Power}
-
-  The LCD presents a regularly refreshed subset of operating parameters,
-  including voltage and current settings; the serial terminal provides more
-  detailed status messages. The SD card stores the forward, backward, and
-  parameter files. The dual-rail supply described on Sheet~3 powers the analog
-  signal-conditioning hardware.\textsuperscript{[2]}
-\end{minipage}
-\hfill
-\begin{minipage}[t]{0.45\linewidth}
-  \vspace{0pt}
-  \centering
-
-  \fbox{\parbox[c][1.28in][c]{0.90\linewidth}{
-    \centering
-    \textbf{CIRCUIT-BOARD PHOTOGRAPH PLACEHOLDER}\\[6pt]
-    Replace with the clearest full-board image. Label the major connectors,
-    signal entry, power entry, and controller interfaces.
-  }}
-
-  \vspace{8pt}
-
-  \fbox{\parbox[c][1.28in][c]{0.90\linewidth}{
-    \centering
-    \textbf{ANNOTATED HARDWARE VISUALIZATION PLACEHOLDER}\\[6pt]
-    Build from the supplied board photographs. Match its labels and arrows to
-    the measurement and control paths shown above.
-  }}
-
-  \vspace{5pt}
-
-  {\footnotesize\itshape These placeholders reserve the final visual area
-  without implying that unverified board photographs are already available.}
-\end{minipage}
 
 \end{spacing}
 
