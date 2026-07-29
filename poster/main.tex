@@ -1,111 +1,25 @@
 % =================================================
 % SHEEPLE TO DO BOARD AND NOTES
 % =================================================
-% Justin: content sharing one printed page can still use separate sections.
 %
-% Page 8 holds the planned Python data-conversion workflow. Keep every item
-% visibly marked as a placeholder until the software and experimental data
-% actually exist. Pages 6, 9, 10, and 11 remain intentionally blank.
+% Instrument Design + Construction, work on the materials list
+% Also probably work on descriptions on each of them, maybe images
+% I'm not too sure
 %
-% Someone needs to check the components and materials table against
-% what we actually used. Do not leave guessed quantities in there.
+% Hardware Architecture, make it like Software Architecture in terms
+% of design, follow the image stuff, and just lock in I guess. This
+% part is really important too.
 %
-% We need good pictures of the power supply, piezo and tip, motor
-% mechanism, vibration setup, and the finished STM. Label them if it
-% is not obvious what people are looking at.
+% IDK what slide 6 should be ngl...
 %
-% We should make one simple hardware diagram if the hardware page
-% still has a bunch of empty space after the writing is finished.
+% 8 is data output.
 %
-% We need the actual multimeter values for both power rails and the
-% actual function-generator and oscilloscope settings for the analog tests.
+% 9/10/11 is blank, need to brainstorm what to add for those as well.
+% Realistically, 9/10 might be for the output as well.
 %
-% We need the ADC test values, converted voltages, differences, and a
-% graph if we took enough points. We also need the requested DAC values
-% and the waveform or measured voltage that came out.
+% 11 could be conclusion I guess, and misc. graphs, or 10 could be misc.
+% graphs and 11 could be conclusion
 %
-% Put all of those hardware tests into one results table with the expected
-% value, measured value, units, difference, and whether the part passed.
-%
-% We need to record the final approach threshold and whatever Kp, Ki,
-% and Kd values we actually use. Do not leave the supplied defaults there
-% if we end up changing them.
-%
-% Someone needs to check the Timer 2 backward-array index before we trust
-% the scan files. pointcounter keeps counting past numpoints, but
-% DataArray1B is only MAXNUMPTS wide, so this could be an actual bug.
-%
-% We also need to confirm the saved data format. The firmware casts Output
-% to int16_t and writes 2 bytes even though one comment says 18 bits and
-% 4 bytes. The reconstruction code has to follow what is really written.
-%
-% For data output, we still need a complete forward file, backward file,
-% and parameter file from a real scan. A Serial Monitor picture is not
-% the same thing as the scan data.
-%
-% We need to finish and test the Python reconstruction code on those real
-% files. It should check the file length, read the scan dimensions, reshape
-% the values, reverse the backward direction, and keep the raw matrix.
-%
-% We need to make sure x and y are facing the right way and compare the
-% forward and backward scans before combining anything.
-%
-% We cannot call the vertical values actual height until we measure the
-% z-piezo calibration. Until then, call them relative correction or counts.
-%
-% Once the code works, replace the Page 8 and Page 9 code, matrix, architecture,
-% provenance, and reconstruction placeholders with verified material.
-%
-% Make the final 2D Matplotlib surface map from the real data. A raised
-% 3D view is optional and should be called a visualization of the same
-% 2D matrix, not a separate three-dimensional measurement.
-%
-% We need to write the results and uncertainty page after the final tests.
-% Only say what the data actually supports, then connect each improvement
-% to a problem we really observed.
-%
-% We need to decide which extra graphs or test pictures actually belong
-% on the supplementary figures page. Do not add filler just to use space.
-%
-% Update the abstract after the final scan and tests so it does not claim
-% more than the finished STM actually did.
-%
-% Add the exact raw-data and processing-code paths to the data notice once
-% they are in clustered. Put the real files, code, settings, calibration,
-% and final figures in the repo together.
-%
-% Check every code citation and line number after the writing is final.
-% If we add another source, update Works Cited and the citation-path file too.
-%
-% Finish the title block in Overleaf with the final title, names, program,
-% and whatever other information the group decides belongs there.
-%
-% Add anyone else who helped us to the acknowledgments before printing.
-%
-% Compile the whole folder in Overleaf and look at every page for overflow.
-% Check the 2 cm and 1 cm gaps, paragraph indents, table widths, code boxes,
-% captions, image quality, and whether the font is readable when printed.
-%
-% Make sure every PNG used by main.tex is uploaded beside it, test the GitHub
-% QR code, and print one black-and-white test page before doing the full poster.
-%
-% We should decide who is handling each unfinished page so two people do not
-% work on the same thing while another page gets forgotten.
-%
-% Save the final scan settings in one place so the numbers on the poster,
-% the parameter file, and the reconstruction code all match.
-%
-% Keep one untouched copy of the raw scan files before we start processing
-% them, and put each usable scan in its own clearly named folder.
-%
-% Check the software diagrams against the final firmware so the arrows,
-% timer steps, and file-writing order are still correct.
-%
-% Remove every visible placeholder, blank line, and "for future" note before
-% the final PDF is sent for printing.
-%
-% Save one clearly named final PDF and a copy of the matching Overleaf folder
-% so everyone knows which version is actually ready to print.
 % =================================================
 % FORMATTING NOTES
 % =================================================
