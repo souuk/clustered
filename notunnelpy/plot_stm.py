@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Validate STM files and render forward/backward comparison plots."""
+"""Validate STM files and render simple, printer-friendly heatmaps."""
 
 from __future__ import annotations
 
@@ -18,6 +18,13 @@ else:
 
 LevelMode = Literal["none", "mean", "line", "plane"]
 LEVEL_MODES: tuple[LevelMode, ...] = ("none", "mean", "line", "plane")
+PlotView = Literal["forward", "backward", "average", "difference"]
+PLOT_VIEWS: tuple[PlotView, ...] = (
+    "forward",
+    "backward",
+    "average",
+    "difference",
+)
 
 
 def positive_int(value: str) -> int:
@@ -60,44 +67,77 @@ def level_matrix(
 
 
 def _display_limits(
-    matrices: list[npt.NDArray[np.float64]],
+    matrix: npt.NDArray[np.float64],
     *,
     robust: bool,
 ) -> tuple[float, float]:
-    merged = np.concatenate([matrix.ravel() for matrix in matrices])
     if robust:
-        low, high = np.percentile(merged, [2.0, 98.0])
+        low, high = np.percentile(matrix, [2.0, 98.0])
     else:
-        low, high = float(np.min(merged)), float(np.max(merged))
+        low, high = float(np.min(matrix)), float(np.max(matrix))
     if np.isclose(low, high):
         low -= 1.0
         high += 1.0
     return float(low), float(high)
 
 
-def _add_image(
+def _select_view(
     *,
-    figure,
-    axis,
-    matrix: npt.NDArray[np.float64],
-    title: str,
-    limits: tuple[float, float],
-    colorbar_label: str,
-) -> None:
-    image = axis.imshow(
-        matrix,
-        origin="lower",
-        aspect="auto",
-        interpolation="nearest",
-        cmap="gray",
-        vmin=limits[0],
-        vmax=limits[1],
-    )
-    axis.set_title(title)
-    axis.set_xlabel("X point")
-    axis.set_ylabel("Y line")
-    colorbar = figure.colorbar(image, ax=axis, shrink=0.86)
-    colorbar.set_label(colorbar_label)
+    forward: npt.NDArray[np.float64],
+    backward: npt.NDArray[np.float64] | None,
+    view: PlotView,
+    robust_limits: bool,
+) -> tuple[npt.NDArray[np.float64], str, str, tuple[float, float]]:
+    """Return the matrix and labels for one requested heatmap."""
+
+    if view == "forward":
+        matrix = forward
+        title = "Forward scan"
+        colorbar_label = "Relative signal (counts)"
+        limits = _display_limits(matrix, robust=robust_limits)
+        return matrix, title, colorbar_label, limits
+
+    if backward is None:
+        raise ValueError(
+            f"The {view!r} view requires a valid backward scan"
+        )
+
+    if view == "backward":
+        matrix = backward
+        title = "Backward scan (aligned)"
+        colorbar_label = "Relative signal (counts)"
+        limits = _display_limits(matrix, robust=robust_limits)
+    elif view == "average":
+        matrix = (forward + backward) / 2.0
+        title = "Forward/backward average"
+        colorbar_label = "Relative signal (counts)"
+        limits = _display_limits(matrix, robust=robust_limits)
+    elif view == "difference":
+        matrix = forward - backward
+        title = "Forward minus backward"
+        colorbar_label = "Difference (counts)"
+        difference_abs = float(np.max(np.abs(matrix)))
+        if np.isclose(difference_abs, 0.0):
+            difference_abs = 1.0
+        limits = (-difference_abs, difference_abs)
+    else:
+        raise ValueError(f"Unsupported plot view: {view}")
+
+    return matrix, title, colorbar_label, limits
+
+
+def _printer_colormap(plt, *, difference: bool):
+    """Return a restrained colormap without near-black endpoints."""
+
+    from matplotlib.colors import ListedColormap
+
+    if difference:
+        colors = plt.colormaps["RdBu_r"](np.linspace(0.20, 0.80, 256))
+        name = "printer_difference"
+    else:
+        colors = plt.colormaps["Blues"](np.linspace(0.04, 0.68, 256))
+        name = "printer_blues"
+    return ListedColormap(colors, name=name)
 
 
 def plot_scan_set(
@@ -105,11 +145,12 @@ def plot_scan_set(
     output_path: Path | str,
     *,
     level: LevelMode = "none",
+    view: PlotView = "forward",
     robust_limits: bool = True,
     dpi: int = 180,
     show: bool = False,
 ) -> Path:
-    """Render one forward-only or forward/backward diagnostic figure."""
+    """Render one simple heatmap from a validated scan set."""
 
     if dpi <= 0:
         raise ValueError("dpi must be greater than zero")
@@ -126,94 +167,67 @@ def plot_scan_set(
         if scan.backward_aligned is not None
         else None
     )
+    matrix, title, colorbar_label, limits = _select_view(
+        forward=forward,
+        backward=backward,
+        view=view,
+        robust_limits=robust_limits,
+    )
 
-    if backward is None:
-        figure, axis = plt.subplots(figsize=(8.2, 6.4))
-        limits = _display_limits([forward], robust=robust_limits)
-        _add_image(
-            figure=figure,
-            axis=axis,
-            matrix=forward,
-            title="Forward scan",
-            limits=limits,
-            colorbar_label="Relative correction (counts)",
-        )
-        axes = [axis]
-    else:
-        average = (forward + backward) / 2.0
-        difference = forward - backward
-        common_limits = _display_limits(
-            [forward, backward, average],
-            robust=robust_limits,
-        )
-        difference_abs = float(np.max(np.abs(difference)))
-        if np.isclose(difference_abs, 0.0):
-            difference_abs = 1.0
+    figure, axis = plt.subplots(figsize=(7.2, 6.2))
+    image = axis.imshow(
+        matrix,
+        origin="lower",
+        aspect="equal",
+        interpolation="nearest",
+        cmap=_printer_colormap(plt, difference=view == "difference"),
+        vmin=limits[0],
+        vmax=limits[1],
+    )
+    axis.set_title(title)
+    axis.set_xlabel("X point")
+    axis.set_ylabel("Y line")
+    axis.grid(False)
 
-        figure, grid = plt.subplots(
-            2,
-            2,
-            figsize=(11.5, 8.4),
-        )
-        axes = list(grid.ravel())
-        _add_image(
-            figure=figure,
-            axis=axes[0],
-            matrix=forward,
-            title="Forward scan",
-            limits=common_limits,
-            colorbar_label="Relative correction (counts)",
-        )
-        _add_image(
-            figure=figure,
-            axis=axes[1],
-            matrix=backward,
-            title="Backward scan (spatially aligned)",
-            limits=common_limits,
-            colorbar_label="Relative correction (counts)",
-        )
-        _add_image(
-            figure=figure,
-            axis=axes[2],
-            matrix=average,
-            title="Forward/backward average",
-            limits=common_limits,
-            colorbar_label="Relative correction (counts)",
-        )
-        _add_image(
-            figure=figure,
-            axis=axes[3],
-            matrix=difference,
-            title="Forward minus backward",
-            limits=(-difference_abs, difference_abs),
-            colorbar_label="Difference (counts)",
-        )
+    colorbar = figure.colorbar(image, ax=axis, shrink=0.88, pad=0.03)
+    colorbar.set_label(colorbar_label)
+    colorbar.outline.set_linewidth(0.6)
 
     parameters = scan.parameters
-    provenance = (
-        "SYNTHETIC DEMO — NOT EXPERIMENTAL"
-        if parameters.synthetic
-        else "EXPERIMENTAL INPUT — VERIFY PROVENANCE AND CALIBRATION"
-    )
-    figure.suptitle(
-        f"{provenance}\n"
-        f"{parameters.points} × {parameters.lines} samples; "
-        f"leveling: {level}",
-        fontweight="bold",
-    )
+    if parameters.synthetic:
+        pattern = parameters.metadata.get("Pattern", "synthetic")
+        provenance = (
+            f"SYNTHETIC {pattern.replace('-', ' ').upper()} - "
+            "NOT EXPERIMENTAL"
+        )
+    else:
+        provenance = "STM HEATMAP - VERIFY PROVENANCE AND CALIBRATION"
+    figure.suptitle(provenance, fontweight="bold")
+
     footer = (
-        f"Parameters: {scan.parameter_path.name} | "
-        f"Forward: {scan.forward_path.name} | "
-        f"Backward: "
-        f"{scan.backward_path.name if scan.backward_path else 'not loaded'}\n"
-        "Vertical values are relative controller counts, not physical height."
+        f"{parameters.points} x {parameters.lines} samples | "
+        f"leveling: {level} | "
+        "axes are sample indices; signal is not calibrated height"
     )
-    figure.text(0.5, 0.012, footer, ha="center", va="bottom", fontsize=8)
-    figure.tight_layout(rect=(0.0, 0.06, 1.0, 0.95), h_pad=1.1, w_pad=1.0)
+    figure.text(
+        0.5,
+        0.018,
+        footer,
+        ha="center",
+        va="bottom",
+        fontsize=8,
+        color="#4d4d4d",
+    )
+    figure.tight_layout(rect=(0.0, 0.06, 1.0, 0.94))
 
     output = Path(output_path)
     output.parent.mkdir(parents=True, exist_ok=True)
-    figure.savefig(output, dpi=dpi, bbox_inches="tight")
+    figure.savefig(
+        output,
+        dpi=dpi,
+        bbox_inches="tight",
+        facecolor="white",
+    )
     if show:
         plt.show()
     plt.close(figure)
@@ -223,7 +237,7 @@ def plot_scan_set(
 def build_parser() -> argparse.ArgumentParser:
     parser = argparse.ArgumentParser(
         description=(
-            "Validate Teensy-format STM files and create diagnostic maps. "
+            "Validate Teensy-format STM files and create one simple heatmap. "
             "Backward input is optional."
         )
     )
@@ -246,6 +260,12 @@ def build_parser() -> argparse.ArgumentParser:
     )
     parser.add_argument("--level", choices=LEVEL_MODES, default="none")
     parser.add_argument(
+        "--view",
+        choices=PLOT_VIEWS,
+        default="forward",
+        help="single heatmap to render (default: forward)",
+    )
+    parser.add_argument(
         "--full-range",
         action="store_true",
         help="use absolute min/max rather than 2nd/98th percentiles",
@@ -253,7 +273,7 @@ def build_parser() -> argparse.ArgumentParser:
     parser.add_argument(
         "--output",
         type=Path,
-        help="output PNG path (default: <input_dir>/<prefix><n>-plots.png)",
+        help="output PNG path (default: <input_dir>/<prefix><n>-heatmap.png)",
     )
     parser.add_argument("--dpi", type=positive_int, default=180)
     parser.add_argument("--show", action="store_true")
@@ -264,6 +284,8 @@ def main() -> None:
     args = build_parser().parse_args()
     if args.forward_only and args.require_backward:
         raise SystemExit("--forward-only and --require-backward cannot be combined")
+    if args.forward_only and args.view != "forward":
+        raise SystemExit("--forward-only can only be used with --view forward")
 
     scan = load_scan_set(
         args.input_dir,
@@ -273,12 +295,13 @@ def main() -> None:
         require_backward=args.require_backward,
     )
     output = args.output or (
-        args.input_dir / f"{args.prefix}{args.scan_number}-plots.png"
+        args.input_dir / f"{args.prefix}{args.scan_number}-heatmap.png"
     )
     rendered = plot_scan_set(
         scan,
         output,
         level=args.level,
+        view=args.view,
         robust_limits=not args.full_range,
         dpi=args.dpi,
         show=args.show,
@@ -286,11 +309,14 @@ def main() -> None:
 
     print(f"Validated matrix shape: {scan.forward.shape}")
     print(f"Expected bytes per direction: {scan.parameters.expected_bytes}")
-    print(
-        "Input type: "
-        + ("SYNTHETIC (not experimental)" if scan.parameters.synthetic else "unknown/experimental")
+    input_type = (
+        "SYNTHETIC (not experimental)"
+        if scan.parameters.synthetic
+        else "unknown/experimental"
     )
-    print(f"Saved plot: {rendered}")
+    print(f"Input type: {input_type}")
+    print(f"Rendered view: {args.view}")
+    print(f"Saved heatmap: {rendered}")
 
 
 if __name__ == "__main__":

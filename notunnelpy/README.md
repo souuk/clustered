@@ -13,7 +13,7 @@ presented as experimental STM results.
 - `stm_io.py`: discovers, parses, and validates one scan's input files.
 - `generate_demo_data.py`: creates reproducible synthetic forward, backward,
   and parameter files.
-- `plot_stm.py`: creates forward-only or four-panel diagnostic plots.
+- `plot_stm.py`: creates one simple, printer-friendly heatmap.
 - `tests/test_pipeline.py`: verifies file lengths, reshaping, backward
   alignment, error handling, leveling, and plotting.
 - `requirements.txt`: NumPy and Matplotlib dependencies.
@@ -63,14 +63,21 @@ notunnelpy/demo_output/STMB1.hex
 notunnelpy/demo_output/STMP1.txt
 ```
 
+By default, the generator creates an idealized atomic lattice. Each bright
+site is a Gaussian peak representing an atom-scale feature. This tests
+atomic-resolution plotting, but it is not a material-specific or
+tunneling-current simulation. The forward and backward fixtures use the same
+underlying lattice with independent low-level noise; their default systematic
+offset is zero.
+
 Choose a different fixture:
 
 ```console
 python -m notunnelpy.generate_demo_data notunnelpy/demo_output --points 96 --lines 72 --pattern double-bump --noise 10 --overwrite
 ```
 
-Available patterns are `flat`, `slope`, `bump`, `double-bump`, and
-`checkerboard`.
+Available patterns are `atomic-lattice`, `flat`, `slope`, `bump`,
+`double-bump`, and `checkerboard`.
 
 ## Plot the files
 
@@ -78,12 +85,16 @@ Available patterns are `flat`, `slope`, `bump`, `double-bump`, and
 python -m notunnelpy.plot_stm notunnelpy/demo_output
 ```
 
-This creates `notunnelpy/demo_output/STM1-plots.png` with:
+This creates `notunnelpy/demo_output/STM1-heatmap.png`: a single forward-scan
+heatmap using a light blue palette that remains readable when printed.
 
-- the forward matrix;
-- the spatially aligned backward matrix;
-- their average; and
-- their difference.
+Other views remain available as individual, uncluttered heatmaps:
+
+```console
+python -m notunnelpy.plot_stm notunnelpy/demo_output --view backward
+python -m notunnelpy.plot_stm notunnelpy/demo_output --view average
+python -m notunnelpy.plot_stm notunnelpy/demo_output --view difference
+```
 
 Because the supplied firmware currently has an unsafe backward-array index,
 the first real-data version should support forward-only plotting:

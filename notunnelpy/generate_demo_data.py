@@ -26,8 +26,16 @@ else:
     from stm_io import scan_paths, write_scan_matrix
 
 
-Pattern = Literal["flat", "slope", "bump", "double-bump", "checkerboard"]
+Pattern = Literal[
+    "atomic-lattice",
+    "flat",
+    "slope",
+    "bump",
+    "double-bump",
+    "checkerboard",
+]
 PATTERNS: tuple[Pattern, ...] = (
+    "atomic-lattice",
     "flat",
     "slope",
     "bump",
@@ -62,7 +70,33 @@ def build_pattern(
     y = np.linspace(-1.0, 1.0, lines)
     xx, yy = np.meshgrid(x, y)
 
-    if pattern == "flat":
+    if pattern == "atomic-lattice":
+        # Idealized triangular lattice of Gaussian sites. This is a plotting
+        # fixture, not a tunneling-current or material-specific simulation.
+        surface = np.zeros_like(xx)
+        spacing = 0.24
+        row_spacing = spacing * np.sqrt(3.0) / 2.0
+        width = 0.045
+        y_centers = np.arange(
+            -1.0 - row_spacing,
+            1.0 + (2.0 * row_spacing),
+            row_spacing,
+        )
+        for row_index, y_center in enumerate(y_centers):
+            x_offset = (spacing / 2.0) if row_index % 2 else 0.0
+            x_centers = np.arange(
+                -1.0 - spacing,
+                1.0 + (2.0 * spacing),
+                spacing,
+            )
+            for x_center in x_centers + x_offset:
+                radius_squared = (
+                    ((xx - x_center) ** 2) + ((yy - y_center) ** 2)
+                )
+                surface += np.exp(
+                    -radius_squared / (2.0 * width**2)
+                )
+    elif pattern == "flat":
         surface = np.zeros_like(xx)
     elif pattern == "slope":
         surface = (0.65 * xx) + (0.35 * yy)
@@ -108,6 +142,10 @@ def _parameter_text(
             f"{current_na:g} nA, tunneling current",
             "Data source: SYNTHETIC - NOT EXPERIMENTAL",
             f"Pattern: {pattern}",
+            (
+                "Simulation model: idealized Gaussian atomic sites; "
+                "not a physical STM model"
+            ),
             f"Random seed: {seed}",
             (
                 "Bias note: firmware-shaped raw bias field; do not interpret "
@@ -123,11 +161,11 @@ def generate_demo_scan(
     *,
     points: int = 64,
     lines: int = 64,
-    pattern: Pattern = "bump",
+    pattern: Pattern = "atomic-lattice",
     baseline: float = 1200.0,
     amplitude: float = 350.0,
-    noise: float = 8.0,
-    backward_offset: float = 3.0,
+    noise: float = 5.0,
+    backward_offset: float = 0.0,
     seed: int = 2026,
     prefix: str = "STM",
     scan_number: int = 1,
@@ -206,11 +244,15 @@ def build_parser() -> argparse.ArgumentParser:
     )
     parser.add_argument("--points", type=positive_int, default=64)
     parser.add_argument("--lines", type=positive_int, default=64)
-    parser.add_argument("--pattern", choices=PATTERNS, default="bump")
+    parser.add_argument(
+        "--pattern",
+        choices=PATTERNS,
+        default="atomic-lattice",
+    )
     parser.add_argument("--baseline", type=float, default=1200.0)
     parser.add_argument("--amplitude", type=float, default=350.0)
-    parser.add_argument("--noise", type=nonnegative_float, default=8.0)
-    parser.add_argument("--backward-offset", type=float, default=3.0)
+    parser.add_argument("--noise", type=nonnegative_float, default=5.0)
+    parser.add_argument("--backward-offset", type=float, default=0.0)
     parser.add_argument("--seed", type=int, default=2026)
     parser.add_argument("--prefix", default="STM")
     parser.add_argument("--scan-number", type=positive_int, default=1)

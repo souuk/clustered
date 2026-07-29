@@ -9,12 +9,32 @@ os.environ.setdefault("MPLBACKEND", "Agg")
 
 import numpy as np
 
-from notunnelpy.generate_demo_data import generate_demo_scan
+from notunnelpy.generate_demo_data import build_pattern, generate_demo_scan
 from notunnelpy.plot_stm import level_matrix, plot_scan_set
 from notunnelpy.stm_io import load_scan_set, parse_parameter_file
 
 
 class SyntheticPipelineTests(unittest.TestCase):
+    def test_atomic_lattice_contains_many_resolved_sites(self) -> None:
+        lattice = build_pattern(
+            "atomic-lattice",
+            points=96,
+            lines=96,
+        )
+        center = lattice[1:-1, 1:-1]
+        is_peak = np.ones(center.shape, dtype=bool)
+        for row_shift in (-1, 0, 1):
+            for column_shift in (-1, 0, 1):
+                if row_shift == 0 and column_shift == 0:
+                    continue
+                neighbor = lattice[
+                    1 + row_shift : 95 + row_shift,
+                    1 + column_shift : 95 + column_shift,
+                ]
+                is_peak &= center > neighbor
+        self.assertGreaterEqual(int(np.count_nonzero(is_peak)), 40)
+        self.assertAlmostEqual(float(np.max(lattice)), 1.0)
+
     def test_generator_matches_binary_contract(self) -> None:
         with tempfile.TemporaryDirectory() as temporary:
             directory = Path(temporary)
@@ -72,7 +92,7 @@ class SyntheticPipelineTests(unittest.TestCase):
             self.assertTrue(output.is_file())
             self.assertGreater(output.stat().st_size, 0)
 
-    def test_full_comparison_plot_is_created(self) -> None:
+    def test_average_heatmap_is_created(self) -> None:
         with tempfile.TemporaryDirectory() as temporary:
             directory = Path(temporary)
             generate_demo_scan(
@@ -85,8 +105,9 @@ class SyntheticPipelineTests(unittest.TestCase):
             scan = load_scan_set(directory, require_backward=True)
             output = plot_scan_set(
                 scan,
-                directory / "comparison.png",
+                directory / "average.png",
                 level="line",
+                view="average",
                 dpi=72,
             )
             self.assertTrue(output.is_file())
