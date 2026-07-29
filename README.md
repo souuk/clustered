@@ -32,6 +32,18 @@ in the Teensy firmware's `Timer2Service`: acquire one line while stepping in
 the +X direction, retrace and acquire while stepping in the -X direction,
 reset X, increment Y, and repeat.
 
+The firmware source is S. Chiang,
+`Experiments/STM Project/Teensy_STM11A_July_29_2025.ino` in the supplied
+course-material ZIP ([citation 2](CITATION_SOURCE_PATHS.txt)). The relevant
+locations in that source copy are:
+
+- lines 838-857: the `g` command initializes `pointcounter`, `linenumber`,
+  `fscan`, X, and Y, then starts the `Timer2Service` acquisition timer;
+- lines 1178-1203: `Timer2Service` writes the current X value, advances or
+  retracts X, records forward/backward data, and switches direction; and
+- lines 1203-1229: after two passes, it resets the point counter, increments Y,
+  resets X, pulses the line trigger, and advances the line number.
+
 Install its dependencies and open the interactive animation:
 
 ```console
@@ -52,10 +64,10 @@ motion is easy to follow. Use `--points`, `--lines`, `--step-size`,
 ![Preview of the Teensy bidirectional scanning pattern](scan-pattern-preview.gif)
 
 The animation also displays the firmware's literal `pointcounter` value. In
-the current Teensy source, the backward pass indexes `DataArray1B` with values
-from `numpoints` through `2 * numpoints - 1`. That exceeds the 512-element
-second array dimension at the default `numpoints = 512`; the firmware should
-use a zero-based backward index before relying on those stored array entries.
+the cited Teensy source, lines 1194-1198 index `DataArray1B` with values from
+`numpoints` through `2 * numpoints - 1`. That exceeds the 512-element second
+array dimension at the default `numpoints = 512`; the firmware should use a
+zero-based backward index before relying on those stored array entries.
 
 ## Poster citations
 

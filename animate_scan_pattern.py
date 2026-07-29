@@ -16,6 +16,12 @@ Run without ``--output`` for an interactive window, or save a GIF/MP4:
 
     python animate_scan_pattern.py
     python animate_scan_pattern.py --output scan-pattern.gif
+
+Firmware source:
+    S. Chiang, ``Teensy_STM11A_July_29_2025.ino``.  Image acquisition is
+    initialized in lines 838-857, and ``Timer2Service`` implements the scan
+    loop in lines 1178-1229 of the supplied course-material copy.  See
+    ``CITATION_SOURCE_PATHS.txt``, reference [2].
 """
 
 from __future__ import annotations

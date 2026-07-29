@@ -17,6 +17,11 @@ supplied course-material ZIP.
     >> STM Project
     >> Teensy_STM11A_July_29_2025.ino
 
+    Relevant scan-control locations in the supplied source copy:
+    Lines 838-857: image-scan initialization and Timer2Service startup
+    Lines 1178-1203: forward/backward X sampling and direction change
+    Lines 1203-1229: X reset, Y increment, line trigger, and line advance
+
 [3] B. Beauregard, Arduino PID Library, timer-interrupt modification
     by S. Chiang
 
