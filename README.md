@@ -40,6 +40,8 @@ raw signed 16-bit values rather than human-readable hexadecimal text.
 - `animate_scan_pattern.py`: firmware-derived scan-order animation.
 - `scan-pattern-preview.gif`: rendered preview of that animation.
 - `requirements-animation.txt`: Python dependencies for the animation.
+- `notunnelpy/`: synthetic input generator, validated STM file reader,
+  diagnostic plotter, and tests for development before tunneling works.
 - `CITATION_SOURCE_PATHS.txt`: exact locations of cited course sources.
 - `POSTER_FORMATTING_AND_WORKFLOW_RULES.txt`: poster layout and content rules.
 
