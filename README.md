@@ -1,21 +1,15 @@
-# STM Poster Citation Source Locations
+# Clustered STM Project
 
-The course materials were provided together in `the COSMOS Cluster 1 Canvas`.
-The paths below show where each cited source appears within that archive.
+This repository is a temporary workspace for the COSMOS 2026 scanning tunneling microscope project. The project files and documentation are still being organized.
 
-## Citation path index
+Planned contents include:
 
-**[1] S. Chiang, "Additional Quantum Mechanics Discussion"**
+- original measurement output recorded by the STM;
+- processed surface models and visualizations;
+- the Python program used to convert recorded measurements into a model;
+- controller and supporting source code; and
+- citation-source locations for the project poster.
 
-`Canvas` >> `Computation` >> `QMnotes1.pdf`
+The STM's original data and any processed visualization are different artifacts. A generated image or three-dimensional model is a representation produced from the recorded measurements, not a direct photograph from the instrument.
 
-**[2] S. Chiang, Teensy STM11A controller source code**
-
-`Canvas` >> `Experiments` >> `STM Project` >>
-`Teensy_STM11A_July_29_2025.ino`
-
-**[3] B. Beauregard, Arduino PID Library, timer-interrupt modification by
-S. Chiang**
-
-`Canvas` >> `Experiments` >> `STM Project` >>
-`PID_vInt.zip` >> `PID_vInt` >> `PID_vInt.cpp`
+For the current citation index, see [`CITATION_SOURCE_PATHS.txt`](CITATION_SOURCE_PATHS.txt). The placeholder processing interface is in [`process_stm_input.py`](process_stm_input.py).
