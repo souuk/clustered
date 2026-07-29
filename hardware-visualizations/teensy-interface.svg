@@ -1,0 +1,103 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1600" height="900" viewBox="0 0 1600 900" role="img" aria-labelledby="title desc">
+  <title id="title">Teensy 4.1 interface overview for the scanning tunneling microscope</title>
+  <desc id="desc">A wiring overview centered on the Teensy 4.1, showing USB serial, LCD I2C, stepper motor control, ADC-DAC SPI and control pins, DAC channel assignments, and the on-board SD card.</desc>
+  <defs>
+    <marker id="arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto-start-reverse">
+      <path d="M 0 0 L 10 5 L 0 10 z" fill="#222"/>
+    </marker>
+    <style>
+      .title { font: 700 42px Arial, Helvetica, sans-serif; fill: #111; }
+      .subtitle { font: 400 21px Arial, Helvetica, sans-serif; fill: #444; }
+      .label { font: 700 24px Arial, Helvetica, sans-serif; fill: #111; }
+      .body { font: 400 19px Arial, Helvetica, sans-serif; fill: #222; }
+      .small { font: 400 16px Arial, Helvetica, sans-serif; fill: #444; }
+      .pin { font: 700 18px Arial, Helvetica, sans-serif; fill: #111; }
+      .box { fill: #f7f7f7; stroke: #222; stroke-width: 2.5; rx: 12; }
+      .controller { fill: #e7e7e7; stroke: #111; stroke-width: 3.5; rx: 16; }
+      .line { fill: none; stroke: #222; stroke-width: 4; marker-end: url(#arrow); }
+      .bidir { fill: none; stroke: #222; stroke-width: 4; marker-start: url(#arrow); marker-end: url(#arrow); }
+      .dash { fill: none; stroke: #555; stroke-width: 2.5; stroke-dasharray: 10 8; marker-end: url(#arrow); }
+    </style>
+  </defs>
+
+  <rect width="1600" height="900" fill="#fff"/>
+
+  <text x="800" y="60" text-anchor="middle" class="title">Teensy 4.1 STM Interface Overview</text>
+  <text x="800" y="96" text-anchor="middle" class="subtitle">Verified pin assignments from the supplied 2025 wiring list</text>
+
+  <rect x="620" y="145" width="360" height="90" class="box"/>
+  <text x="800" y="180" text-anchor="middle" class="label">USB / serial terminal</text>
+  <text x="800" y="211" text-anchor="middle" class="body">commands and detailed status</text>
+  <path d="M800 235 V282" class="bidir"/>
+
+  <rect x="595" y="285" width="410" height="390" class="controller"/>
+  <text x="800" y="342" text-anchor="middle" class="title">Teensy 4.1</text>
+  <text x="800" y="384" text-anchor="middle" class="body">central scan and feedback controller</text>
+
+  <rect x="670" y="430" width="260" height="104" class="box"/>
+  <text x="800" y="469" text-anchor="middle" class="label">On-board SD card</text>
+  <text x="800" y="502" text-anchor="middle" class="small">forward, backward, and</text>
+  <text x="800" y="525" text-anchor="middle" class="small">parameter files</text>
+
+  <text x="800" y="593" text-anchor="middle" class="body">PID feedback  |  raster timing  |  data storage</text>
+  <text x="800" y="630" text-anchor="middle" class="small">3.3 V logic</text>
+
+  <rect x="55" y="160" width="405" height="190" class="box"/>
+  <text x="258" y="205" text-anchor="middle" class="label">20 x 4 LCD display</text>
+  <text x="88" y="248" class="pin">SDA</text>
+  <text x="180" y="248" class="body">Teensy pin 18</text>
+  <text x="88" y="280" class="pin">SCL</text>
+  <text x="180" y="280" class="body">Teensy pin 19</text>
+  <text x="88" y="315" class="small">I2C interface; 3.3 V and ground</text>
+  <path d="M460 255 H590" class="bidir"/>
+  <text x="525" y="239" text-anchor="middle" class="small">I2C</text>
+
+  <rect x="55" y="492" width="405" height="205" class="box"/>
+  <text x="258" y="538" text-anchor="middle" class="label">Stepper interface board</text>
+  <text x="88" y="580" class="pin">IN1-IN4</text>
+  <text x="200" y="580" class="body">pins 28, 29, 30, 31</text>
+  <text x="88" y="618" class="small">Controls coarse approach direction and steps</text>
+  <text x="88" y="653" class="small">Separate 5 V motor-interface supply</text>
+  <path d="M590 575 H460" class="line"/>
+  <text x="525" y="559" text-anchor="middle" class="small">step commands</text>
+
+  <rect x="1135" y="130" width="410" height="410" class="box"/>
+  <text x="1340" y="173" text-anchor="middle" class="label">ADC-DAC board</text>
+  <text x="1170" y="214" class="pin">SPI bus</text>
+  <text x="1280" y="214" class="body">SCK 13  |  MOSI 11  |  MISO 12</text>
+
+  <line x1="1170" y1="239" x2="1510" y2="239" stroke="#aaa" stroke-width="2"/>
+
+  <text x="1170" y="276" class="pin">ADC CS</text>
+  <text x="1300" y="276" class="body">pin 7</text>
+  <text x="1170" y="307" class="pin">DAC CS</text>
+  <text x="1300" y="307" class="body">pin 4</text>
+  <text x="1170" y="338" class="pin">DAC RST</text>
+  <text x="1300" y="338" class="body">pin 6</text>
+  <text x="1170" y="369" class="pin">DAC LDAC</text>
+  <text x="1300" y="369" class="body">pin 5</text>
+  <text x="1170" y="400" class="pin">ADC RVS</text>
+  <text x="1300" y="400" class="body">pin 8</text>
+  <text x="1170" y="431" class="pin">ADC RST</text>
+  <text x="1300" y="431" class="body">pin 9</text>
+
+  <text x="1170" y="478" class="small">ADC input: J7 pin 1; analog ground: J7 pin 2</text>
+  <text x="1170" y="507" class="small">Board power: +15 V, ground, -15 V</text>
+  <path d="M1005 370 H1130" class="bidir"/>
+  <text x="1068" y="350" text-anchor="middle" class="small">SPI + control</text>
+
+  <rect x="1135" y="582" width="410" height="170" class="box"/>
+  <text x="1340" y="624" text-anchor="middle" class="label">DAC output assignments</text>
+  <text x="1170" y="664" class="body">DAC 0: Z correction</text>
+  <text x="1370" y="664" class="body">DAC 1: X scan</text>
+  <text x="1170" y="702" class="body">DAC 2: Y scan</text>
+  <text x="1370" y="702" class="body">DAC 3: sample bias</text>
+  <path d="M1340 540 V577" class="line"/>
+
+  <rect x="55" y="790" width="1490" height="66" class="box"/>
+  <text x="800" y="818" text-anchor="middle" class="label">Keep the power domains separate</text>
+  <text x="800" y="844" text-anchor="middle" class="body">Teensy and LCD: 3.3 V logic  |  stepper interface: 5 V  |  analog boards: +/-15 V</text>
+
+  <text x="595" y="724" class="small">Functional wiring overview only.</text>
+  <text x="595" y="748" class="small">Verify against the final assembled wiring before publication.</text>
+</svg>
