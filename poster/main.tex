@@ -2,13 +2,9 @@
 % SHEEPLE TO DO BOARD AND NOTES
 % =================================================
 %
-% Instrument Design + Construction, work on the materials list
-% Also probably work on descriptions on each of them, maybe images
-% I'm not too sure
-%
-% Hardware Architecture, make it like Software Architecture in terms
-% of design, follow the image stuff, and just lock in I guess. This
-% part is really important too.
+% Sheets 3 and 4 now form one continuous instrument-design section.
+% Sheet 3 covers construction and materials; Sheet 4 continues with the
+% electronic signal chain and reserved locations for circuit-board visuals.
 %
 % IDK what slide 6 should be ngl...
 %
@@ -46,13 +42,14 @@
 %   1. Abstract + Introduction and Motivation
 %      + Data Provenance and Visualization Notice
 %   2. Theoretical and Technical Background
-%   3. Instrument Design and Construction
+%   3. Instrument Design, Construction, and Hardware Architecture
 %
 % CENTER PANEL
 %   The top-center row remains empty in the assembled poster.
 %
 %   LEFT CENTER COLUMN          RIGHT CENTER COLUMN
-%   4. Hardware Architecture    5. Control Software Architecture
+%   4. Instrument Hardware      5. Control Software Architecture
+%      (continued)
 %   6. Reserved                 7. Control Logic and Scan Execution
 %   8. Data + Python Conversion 9. Reserved
 %
@@ -301,20 +298,72 @@ compared.\textsuperscript{[2]}
 \clearpage
 
 % -------------------------------------------------
-% SHEET 3 OF 12 -- INSTRUMENT DESIGN AND CONSTRUCTION
+% SHEET 3 OF 12 -- INSTRUMENT DESIGN, CONSTRUCTION,
+%                  AND HARDWARE ARCHITECTURE
 % -------------------------------------------------
-\section{Instrument Design and Construction}
+\section{Instrument Design, Construction, and Hardware Architecture}
 
-% Talk about what we physically built and how we put it together here.
-% Save detailed testing and measurement results for a later assigned section.
+% Sheets 3 and 4 are one continuous section. This portrait sheet introduces
+% the physical instrument and retains the selected materials list. The
+% landscape continuation shows the electronic signal and control paths.
+\begingroup
+\titlespacing*{\subsubsection}{0pt}{0.45cm}{2pt}
+\begin{spacing}{1.0}
+\small
+
+The instrument combines two scales of motion with a low-noise electronic
+measurement chain. A stepper-driven mechanism first brings the tip into the
+piezoelectric scanner's fine operating range. The suspended platform reduces
+external vibration, while the electronics measure tunneling current and
+command the scanner. The signal and control connections continue on
+Sheet~4.
+
+\vspace{4pt}
+
+\noindent
+\begin{minipage}[t]{0.48\textwidth}
+  \vspace{0pt}
+  \subsubsection{Dual-Rail Power Supply}
+
+  The assembled supply provides \(+15\) V and \(-15\) V rails for the analog
+  electronics. Components were soldered to the provided circuit board and
+  installed in a 3D-printed enclosure. The outputs were checked relative to
+  ground with a multimeter, and the trimmer potentiometers were adjusted to
+  the target rail voltages.
+
+  \subsubsection{Coarse-Approach Mechanism}
+
+  A geared stepper motor, metal plates, and machine screws provide the coarse
+  motion needed to bring the tip close to the sample. The piezoelectric
+  scanner is mounted at the center of this assembly and takes over once the
+  remaining separation is within its fine-motion range.
+\end{minipage}
+\hfill
+\begin{minipage}[t]{0.48\textwidth}
+  \vspace{0pt}
+  \subsubsection{Piezoelectric Scanner}
+
+  The scanner provides fine \(x\), \(y\), and \(z\) positioning. Lateral
+  commands raster the tip across the sample, while the feedback-controlled
+  vertical command responds to changes in the measured tunneling-current
+  signal.
+
+  \subsubsection{Vibration-Isolation System}
+
+  Professor Shirley Chiang provided the spring-suspended platform used to
+  isolate the microscope. Magnetic stabilizers were added at the base and
+  sides to damp motion, and weights brought the suspended platform into the
+  magnets' effective range. The completed approach assembly rests on this
+  platform.
+\end{minipage}
 
 \subsection{Components and Materials}
 
-% This is only a selected list right now. Insert the full final parts list here
-% for future once everyone agrees on what was actually used.
+% Keep this selected list unchanged until the group verifies the final bill of
+% materials.
 \begin{table}[H]
   \centering
-  \small
+  \footnotesize
   \begin{tabular}{>{\raggedright\arraybackslash}p{0.78\textwidth}r}
     \toprule
     Component & Quantity \\
@@ -333,44 +382,23 @@ compared.\textsuperscript{[2]}
   \caption{Selected power-supply and mechanical components.}
 \end{table}
 
-\subsubsection{Dual-Rail Power Supply}
+\vspace{4pt}
 
-% Insert a clear photo of the finished power-supply board here for future.
-% Try to use one where the wiring and the +15 V / -15 V labels are readable.
-The power supply provides stable \(+15\) V and \(-15\) V rails. It was
-constructed from a provided circuit board, resistors, capacitors,
-transformers, regulators, and related components. The components were
-soldered to the board, installed in a 3D-printed enclosure, and checked with
-a multimeter. Trimmer potentiometers were adjusted until both output rails
-reached their target voltages relative to ground.
+\begin{center}
+  \fbox{\parbox[c][2.05in][c]{0.92\textwidth}{
+    \centering
+    \textbf{INSTRUMENT-ASSEMBLY IMAGE PLACEHOLDER}\\[7pt]
+    Replace with a labeled overview of the completed instrument. Identify the
+    dual-rail supply enclosure, coarse-approach mechanism, piezoelectric
+    scanner, suspended platform, magnetic stabilizers, and added weights.
+  }}
+  \captionsetup{font=footnotesize}
+  \captionof{figure}{Reserved location for the final physical-construction
+  overview.}
+\end{center}
 
-\subsubsection{Piezoelectric Scanner}
-
-% Insert a labeled close-up of the piezo and tip here for future if we have one.
-The piezoelectric scanner provides fine \(x\), \(y\), and \(z\) positioning
-of the tip. A voltage bias between the metallic tip and conductive sample
-allows a tunneling current to form when their separation becomes sufficiently
-small. During scanning, the lateral piezo signals move the tip across the
-sample while feedback controls its vertical position.
-
-\subsubsection{Coarse-Approach Mechanism}
-
-% Insert a photo showing the motor, plates, and direction of movement here for
-% future. A side view would probably explain this better than a top view.
-The stepper-motor mechanism provides coarse positioning so the tip can be
-brought into the operating range of the piezoelectric scanner. The mechanism
-was assembled from metal plates, screws, and a geared stepper motor. The
-piezoelectric scanner was mounted at the center of the mechanism.
-
-\subsubsection{Vibration-Isolation System}
-
-% Insert a full photo of the suspended platform here for future. Label the
-% springs, magnets, and added weights if the picture is not obvious by itself.
-The spring-suspension system isolates the microscope from external
-vibrations. Professor Shirley Chiang provided the suspended platform.
-Magnetic stabilizers were added at the base and sides to damp motion, and
-weights were added to bring the suspended platform into the effective range
-of the magnets. The stepper-motor assembly was then placed on the platform.
+\end{spacing}
+\endgroup
 
 \clearpage
 
@@ -385,40 +413,93 @@ of the magnets. The stepper-motor assembly was then placed on the platform.
 
 % -------------------------------------------------
 % CENTER ROW 1, HARDWARE COLUMN
-% SHEET 4 OF 12 -- HARDWARE ARCHITECTURE
+% SHEET 4 OF 12 -- INSTRUMENT HARDWARE, CONTINUED
 % -------------------------------------------------
-\section{Hardware Architecture}
+\section{Instrument Hardware Architecture (Continued)}
 
-% Explain what each electronic part does here. Keep the building details
-% on Sheet 3 and the detailed measurements out of this architecture sheet.
-% Insert one hardware block diagram here for future if this page has room.
-% It should go current -> preamp -> ADC -> Teensy -> DAC -> piezo.
+\begin{spacing}{0.98}
+\small
 
-\subsection{Tunneling-Current Preamplifier}
+Sheet~3 describes the physical assembly; this continuation follows the
+measurement and control signals through the instrument. The Teensy 4.1 links
+the current-measurement path to the motion and bias outputs used during
+approach, feedback, and scanning.\textsuperscript{[2]}
 
-The current preamplifier converts the extremely small tunneling current
-(typically picoamperes to nanoamperes) into a measurable voltage using a
-transimpedance configuration. Its large feedback resistance provides the gain
-needed for the ADC and feedback controller to detect nanoampere-scale changes.
+\subsection{Signal and Control Paths}
 
-\subsection{Piezoelectric Drive Amplifier}
+\begin{center}
+  \fbox{\parbox[c][0.88in][c]{0.94\linewidth}{
+    \centering
+    \textbf{Measurement path}\\[4pt]
+    Sample and tip
+    \(\longrightarrow\) current preamplifier
+    \(\longrightarrow\) ADS8691 ADC
+    \(\longrightarrow\) Teensy 4.1\\[9pt]
+    \textbf{Control path}\\[4pt]
+    Teensy 4.1
+    \(\longrightarrow\) DAC8734
+    \(\longrightarrow\) piezo drive amplifier
+    \(\longrightarrow\) \(x\), \(y\), and \(z\) scanner commands and sample bias
+  }}
+\end{center}
 
-The amplifier board accepts the controller's \(x\), \(y\), and \(z\) command
-signals and produces the higher-voltage outputs required by the piezoelectric
-scanner. Its summing and subtracting stages combine the control channels used
-to bend or extend the scanner.
+\vspace{4pt}
 
-\subsection{Analog-to-Digital Converter}
+\noindent
+\begin{minipage}[t]{0.51\linewidth}
+  \vspace{0pt}
+  \subsubsection{Tunneling-Signal Acquisition}
 
-The ADS8691 analog-to-digital converter digitizes the preamplifier voltage
-with 18-bit resolution. The Teensy reads this value over SPI and supplies it
-to the feedback controller as the measured tunneling-current signal.
+  The transimpedance preamplifier converts picoampere- to nanoampere-scale
+  tunneling current into a measurable voltage. Its output is routed to the
+  ADS8691 and may also be observed on an oscilloscope, giving an independent
+  view of the signal during approach. The 18-bit ADC digitizes this voltage,
+  and the Teensy reads the result over SPI.\textsuperscript{[2]}
 
-\subsection{Digital-to-Analog Converter}
+  \subsubsection{Motion and Bias Actuation}
 
-The four-channel DAC8734 converts digital commands from the Teensy into analog
-voltages for the \(x\), \(y\), and \(z\) piezo controls and the sample-bias
-voltage.
+  The Teensy compares the measured signal with the selected current setpoint
+  and calculates the required response. The four-channel DAC8734 converts its
+  digital commands into analog \(x\), \(y\), and \(z\) controls plus the
+  sample-bias command. The piezo drive amplifier raises the scanner commands
+  to the voltage range required for fine motion.\textsuperscript{[2]}
+
+  \subsubsection{Supporting Interfaces and Power}
+
+  The LCD presents a regularly refreshed subset of operating parameters,
+  including voltage and current settings; the serial terminal provides more
+  detailed status messages. The SD card stores the forward, backward, and
+  parameter files. The dual-rail supply described on Sheet~3 powers the analog
+  signal-conditioning hardware.\textsuperscript{[2]}
+\end{minipage}
+\hfill
+\begin{minipage}[t]{0.45\linewidth}
+  \vspace{0pt}
+  \centering
+
+  \fbox{\parbox[c][1.28in][c]{0.90\linewidth}{
+    \centering
+    \textbf{CIRCUIT-BOARD PHOTOGRAPH PLACEHOLDER}\\[6pt]
+    Replace with the clearest full-board image. Label the major connectors,
+    signal entry, power entry, and controller interfaces.
+  }}
+
+  \vspace{8pt}
+
+  \fbox{\parbox[c][1.28in][c]{0.90\linewidth}{
+    \centering
+    \textbf{ANNOTATED HARDWARE VISUALIZATION PLACEHOLDER}\\[6pt]
+    Build from the supplied board photographs. Match its labels and arrows to
+    the measurement and control paths shown above.
+  }}
+
+  \vspace{5pt}
+
+  {\footnotesize\itshape These placeholders reserve the final visual area
+  without implying that unverified board photographs are already available.}
+\end{minipage}
+
+\end{spacing}
 
 \clearpage
 
