@@ -1,28 +1,112 @@
 % =================================================
 % SHEEPLE TO DO BOARD AND NOTES
 % =================================================
-% Fill in unfilled sections
+% Justin: content sharing one printed page can still use separate sections.
 %
-% If there is great blank space, we can merge
-% some of them. Currently, I believe there is not
-% going to be enough sections dedicated to Scalettar.
+% We still need to completely write the operating principles page.
+% That means tunneling current, coarse and fine positioning,
+% constant-current imaging, and the actual measurement procedure.
+% - Justin
 %
-% Update components and materials table to make it accurate.
+% Someone needs to check the components and materials table against
+% what we actually used. Do not leave guessed quantities in there.
 %
-% Can one of you guys send an image of the output of the STM
-% machine into the group chat? I need to make a code to convert
-% the thing into images on matplotlib.
+% We need good pictures of the power supply, piezo and tip, motor
+% mechanism, vibration setup, and the finished STM. Label them if it
+% is not obvious what people are looking at.
 %
-% For data output and surface reconstruction, we still need the
-% complete forward, backward, and parameter files from an actual scan.
+% We should make one simple hardware diagram if the hardware page
+% still has a bunch of empty space after the writing is finished.
 %
-% We also need to finish the Python code, make sure x and y are facing
-% the right way, and compare the forward and backward scans.
+% We need the actual multimeter values for both power rails and the
+% actual function-generator and oscilloscope settings for the analog tests.
 %
-% We cannot call the result an actual height until we figure out the
-% z-piezo calibration. Once everything works, add the raw data, code,
-% settings, and final Matplotlib figures to clustered.
+% We need the ADC test values, converted voltages, differences, and a
+% graph if we took enough points. We also need the requested DAC values
+% and the waveform or measured voltage that came out.
 %
+% Put all of those hardware tests into one results table with the expected
+% value, measured value, units, difference, and whether the part passed.
+%
+% We need to record the final approach threshold and whatever Kp, Ki,
+% and Kd values we actually use. Do not leave the supplied defaults there
+% if we end up changing them.
+%
+% Someone needs to check the Timer 2 backward-array index before we trust
+% the scan files. pointcounter keeps counting past numpoints, but
+% DataArray1B is only MAXNUMPTS wide, so this could be an actual bug.
+%
+% We also need to confirm the saved data format. The firmware casts Output
+% to int16_t and writes 2 bytes even though one comment says 18 bits and
+% 4 bytes. The reconstruction code has to follow what is really written.
+%
+% For data output, we still need a complete forward file, backward file,
+% and parameter file from a real scan. A Serial Monitor picture is not
+% the same thing as the scan data.
+%
+% We need to finish and test the Python reconstruction code on those real
+% files. It should check the file length, read the scan dimensions, reshape
+% the values, reverse the backward direction, and keep the raw matrix.
+%
+% We need to make sure x and y are facing the right way and compare the
+% forward and backward scans before combining anything.
+%
+% We cannot call the vertical values actual height until we measure the
+% z-piezo calibration. Until then, call them relative correction or counts.
+%
+% Once the code works, fill in the blank scan table and replace all three
+% "Add about" sentences on Page 9 with the real settings, code, and results.
+%
+% Make the final 2D Matplotlib surface map from the real data. A raised
+% 3D view is optional and should be called a visualization of the same
+% 2D matrix, not a separate three-dimensional measurement.
+%
+% We need to write the results and uncertainty page after the final tests.
+% Only say what the data actually supports, then connect each improvement
+% to a problem we really observed.
+%
+% We need to decide which extra graphs or test pictures actually belong
+% on the supplementary figures page. Do not add filler just to use space.
+%
+% Update the abstract after the final scan and tests so it does not claim
+% more than the finished STM actually did.
+%
+% Add the exact raw-data and processing-code paths to the data notice once
+% they are in clustered. Put the real files, code, settings, calibration,
+% and final figures in the repo together.
+%
+% Check every code citation and line number after the writing is final.
+% If we add another source, update Works Cited and the citation-path file too.
+%
+% Finish the title block in Overleaf with the final title, names, program,
+% and whatever other information the group decides belongs there.
+%
+% Add anyone else who helped us to the acknowledgments before printing.
+%
+% Compile the whole folder in Overleaf and look at every page for overflow.
+% Check the 2 cm and 1 cm gaps, paragraph indents, table widths, code boxes,
+% captions, image quality, and whether the font is readable when printed.
+%
+% Make sure every PNG used by main.tex is uploaded beside it, test the GitHub
+% QR code, and print one black-and-white test page before doing the full poster.
+%
+% We should decide who is handling each unfinished page so two people do not
+% work on the same thing while another page gets forgotten.
+%
+% Save the final scan settings in one place so the numbers on the poster,
+% the parameter file, and the reconstruction code all match.
+%
+% Keep one untouched copy of the raw scan files before we start processing
+% them, and put each usable scan in its own clearly named folder.
+%
+% Check the software diagrams against the final firmware so the arrows,
+% timer steps, and file-writing order are still correct.
+%
+% Remove every visible placeholder, blank line, and "for future" note before
+% the final PDF is sent for printing.
+%
+% Save one clearly named final PDF and a copy of the matching Overleaf folder
+% so everyone knows which version is actually ready to print.
 % =================================================
 % FORMATTING NOTES
 % =================================================
@@ -110,13 +194,13 @@
   {\MakeUppercase}
 
 \titleformat{\subsection}
-  {\normalfont\large\bfseries}
+  {\normalfont\large\bfseries\raggedright}
   {}
   {0pt}
   {}
 
 \titleformat{\subsubsection}
-  {\normalfont\normalsize\bfseries}
+  {\normalfont\normalsize\bfseries\raggedright}
   {}
   {0pt}
   {}
@@ -322,7 +406,7 @@ compared.\textsuperscript{[2]}
     \toprule
     Component & Quantity \\
     \midrule
-    Positive and negative adjustable voltage regulators & 1 each \\
+    Positive (LM317) and negative (LM337) adjustable voltage regulators & 1 each \\
     \(2200\,\mu\mathrm{F}\), 35 V capacitors & 2 \\
     \(1\,\mu\mathrm{F}\), 35 V tantalum capacitors & 2 \\
     General-purpose rectifier diodes & 4 \\
@@ -520,15 +604,38 @@ card.\textsuperscript{[2,3]}
 
 % Add why the current changes so much with tip--sample distance and why we
 % need a conductive sample and a sharp metal tip.
+The tunneling signal is the physical basis of STM operation. A voltage bias
+between a conductive sample and a sharp metallic tip allows electrons to
+quantum-mechanically tunnel across the small gap. The resulting current varies
+approximately exponentially with tip--sample separation, so even a very small
+change in distance produces a measurable change in signal. The sample must be
+conductive to complete the tunneling circuit, and the tip must be extremely
+sharp so that the measurement is localized to a very small region of the
+surface.
 
 \subsection{Coarse and Fine Positioning}
 
 % Add how the coarse motor, z piezo, and x-y movement each work.
+The coarse motor, located above the piezoelectric scanner, moves the tip toward
+the sample until the separation is within the fine-positioning range. The
+\(z\)-piezo then adjusts the vertical tip position in response to the measured
+tunneling current, while the \(x\)- and \(y\)-piezo signals move the tip
+laterally across the sample. Piezoelectric materials expand or contract by
+sub-nanometer amounts when voltage is applied, allowing the feedback system to
+make the small corrections needed during a scan.
+
+% Justin: add more detail on the coarse-motor mechanism.
 
 \subsection{Constant-Current Imaging}
 
 % Add how keeping the current steady lets the z correction represent the
 % relative surface height.
+During constant-current imaging, the feedback loop adjusts the \(z\)-piezo to
+hold the tunneling current near its setpoint as the tip moves across the
+surface. At each lateral position, the required \(z\) correction records the
+relative vertical response needed to preserve the current. Before a
+vertical-piezo calibration is measured, these values are reported as relative
+correction or DAC counts rather than absolute surface height.
 
 \subsection{Measurement Procedure}
 
@@ -545,17 +652,21 @@ card.\textsuperscript{[2,3]}
 
 % This page is about what the code does step by step, not how every file and
 % function is arranged. Sheet 5 already handles the overall organization.
-\begin{spacing}{1.0}
-\small
+\begingroup
+% This sheet has more code than the others, so keep its spacing a little tighter.
+\titlespacing*{\subsubsection}{0pt}{0.42cm}{1.5pt}
+\setlength{\abovedisplayskip}{3pt}
+\setlength{\belowdisplayskip}{3pt}
+\begin{spacing}{0.94}
+\footnotesize
 
 The firmware converts an STM measurement into a repeatable operating sequence:
 approach the sample, confirm a tunneling signal, activate constant-current
-feedback, execute the raster scan, and close the data files safely. The
-approach, feedback, and scan routines use separate state flags and timer
-interrupts so that each process runs only when its required conditions have
-been satisfied.\textsuperscript{[2,3]}
+feedback, execute the raster scan, and close the data files safely. Separate
+state flags and timer interrupts ensure that each process runs only after its
+required conditions have been satisfied.\textsuperscript{[2,3]}
 
-\vspace{4pt}
+\vspace{2pt}
 
 \noindent
 \begin{minipage}[t]{0.48\linewidth}
@@ -569,14 +680,18 @@ been satisfied.\textsuperscript{[2,3]}
   second time. Only two consecutive threshold crossings are accepted as a
   tunneling signal. If no signal is confirmed during the fine sweep, the
   vertical output retracts, the coarse motor advances one step, and the
-  routine can try again.\textsuperscript{[2]}
+  routine tries again.\textsuperscript{[2]}
+
+  \noindent{\tiny\textit{Code:}
+  \nolinkurl{Teensy_STM11A_July_29_2025.ino}, lines
+  1119--1159.\textsuperscript{[2]}\par}
 
   \subsubsection{Timer 1: Constant-Current Feedback}
 
   % This is simplified PID math so visitors can understand the idea without
   % reading the full library. Insert our final Kp, Ki, and Kd here for future.
   After confirmation, Timer~1 executes every \(100\,\mu\mathrm{s}\). It reads
-  the ADC, calculates a new PID output, and writes that value to DAC
+  the ADC, calculates a new PID output, and writes that correction to DAC
   channel~0.\textsuperscript{[2]} The supplied PID routine uses
   \[
     u_n=K_Pe_n+I_n-K_D(x_n-x_{n-1}),
@@ -586,14 +701,70 @@ been satisfied.\textsuperscript{[2,3]}
   clamped to the configured limits to prevent requests outside the DAC
   range.\textsuperscript{[3]}
 
+  \noindent{\tiny\textit{Code:}
+  \nolinkurl{Teensy_STM11A_July_29_2025.ino}, lines
+  1164--1175;\enspace \nolinkurl{PID_vInt.cpp}, lines
+  48--78 and 134--148.\textsuperscript{[2,3]}\par}
+
   \subsubsection{Timer 2: Raster-Scan Execution}
 
-  Timer~2 advances \(x\) by one DAC step and stores the current feedback
-  output at each point. After the forward line reaches the selected number of
-  points, the direction reverses and a backward line is collected. Completing
-  both passes resets \(x\), increments \(y\), and starts the next line. When
-  the selected number of lines is reached, the timer stops, parameters are
-  written, and all files are closed.\textsuperscript{[2]}
+  Timer~2 advances \(x\) by one DAC step and stores the current feedback output
+  at each point. After the forward line reaches the selected number of points,
+  the direction reverses and a backward line is collected. Completing both
+  passes resets \(x\), increments \(y\), and starts the next line. When the
+  selected number of lines is reached, the timer stops, writes the parameters,
+  and closes all files.\textsuperscript{[2]}
+
+  \noindent{\tiny\textit{Code:}
+  \nolinkurl{Teensy_STM11A_July_29_2025.ino}, lines
+  1178--1239.\textsuperscript{[2]}\par}
+
+  \vspace{3pt}
+
+  \noindent\textbf{Equation Variable Legend}
+
+  \vspace{2pt}
+
+  \noindent
+  {\tiny
+  \renewcommand{\arraystretch}{1.0}
+  \begin{tabular}{@{}>{\raggedright\arraybackslash}p{0.10\linewidth}
+                  >{\raggedright\arraybackslash}p{0.35\linewidth}
+                  >{\raggedright\arraybackslash}p{0.10\linewidth}
+                  >{\raggedright\arraybackslash}p{0.35\linewidth}@{}}
+    \toprule
+    \textbf{Var.} & \textbf{Meaning} & \textbf{Var.} & \textbf{Meaning} \\
+    \midrule
+    \(u_n\) & PID output at update \(n\) & \(K_P\) & Proportional gain \\
+    \(e_n\) & Setpoint error & \(I_n\) & Integral correction \\
+    \(K_D\) & Derivative gain & \(x_n\) & Current ADC input \\
+    \(x_{n-1}\) & Previous ADC input & \(n\) & Update number \\
+    \bottomrule
+  \end{tabular}
+  }
+
+  \vspace{3pt}
+
+  \noindent\textbf{Timer 1 Source Excerpt}
+
+  \begin{lstlisting}[
+    language=C++,
+    basicstyle=\ttfamily\tiny,
+    numbers=left,
+    numberstyle=\tiny,
+    numbersep=4pt,
+    firstnumber=1168,
+    aboveskip=2pt,
+    belowskip=1pt
+  ]
+Input = ADC_Convert();
+myPID.Compute();
+int Value = Output;
+SetDAC(0, Value);
+  \end{lstlisting}
+  \noindent{\tiny Timer~1 reads the ADC, runs the PID, and updates DAC~0.
+  \nolinkurl{Teensy_STM11A_July_29_2025.ino}, lines
+  1168--1171.\textsuperscript{[2]}\par}
 \end{minipage}
 \hfill
 \begin{minipage}[t]{0.49\linewidth}
@@ -601,8 +772,8 @@ been satisfied.\textsuperscript{[2,3]}
   \centering
   % Keep this diagram simple because the pseudocode right below it gives the
   % extra detail. Update both if the retry path or timer order changes.
-  \includegraphics[width=\linewidth]{software-state-sequence.png}
-  \captionsetup{font=footnotesize}
+  \includegraphics[width=0.88\linewidth]{software-state-sequence.png}
+  \captionsetup{font=scriptsize}
   \captionof{figure}{Operating states and the no-signal retry
   path.\textsuperscript{[2]}}
 
@@ -611,41 +782,71 @@ been satisfied.\textsuperscript{[2,3]}
 
   % This is not copied code. It is just the logic rewritten so people can read
   % it quickly. Insert any final shutdown or error-handling step here for future.
-  The pseudocode emphasizes the conditions that move the controller from one
-  operating state to the next.
+  The pseudocode summarizes the conditions that move the controller from one
+  state to the next.
 
-  \begin{lstlisting}[language={},basicstyle=\ttfamily\scriptsize]
-START
-  initialize interfaces and safe outputs
-  wait for a command
+  \begin{lstlisting}[language={},basicstyle=\ttfamily\tiny]
+INITIALIZE
+  set interfaces and safe outputs
 APPROACH
-  disable feedback
   sweep Z; read current
-  if threshold confirmed twice
-    start Timer 1
-  else
-    retract Z; motor step; retry
-FEEDBACK TIMER -- every 100 us
+  confirmed twice -> start Timer 1
+  no signal -> retract; motor step; retry
+TIMER 1 -- every 100 us
   current <- ADC
-  correction <- PID(setpoint - current)
-  Z DAC <- limited correction
-SCAN TIMER -- each data point
+  Z DAC <- limited PID correction
+TIMER 2 -- each point
   step X; store correction
-  end forward line -> reverse X
-  end backward line -> reset X; step Y
-  final line -> save parameters; close files
+  forward done -> reverse X
+  backward done -> reset X; step Y
+  final line -> save; close files
   \end{lstlisting}
 
-  \subsubsection{Why Two Timers?}
+  \subsubsection{Raster State Update}
 
-  The feedback update must remain fast and regular because tunneling current
-  is sensitive to probe height. Scan movement and file writing occur on the
-  slower, user-selected acquisition schedule. Separating these schedules
-  prevents lateral scanning from determining the feedback update
-  rate.\textsuperscript{[2]}
+  \begin{lstlisting}[
+    language=C++,
+    basicstyle=\ttfamily\tiny,
+    numbers=left,
+    numberstyle=\tiny,
+    numbersep=4pt,
+    firstnumber=1201,
+    aboveskip=2pt,
+    belowskip=1pt
+  ]
+pointcounter++;
+if (pointcounter >= numpoints) fscan = false;
+if (pointcounter >= (2 * numpoints)) {
+  fscan = true;
+  pointcounter = 0;
+  if (yscan) {
+    yv += stepsize;
+    SetDAC(2, yv);
+  }
+  if (xscan) xv = xvinit;
+  \end{lstlisting}
+  \noindent{\tiny After both \(x\) passes, the code resets the point state,
+  increments \(y\), and returns \(x\) to its start.
+  \nolinkurl{Teensy_STM11A_July_29_2025.ino}, lines
+  1201--1210.\textsuperscript{[2]}\par}
+
+  \vspace{2pt}
+  \noindent{\tiny\textit{Implementation check:} During the backward pass,
+  \texttt{pointcounter} runs from \texttt{numpoints} through
+  \texttt{2*numpoints-1}, while lines 1194--1198 use it directly as the second
+  index of \texttt{DataArray1B}. The index should be made zero-based before
+  relying on the default 512-point scan data.\textsuperscript{[2]}\par}
+
+  \vspace{2pt}
+  \noindent{\tiny\textit{Companion animation:}
+  \href{https://github.com/souuk/clustered/blob/main/animate_scan_pattern.py}
+  {\nolinkurl{animate_scan_pattern.py}} reproduces the firmware's forward
+  pass, backward pass, \(x\) reset, and \(y\) step using the cited timer
+  sequence.\textsuperscript{[2,4]}\par}
 \end{minipage}
 
 \end{spacing}
+\endgroup
 
 \clearpage
 
@@ -743,6 +944,10 @@ values into an \(x,y\) matrix; and converts the result into a surface map.
   \(N_xN_y\) stored values before beginning reconstruction. A different file
   length is identified as an incomplete or inconsistent scan rather than being
   silently filled.
+
+  \noindent{\scriptsize\textit{Code reference:}
+  \nolinkurl{Teensy_STM11A_July_29_2025.ino}, lines
+  1188--1198 and 1248--1262.\textsuperscript{[2]}\par}
 
   \subsubsection{From a Sequence to a Surface}
 
@@ -868,8 +1073,28 @@ values into an \(x,y\) matrix; and converts the result into a surface map.
 % Every graph still needs labeled axes, units, a caption, and a quick
 % explanation of what it shows.
 
+\subsection{Firmware Scan-Pattern Sequence}
+
+\begin{figure}[H]
+  \centering
+  \includegraphics[width=0.96\textwidth]{scan-pattern-sequence.png}
+  \caption{Selected frames from the Python scan-pattern animation. The
+  sequence follows the firmware's Timer~2 routine: sample while stepping in
+  \(+x\), sample while returning in \(-x\), reset \(x\), increment \(y\), and
+  begin the next line. The displayed \texttt{pointcounter} values follow the
+  source literally.\textsuperscript{[2,4]}}
+\end{figure}
+
+\noindent
+The complete animation and its reproducible Python source are available as
+\href{https://github.com/souuk/clustered/blob/main/animate_scan_pattern.py}
+{\nolinkurl{animate_scan_pattern.py}} and
+\href{https://github.com/souuk/clustered/blob/main/scan-pattern-preview.gif}
+{\nolinkurl{scan-pattern-preview.gif}}. The model is based on scan
+initialization at lines 838--857 and raster execution at lines
+1178--1229 of the Teensy source.\textsuperscript{[2,4]}
+
 % Add the extra graphs and number comparisons here.
-% Insert figure 1 here for future.
 % Insert figure 2 here for future if it adds something different.
 % If we only have one useful extra graph, leave the rest of the page open
 % instead of stretching it or adding filler.
@@ -892,17 +1117,22 @@ values into an \(x,y\) matrix; and converts the result into a surface map.
     \item S. Chiang, ``Additional Quantum Mechanics Discussion,''
     \textit{QMnotes1.pdf}, COSMOS course handout, 2026.
 
-    \item S. Chiang, \textit{Teensy STM11A}, STM controller source code,
-    University of California, Davis, 2025.
+    \item S. Chiang, \textit{Teensy STM11A}, STM controller source file
+    \nolinkurl{Teensy_STM11A_July_29_2025.ino}, University of California,
+    Davis, 2025. Cited portions include lines 838--857, 1119--1239, and
+    1248--1262.
 
     \item B. Beauregard, \textit{Arduino PID Library}, version 1.1.1,
-    timer-interrupt modification by S. Chiang, course software archive.
+    timer-interrupt modification by S. Chiang, source file
+    \nolinkurl{PID_vInt.cpp}, course software archive. Cited portions include
+    lines 48--78 and 134--148.
 
     \item souuk, \textit{clustered: STM Project Files and Citation-Source
     Paths}, GitHub repository, 2026. Available:
     \href{https://github.com/souuk/clustered}{github.com/souuk/clustered}.
-    Source locations within the supplied course archive are listed in the
-    repository's
+    The repository includes \nolinkurl{animate_scan_pattern.py} and
+    \nolinkurl{scan-pattern-preview.gif}; source locations within the supplied
+    course archive are listed in the repository's
     \href{https://github.com/souuk/clustered\#citation-path-index}
     {citation path index}.
   \end{enumerate}
@@ -925,6 +1155,7 @@ values into an \(x,y\) matrix; and converts the result into a surface map.
 \subsection{Acknowledgments}
 
 % Insert any other instructors, mentors, or group-specific help here for future.
+% Justin: include Chiang, Scalettar, and any other confirmed contributors.
 We thank Professor Shirley Chiang for providing the spring-suspension
 platform, quantum-mechanics notes, STM controller program, and other course
 materials used in this project.
