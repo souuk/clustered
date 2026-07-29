@@ -13,40 +13,31 @@
 % machine into the group chat? I need to make a code to convert
 % the thing into images on matplotlib.
 %
-% DATA OUTPUT AND SURFACE RECONSTRUCTION:
-% - Once we get a complete scan, add the forward, backward, and
-%   parameter files here.
-% - Finish the Python code that reads everything and turns it into
-%   the scan matrix.
-% - Double-check which way x and y go, then compare the forward and
-%   backward scans to see if anything drifted or got offset.
-% - Figure out the z-piezo calibration before calling anything an
-%   actual height.
-% - Make the final Matplotlib 2D map and maybe a 3D version too.
-% - Put the raw data, working code, settings, and final figures in
-%   clustered when we have them.
+% For data output and surface reconstruction, we still need the
+% complete forward, backward, and parameter files from an actual scan.
 %
+% We also need to finish the Python code, make sure x and y are facing
+% the right way, and compare the forward and backward scans.
+%
+% We cannot call the result an actual height until we figure out the
+% z-piezo calibration. Once everything works, add the raw data, code,
+% settings, and final Matplotlib figures to clustered.
 %
 % =================================================
-% FORMATTING CONVENTIONS
+% FORMATTING NOTES
 % =================================================
-% - A section is a different main category. If two sections share one sheet,
-%   put \categorygap between them so the gap is always 2 cm.
-% - Subsections and subsubsections are parts of the same category. LaTeX gives
-%   them a 1 cm gap automatically, so do not add random \vspace commands.
-% - The first paragraph after a heading stays unindented. Later paragraphs in
-%   the same block use the normal 1.5 em indent.
-% - Normal body text uses 1.12 line spacing. The three crowded software or
-%   formula sheets can use 1.0 spacing inside their existing spacing blocks.
-% - Keep figures centered with the caption right below. Put the citation in the
-%   caption too if the picture or diagram came from one of our sources.
-% - Keep everything black and white except real Matplotlib data graphs.
-% - Use booktabs-style tables: no vertical lines, units in the labels, and no
-%   made-up values in blank result tables.
-% - Every printed sheet ends with \clearpage. Do not use manual line breaks to
-%   force a page layout when a proper paragraph or spacing command works.
-% - Keep main.tex and every PNG it uses directly inside transform so we can
-%   upload the whole folder to Overleaf at once.
+% Different main sections on the same page should have a 2 cm gap.
+% Smaller subsections that are still part of the same topic get a 1 cm gap.
+%
+% The first paragraph after a heading should not be indented, but the
+% paragraphs after it should be. Keep everything black and white except
+% for real Matplotlib data graphs.
+%
+% Keep main.tex and all of its PNGs together in transform so we can
+% upload the folder to Overleaf at once.
+%
+% For the full formatting and workflow list, check:
+% https://github.com/souuk/clustered/blob/main/POSTER_FORMATTING_AND_WORKFLOW_RULES.txt
 %
 % =================================================
 % POSTER LAYOUT MAP

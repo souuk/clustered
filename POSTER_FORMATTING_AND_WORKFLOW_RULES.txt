@@ -1,0 +1,656 @@
+STM POSTER FORMATTING AND WORKFLOW RULES
+========================================
+
+This is the full working list for the COSMOS STM trifold poster. It records
+the choices we have made so that future edits stay consistent. If the group
+later agrees to change a rule, update this file and main.tex together.
+
+
+1. MAIN FILES AND OVERLEAF
+==========================
+
+1.1
+The upload-ready LaTeX source is main.tex.
+
+1.2
+Keep main.tex and every image it references directly in the same upload
+folder. Do not put the PNGs in another figures folder.
+
+1.3
+The local upload folder is named transform. The matching repository copy is
+kept in the poster directory.
+
+1.4
+The complete transform folder should be uploadable to Overleaf at once.
+
+1.5
+Do not depend on a second main.tex outside transform.
+
+1.6
+The title block is being made separately in Overleaf. Do not add an automatic
+LaTeX title page or title command to the first sheet.
+
+1.7
+Every sheet should end with \clearpage so one poster sheet does not flow into
+the next one.
+
+1.8
+Before the final print, compile the complete folder in Overleaf and check every
+page visually. A source-only check cannot prove that text does not overflow.
+
+
+2. POSTER LAYOUT
+================
+
+2.1
+The poster uses twelve content sheets plus a separately created title block.
+
+2.2
+The left panel contains:
+
+Sheet 1: Abstract, Introduction and Motivation, and the data notice.
+Sheet 2: Theoretical and Technical Background.
+Sheet 3: Instrument Design and Construction.
+
+2.3
+The center panel uses landscape sheets in two columns:
+
+Hardware column:
+Sheet 4: Hardware Architecture.
+Sheet 6: STM Operating Principles and Procedure.
+Sheet 8: Subsystem Testing and Calibration.
+
+Software column:
+Sheet 5: Control Software Architecture.
+Sheet 7: STM Control Logic and Scan Execution.
+Sheet 9: Data Output and Surface Reconstruction.
+
+2.4
+The software column should read from top to bottom as:
+
+Architecture >> Execution >> Output
+
+2.5
+The right panel contains:
+
+Sheet 10: Results and Uncertainty Analysis.
+Sheet 11: Supplementary Figures.
+Sheet 12: References and Acknowledgments.
+
+2.6
+The top-center area of the assembled poster remains open unless the physical
+poster layout changes.
+
+
+3. SPACING
+==========
+
+3.1
+When two completely different main sections share one printed sheet, leave
+2 cm between them.
+
+3.2
+Use \categorygap for the 2 cm space between major sections in main.tex.
+
+3.3
+Subsections and subsubsections that belong to the same main topic use a 1 cm
+gap before the next heading.
+
+3.4
+Do not add random \vspace commands to fix a layout unless the space has a clear
+purpose. Use the shared spacing rules first.
+
+3.5
+Small 4-5 point gaps may be used between a paragraph, figure, caption, or table
+when they are all part of the same visual block.
+
+3.6
+Normal body text uses 1.12 line spacing.
+
+3.7
+The crowded formula and software sheets may use 1.0 line spacing inside their
+existing spacing environments.
+
+3.8
+Do not stretch a nearly empty page with giant gaps just to fill the sheet.
+Add useful material or leave intentional open space.
+
+
+4. PARAGRAPHS AND TYPOGRAPHY
+============================
+
+4.1
+The first paragraph after a heading is unindented.
+
+4.2
+Later paragraphs in the same section use the normal 1.5 em indentation.
+
+4.3
+Use complete paragraphs as the main way of explaining the project.
+
+4.4
+Lists are fine when they make a procedure, record, or checklist easier to read,
+but do not turn every paragraph into bullets.
+
+4.5
+Keep section titles consistent, professional, and descriptive.
+
+4.6
+Do not overuse bold text. Headings already provide most of the hierarchy.
+
+4.7
+Keep scientific symbols, subscripts, units, and formulas in LaTeX math mode.
+
+4.8
+Put a space between a value and its unit in LaTeX, such as \(100\,\mu\mathrm{s}\).
+
+4.9
+Do not use manual line breaks to force normal paragraph wrapping.
+
+
+5. COLOR AND PRINTING
+=====================
+
+5.1
+The poster is black and white.
+
+5.2
+Real Matplotlib data graphs may use color when color carries useful numerical
+information.
+
+5.3
+Do not add colored headings, decorative backgrounds, or unnecessary colored
+icons.
+
+5.4
+Make sure grayscale contrast is still readable when the poster is printed.
+
+
+6. WRITING STYLE AND AUDIENCE
+=============================
+
+6.1
+The expected audience is made up of adults, including visitors who are not STM
+experts.
+
+6.2
+Write accurately enough for a technical reader, but explain the purpose of
+each process in plain language.
+
+6.3
+The poster should explain what we made, what we did, how it operates, how the
+software works, and how the output becomes an interpretable surface.
+
+6.4
+Paragraphs must carry the explanation. Visuals help the reader but should not
+replace the written explanation.
+
+6.5
+Do not make the writing childish or oversimplified. Short labels in diagrams
+are fine, while the surrounding paragraphs can be more detailed.
+
+6.6
+Avoid repeating the same paragraph on multiple sheets. Each sheet should answer
+a different question.
+
+6.7
+Use professional section names even when the comments inside the source are
+casual.
+
+
+7. COMMENTS INSIDE MAIN.TEX
+===========================
+
+7.1
+Source comments should sound casual and direct, like the SHEEPLE notes.
+
+7.2
+Use normal comment paragraphs beginning with %, with blank % lines between
+separate thoughts.
+
+7.3
+Do not write every comment as a formal checklist or documentation manual.
+
+7.4
+Comments can explain why a block is placed on a certain sheet.
+
+7.5
+Comments should mark future insertion points with wording such as:
+
+Insert the final scan settings here for future.
+Add the oscilloscope screenshot here once we have it.
+Replace this with the measured calibration once completed.
+
+7.6
+Comments do not appear on the printed poster, so they may be more conversational
+than the final poster prose.
+
+7.7
+Keep the short SHEEPLE list and basic formatting overview at the top of
+main.tex. Keep this file as the comprehensive reference instead of copying the
+entire rule list into the LaTeX header.
+
+
+8. HARDWARE, EXPERIMENTS, AND COMPUTATION
+=========================================
+
+8.1
+The Experiments material mainly covers making, wiring, operating, and testing
+the STM.
+
+8.2
+The Computation material mainly covers calculations, software, coding, and
+general computational-physics work.
+
+8.3
+Do not present unrelated computation labs as if they were part of the STM
+control program.
+
+8.4
+Hardware Architecture explains what the electronic subsystems do.
+
+8.5
+Instrument Design and Construction explains what was physically built and how
+it was assembled.
+
+8.6
+Subsystem Testing and Calibration explains how the individual parts were
+checked before or during integration.
+
+8.7
+Operating Principles explains the physical sequence from approach to imaging.
+
+
+9. SOFTWARE COLUMN
+==================
+
+9.1
+Sheet 5, Control Software Architecture, answers:
+
+How is the firmware organized?
+
+9.2
+Sheet 5 includes the Teensy 4.1, ADC input, DAC outputs, main program, Timer 1,
+Timer 2, operating states, storage, and a high-level architecture diagram.
+
+9.3
+Do not crowd Sheet 5 with the full approach algorithm, PID sequence, raster
+logic, or long pseudocode. Those belong on Sheet 7.
+
+9.4
+Sheet 7, STM Control Logic and Scan Execution, answers:
+
+How does the program operate the STM?
+
+9.5
+Sheet 7 includes automated approach, the repeated current-threshold check,
+the no-signal retract/motor/retry path, the 100 microsecond feedback loop, PID
+output limiting, raster movement, forward and backward scans, y increments,
+completion, and file closing.
+
+9.6
+Sheet 7 may use readable pseudocode instead of long direct code quotations.
+
+9.7
+Sheet 9, Data Output and Surface Reconstruction, answers:
+
+What does the STM save, and how does the program turn it into a surface?
+
+9.8
+Sheet 9 explains the signed 16-bit correction values, separate forward and
+backward files, parameter information, matrix reshaping, direction alignment,
+calibration, comparison, and visualization.
+
+9.9
+Keep the software-column narrative in this order:
+
+Architecture >> Execution >> Output
+
+
+10. CODE AND PSEUDOCODE
+=======================
+
+10.1
+Direct code may be quoted when an exact firmware behavior needs proof.
+
+10.2
+Use pseudocode when the audience needs to understand the sequence more than the
+exact C++ syntax.
+
+10.3
+Do not claim that placeholder code performs reconstruction when it does not.
+
+10.4
+When the real conversion code works, record the script name, repository path,
+input format, output format, validation checks, and processing choices.
+
+10.5
+Keep code excerpts short enough to read on a printed trifold.
+
+10.6
+Explain what a code excerpt does in surrounding prose.
+
+
+11. FIGURES AND DIAGRAMS
+========================
+
+11.1
+Use a visualization only when it makes the process easier to understand.
+
+11.2
+For the software pages, favor one large diagram and at most one smaller
+supporting visual unless the layout is deliberately revised.
+
+11.3
+Diagram boxes should use only a few words. Do not put full explanatory
+sentences inside the image.
+
+11.4
+Put the detailed explanation in paragraphs beside or below the visual.
+
+11.5
+Center figures and place their captions directly below.
+
+11.6
+Captions should say what the reader is seeing and should include a citation
+when the figure is based on a supplied source.
+
+11.7
+Use actual local filenames in \includegraphics and keep those files beside
+main.tex.
+
+11.8
+Do not insert an invented STM scan, fabricated dataset, or simulated image as
+if it were an experimental result.
+
+11.9
+When real figures are added, keep axes, units, scales, legends, and captions
+readable at printed size.
+
+
+12. TABLES
+==========
+
+12.1
+Use booktabs-style tables with top, middle, and bottom rules.
+
+12.2
+Do not use vertical table lines.
+
+12.3
+Put units in row labels, column labels, or the entered value.
+
+12.4
+Do not invent values to make an unfinished table look complete.
+
+12.5
+For unfinished results, leave the value cells blank and add a visible prompt
+such as "Add about the collected data and scan conditions."
+
+12.6
+Update the components and materials table after confirming what the group
+actually used.
+
+12.7
+Keep tables narrow enough to remain inside their page or minipage.
+
+
+13. FORMULAS
+============
+
+13.1
+Use formulas when they explain a real operating relationship, conversion, or
+reconstruction step.
+
+13.2
+Do not make a section formula-heavy just to appear technical.
+
+13.3
+The background section should stay mostly text based, with a small number of
+useful formulas.
+
+13.4
+When a formula comes from Chiang's notes or supplied code, place the numbered
+citation next to the formula.
+
+13.5
+Cite the explanation around a formula too. Citations are not only for equations.
+
+13.6
+Define every symbol that a general visitor needs to understand.
+
+13.7
+Do not insert a numerical calibration factor until it has been measured.
+
+
+14. CITATIONS AND SOURCE PATHS
+==============================
+
+14.1
+Cite factual information taken from the supplied notes, firmware, or PID code.
+
+14.2
+Do not cite only formulas. Cite source-based statements in the prose as well.
+
+14.3
+The current poster references are:
+
+[1] S. Chiang, "Additional Quantum Mechanics Discussion," QMnotes1.pdf.
+[2] S. Chiang, Teensy STM11A controller source code.
+[3] B. Beauregard, Arduino PID Library, modified by S. Chiang.
+[4] souuk, clustered GitHub repository.
+
+14.4
+References [1]-[3] came from the supplied course-material ZIP.
+
+14.5
+Reference [4] is the GitHub repository itself and does not have a path inside
+the supplied ZIP.
+
+14.6
+Do not place long Windows paths in the printed references.
+
+14.7
+Record archive locations using readable paths such as:
+
+In the supplied course-material ZIP:
+Experiments
+>> STM Project
+>> Teensy_STM11A_July_29_2025.ino
+
+14.8
+Keep the complete citation-to-path list in CITATION_SOURCE_PATHS.txt.
+
+14.9
+If a new citation is added to main.tex, update the Works Cited list,
+CITATION_SOURCE_PATHS.txt when applicable, and this rules file.
+
+14.10
+The References and Acknowledgments sheet keeps the clustered QR code in the
+top-right area.
+
+
+15. DATA PROVENANCE AND HONESTY
+===============================
+
+15.1
+The STM output is measurement data, not a photograph.
+
+15.2
+A 2D map or 3D model is a processed representation produced from the saved
+values.
+
+15.3
+Keep the data-provenance notice on the first sheet even after reconstruction
+works.
+
+15.4
+Do not present invented scan files, fake measurements, or demonstration plots
+as real experimental results.
+
+15.5
+The poster may explain the complete reconstruction workflow in normal present
+tense, but data-specific fields stay blank until real values exist.
+
+15.6
+Use visible "Add about ______" placeholders where real data, code performance,
+calibration, or results are still missing.
+
+15.7
+When the real pipeline works, preserve the raw files, processed files, code,
+settings, calibration, and final figures.
+
+15.8
+Upload those items to clustered so someone else can inspect the transformation.
+
+
+16. STM DATA INTERPRETATION
+===========================
+
+16.1
+The firmware stores the controller's vertical correction, not automatically
+calibrated absolute height.
+
+16.2
+Describe uncalibrated values as relative vertical correction or controller
+counts.
+
+16.3
+Do not label the vertical scale as physical height until the z-piezo response
+has been measured and validated.
+
+16.4
+Read the forward scan, backward scan, and parameter file together.
+
+16.5
+Check that the number of values agrees with the recorded points and lines.
+
+16.6
+Reshape the one-dimensional sequence into an x-y matrix using the recorded
+scan dimensions.
+
+16.7
+Reverse backward lines into the same spatial orientation as the forward lines
+before comparing them.
+
+16.8
+Inspect forward and backward maps separately before averaging or combining
+them.
+
+16.9
+Document plane subtraction, line leveling, filtering, interpolation, color
+limits, or any other processing that changes the displayed image.
+
+16.10
+Keep an unprocessed reconstruction for comparison.
+
+
+17. PHOTOS, TEST RESULTS, AND FUTURE MATERIAL
+=============================================
+
+17.1
+Use actual project photos when showing construction and testing.
+
+17.2
+Add a readable power-supply photo, piezo/tip close-up, motor mechanism photo,
+and vibration-isolation photo when good versions are available.
+
+17.3
+Add real multimeter values, oscilloscope screenshots, ADC comparisons, DAC
+measurements, and calibration plots when available.
+
+17.4
+For every test, record the expected value, measured value, units, difference,
+and whether the part passed.
+
+17.5
+Do not write "confirmed" unless the measurement or observation actually
+supports it.
+
+17.6
+Results and uncertainty statements must be based on final tests or collected
+data.
+
+17.7
+Connect every recommended improvement to a limitation that was actually
+observed.
+
+
+18. GITHUB AND PROJECT RECORDS
+==============================
+
+18.1
+The repository is:
+
+https://github.com/souuk/clustered
+
+18.2
+Keep README.md accurate about what is complete and what remains a placeholder.
+
+18.3
+Keep the poster directory synchronized with the upload-ready transform folder
+after important poster revisions.
+
+18.4
+Keep CITATION_SOURCE_PATHS.txt synchronized with the numbered Works Cited list.
+
+18.5
+Add raw data and working processing code only when they are real and usable.
+
+18.6
+Use clear commit messages that describe the actual update.
+
+18.7
+Do not say the remote repository was updated until the commit is visible on
+GitHub.
+
+
+19. FINAL QUALITY CHECK
+=======================
+
+19.1
+Compile the whole poster in Overleaf.
+
+19.2
+Confirm that every intended sheet is exactly one page.
+
+19.3
+Check that no text, table, formula, caption, or image crosses a margin.
+
+19.4
+Check the 2 cm gaps between major sections sharing a page.
+
+19.5
+Check the 1 cm gaps between subcategories.
+
+19.6
+Confirm that the first paragraph after each heading is unindented and later
+paragraphs are indented.
+
+19.7
+Confirm that all images referenced by main.tex were uploaded.
+
+19.8
+Check every image and graph at actual printed size.
+
+19.9
+Check that every factual source-based claim has the correct citation.
+
+19.10
+Check that citation numbering matches the Works Cited list and repository path
+index.
+
+19.11
+Check that no unfinished item is written as though it has already been
+measured, implemented, or validated.
+
+19.12
+Check that every remaining future item has a clear casual comment or visible
+"Add about ______" placeholder.
+
+19.13
+Check that the GitHub QR code opens the correct clustered repository.
+
+19.14
+Check the final black-and-white print appearance, including contrast, font
+size, line weight, and readability from normal poster-viewing distance.

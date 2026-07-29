@@ -34,6 +34,13 @@ The poster currently uses four numbered references. References `[1]` through
 See [`CITATION_SOURCE_PATHS.txt`](CITATION_SOURCE_PATHS.txt) for the full
 citation-to-source-path index.
 
+## Poster source and working rules
+
+The current upload-ready LaTeX source and its PNG diagrams are kept in
+[`poster/`](poster/). The comprehensive formatting, content, citation, data,
+and workflow conventions are recorded in
+[`POSTER_FORMATTING_AND_WORKFLOW_RULES.txt`](POSTER_FORMATTING_AND_WORKFLOW_RULES.txt).
+
 ## Files still to add
 
 - complete forward- and backward-scan files;
