@@ -243,7 +243,7 @@ sites, the wavefunction is a vector with one component for each site. The
 squared magnitude of a component gives the probability of finding the
 electron at that location.\textsuperscript{[1]} A Hamiltonian matrix describes
 the system's energy, and its eigenvalues and eigenvectors determine how the
-state changes with time.\textsuperscript{[1]}
+state changes with time.\textsuperscript{[1]}\figureneeded{}
 \[
   P(j)=\lvert\psi_j\rvert^2,
   \qquad
@@ -252,7 +252,11 @@ state changes with time.\textsuperscript{[1]}
 \]
 This framework connects quantum probability to the vectors, matrices, and
 time-evolution calculations studied in computational
-physics.\textsuperscript{[1]}
+physics.\textsuperscript{[1]} These eigenstate calculations are offline
+computational models, not operations performed by the Teensy during STM
+acquisition. Sheet~9 distinguishes the Hamiltonian matrix used in a quantum
+model from the scan-data matrix produced by the
+instrument.\textsuperscript{[1,2,4]}
 
 \subsection{STM Signal Measurement}
 
@@ -931,11 +935,131 @@ available, any inserted development figure must remain labeled
 
 % -------------------------------------------------
 % CENTER ROW 3, RIGHT CENTER COLUMN
-% SHEET 9 OF 12 -- RESERVED
+% SHEET 9 OF 12 -- COMPUTATIONAL EXPERIMENTS
 % -------------------------------------------------
-% Intentionally blank until the group chooses the final topic and content.
-\thispagestyle{empty}
-\null
+\section{Computational Experiments and Low-Level STM Models}
+
+\begin{spacing}{0.94}
+\footnotesize
+
+Computational experiments help at two distinct levels. An offline quantum
+model can solve for electron states and visualize probability distributions.
+The operating STM does not solve that eigenvalue problem in real time; its
+controller converts measurements, updates feedback, advances the raster, and
+stores scan values. Likewise, the Hamiltonian \(H\) and the measured scan
+matrix \(Q\) are different objects with different purposes.
+
+\vspace{4pt}
+
+\begin{center}
+  \fbox{\parbox[c][0.67in][c]{0.95\linewidth}{
+    \centering
+    \textbf{TWO COMPUTATIONAL PATHS}\\[3pt]
+    Quantum model:
+    \(H\rightarrow\{E_n,\phi_n\}\rightarrow
+    |\phi_n(j)|^2\rightarrow\) predicted spatial behavior
+    \quad\textbar\quad
+    STM pipeline:
+    ADC samples \(\rightarrow\) PID and raster logic
+    \(\rightarrow Q_{j,i}\rightarrow\) validated heatmap
+  }}
+  \captionsetup{font=scriptsize}
+  \captionof{figure}{Conceptual separation between an offline quantum-state
+  calculation and the instrument's measurement-and-control computation.}
+\end{center}
+
+\vspace{3pt}
+
+\noindent
+\begin{minipage}[t]{0.49\linewidth}
+  \vspace{0pt}
+  \subsection{Experiment 1: Hamiltonian Eigenstates}
+
+  For a finite model, choose a Hamiltonian \(H\) and solve
+  \[
+    H\phi_n=E_n\phi_n,
+    \qquad
+    P_n(j)=|\phi_n(j)|^2.
+  \]
+  Each eigenvalue \(E_n\) is an allowed energy of the model, while the
+  components of eigenvector \(\phi_n\) describe the spatial amplitude of that
+  state. Plotting \(P_n(j)\) shows where the simulated state is concentrated.
+  Changing coupling strengths, site energies, or boundaries reveals how the
+  spectrum and spatial patterns respond.\textsuperscript{[1]}
+
+  \begin{center}
+    \fbox{\parbox[c][1.78in][c]{0.91\linewidth}{
+      \centering
+      \textbf{EIGENVALUE SPECTRUM AND EIGENVECTOR}\\
+      \textbf{PROBABILITY PLACEHOLDER}\\[6pt]
+      Include an energy-level or eigenvalue plot beside one
+      \( |\phi_n(j)|^2 \) spatial map. State the Hamiltonian, parameters,
+      boundary conditions, and selected state.
+    }}
+    \captionsetup{font=scriptsize}
+    \captionof{figure}{Offline quantum-model result. It must not be labeled as
+    an experimental STM image.}
+  \end{center}
+\end{minipage}
+\hfill
+\begin{minipage}[t]{0.49\linewidth}
+  \vspace{0pt}
+  \subsection{Experiment 2: Data-Pipeline Robustness}
+
+  The current Python pipeline performs no eigendecomposition. It checks the
+  signed 16-bit binary contract, rejects incomplete data, reshapes samples,
+  aligns backward rows, and produces separate heatmap views. Optional plane
+  leveling fits \(q(x,y)=ax+by+c\) by least squares and subtracts that fitted
+  background; this changes image presentation, not the underlying raw
+  files.\textsuperscript{[4]}
+
+  \vspace{2pt}
+
+  \begin{tabular}{>{\raggedright\arraybackslash}p{0.34\linewidth}
+                  >{\raggedright\arraybackslash}p{0.57\linewidth}}
+    \toprule
+    Computational check & Failure or artifact it targets \\
+    \midrule
+    Binary length and shape & Truncated or mismatched scan files \\
+    Backward alignment & Reversed spatial orientation \\
+    Forward-only mode & Unsafe or missing backward data \\
+    Plane-leveling test & Residual planar background \\
+    Synthetic lattice test & Loss of resolvable repeated features \\
+    Plot creation tests & Broken rendering paths \\
+    \bottomrule
+  \end{tabular}
+
+  \vspace{3pt}
+  \noindent{\scriptsize\textbf{Current local regression check:} six of six
+  tests pass using the repository's declared plotting dependencies. These are
+  software tests with synthetic fixtures, not evidence of tunneling or STM
+  resolution.\textsuperscript{[4]}\par}
+
+  \begin{center}
+    \fbox{\parbox[c][1.18in][c]{0.91\linewidth}{
+      \centering
+      \textbf{NOISE AND LEVELING SWEEP PLACEHOLDER}\\[4pt]
+      Compare the same synthetic matrix with no leveling, line leveling, and
+      plane leveling. Report noise amplitude and a quantitative recovery or
+      residual metric.
+    }}
+  \end{center}
+\end{minipage}
+
+\vspace{4pt}
+
+\noindent
+\fbox{\parbox[c][0.78in][c]{0.96\linewidth}{
+  \textbf{EXPERIMENT 3 -- PLANNED CONTROLLER-IN-THE-LOOP SIMULATION}\hfill
+  \textit{Not yet implemented}\\[3pt]
+  Feed a known synthetic surface or current trace through a numerical model of
+  ADC conversion, setpoint error, limited PID correction, raster stepping, and
+  file output. Verify stable response, correct scan dimensions, recovery of
+  known features, and forward/backward agreement. Add a compact block diagram
+  here; place the resulting response plots on Sheets~10--11.
+}}
+
+\end{spacing}
 
 \end{landscape}
 
@@ -951,7 +1075,7 @@ available, any inserted development figure must remain labeled
 \begin{spacing}{0.96}
 \footnotesize
 
-The placeholders on Sheets~10 and~11 correspond to the
+The placeholders on Sheets~9--11 correspond to the
 \figureneeded{} markers in the main text. Replace each box only with a measured,
 simulated, or calculated result whose provenance and processing steps are
 stated explicitly.
