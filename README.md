@@ -25,6 +25,38 @@ become available, this repository will keep the raw files, processing code,
 processing settings, and generated figures together so the transformation can
 be checked and reproduced.
 
+### Teensy scanning-pattern animation
+
+[`animate_scan_pattern.py`](animate_scan_pattern.py) reproduces the scan order
+in the Teensy firmware's `Timer2Service`: acquire one line while stepping in
+the +X direction, retrace and acquire while stepping in the -X direction,
+reset X, increment Y, and repeat.
+
+Install its dependencies and open the interactive animation:
+
+```console
+python -m pip install -r requirements-animation.txt
+python animate_scan_pattern.py
+```
+
+To export a shareable animation:
+
+```console
+python animate_scan_pattern.py --output scan-pattern.gif
+```
+
+The defaults use fewer points than the firmware's 512-by-512 default so the
+motion is easy to follow. Use `--points`, `--lines`, `--step-size`,
+`--initial-x`, and `--initial-y` to change the modeled scan.
+
+![Preview of the Teensy bidirectional scanning pattern](scan-pattern-preview.gif)
+
+The animation also displays the firmware's literal `pointcounter` value. In
+the current Teensy source, the backward pass indexes `DataArray1B` with values
+from `numpoints` through `2 * numpoints - 1`. That exceeds the 512-element
+second array dimension at the default `numpoints = 512`; the firmware should
+use a zero-based backward index before relying on those stored array entries.
+
 ## Poster citations
 
 The poster currently uses four numbered references. References `[1]` through
