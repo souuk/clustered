@@ -94,6 +94,9 @@
 % Use this only between two completely different sections on the same sheet.
 % Subsection spacing is already handled below.
 \newcommand{\categorygap}{\par\vspace{2cm}}
+\newcommand{\figureneeded}{%
+  \textsuperscript{\mbox{\tiny\bfseries FIGURE NEEDED}}%
+}
 
 \setcounter{secnumdepth}{0}
 
@@ -165,7 +168,8 @@ microscope (STM) capable of measuring the surface topography of a conductive
 sample at the nanoscale. An STM operates by applying a voltage bias between a
 sharp metallic tip and the sample. When the tip is brought within a few
 angstroms of the surface, electrons quantum mechanically tunnel across the
-gap, producing a current that varies exponentially with tip--sample distance.
+gap, producing a current that varies exponentially with tip--sample
+distance.\figureneeded{}
 
 The instrument combines a piezoelectric scanner, coarse-positioning stepper
 motor, current preamplifier, analog-to-digital converter, dual-rail power
@@ -174,12 +178,12 @@ measured and used by a feedback system to adjust the vertical position of the
 tip. By maintaining a nearly constant current while scanning laterally, the
 system can relate the required tip motion to changes in surface height.
 
-Subsystem testing confirmed the operation of the power supply, preamplifier,
-and analog-to-digital conversion stages. The final performance of the STM is
-limited by mechanical vibration, electrical noise, thermal drift, tip
-sharpness, and calibration accuracy. These tests establish the operating
-principles of the instrument and identify the improvements needed to achieve
-stable, repeatable nanoscale imaging.
+Subsystem testing is being used to evaluate the power supply, preamplifier,
+and analog-to-digital conversion stages.\figureneeded{} The final performance
+of the STM is limited by mechanical vibration, electrical noise, thermal
+drift, tip sharpness, and calibration accuracy. These tests establish the
+operating principles of the instrument and identify the improvements needed
+to achieve stable, repeatable nanoscale imaging.
 
 \categorygap
 
@@ -261,8 +265,8 @@ data.\textsuperscript{[2]} Its preamplifier uses a
 current of \(1\) nA.\textsuperscript{[2]} An 18-bit ADS8691
 analog-to-digital converter maps voltages from \(-12.288\) to \(+12.288\) V
 into integer values from \(0\) to \(262143\), with zero volts at
-\(N_0=131072\).\textsuperscript{[2]} The controller converts each ADC reading
-\(N\) back into a voltage using
+\(N_0=131072\).\textsuperscript{[2]}\figureneeded{} The controller converts
+each ADC reading \(N\) back into a voltage using
 \[
   V_{\mathrm{ADC}}
   =\frac{(N-N_0)(12.288\ \mathrm{V})}{N_0}.
@@ -282,15 +286,16 @@ During the automated approach, the program gradually extends the \(z\)-piezo
 and repeatedly measures the current. A reading greater than \(0.2\) nA in
 magnitude must be detected twice before the approach stops and feedback is
 enabled.\textsuperscript{[2]} This repeated check helps prevent a single noisy
-reading from being treated as a tunneling signal.\textsuperscript{[2]}
+reading from being treated as a tunneling
+signal.\textsuperscript{[2]}\figureneeded{}
 
 Once feedback is active, the included PID routine compares the measured ADC
 value with the chosen current setpoint. It updates the \(z\)-piezo output
 every \(100\,\mu\mathrm{s}\), using proportional, integral, and derivative
-terms to reduce the error.\textsuperscript{[2,3]} During imaging, a second
-timer records points while the DAC moves through the \(x\) and \(y\)
-coordinates.\textsuperscript{[2]} The program stores forward and backward
-scan lines separately so the two directions can be
+terms to reduce the error.\textsuperscript{[2,3]}\figureneeded{} During imaging,
+a second timer records points while the DAC moves through the \(x\) and \(y\)
+coordinates.\textsuperscript{[2]} The program stores forward and backward scan
+lines separately so the two directions can be
 compared.\textsuperscript{[2]}
 
 \end{spacing}
@@ -329,7 +334,7 @@ Sheet~4.
   electronics. Components were soldered to the provided circuit board and
   installed in a 3D-printed enclosure. The outputs were checked relative to
   ground with a multimeter, and the trimmer potentiometers were adjusted to
-  the target rail voltages.
+  the target rail voltages.\figureneeded{}
 
   \subsubsection{Coarse-Approach Mechanism}
 
@@ -917,7 +922,7 @@ available, any inserted development figure must remain labeled
   Record the selected leveling mode, display limits, backward-file validation
   status, and a forward/backward difference metric. Report vertical values as
   controller counts until a measured piezo calibration supports conversion to
-  physical height.
+  physical height.\figureneeded{}
 }}
 
 \end{spacing}
@@ -939,20 +944,213 @@ available, any inserted development figure must remain labeled
 % =================================================
 
 % -------------------------------------------------
-% SHEET 10 OF 12 -- RESERVED
+% SHEET 10 OF 12 -- SUPPLEMENTARY PLOTS AND VALIDATION FIGURES
 % -------------------------------------------------
-% Intentionally blank until the group chooses the final topic and content.
-\thispagestyle{empty}
-\null
+\section{Supplementary Plots and Validation Figures}
+
+\begin{spacing}{0.96}
+\footnotesize
+
+The placeholders on Sheets~10 and~11 correspond to the
+\figureneeded{} markers in the main text. Replace each box only with a measured,
+simulated, or calculated result whose provenance and processing steps are
+stated explicitly.
+
+\vspace{6pt}
+
+\noindent
+\begin{minipage}[t]{0.48\textwidth}
+  \vspace{0pt}
+  \begin{center}
+    \fbox{\parbox[c][2.82in][c]{0.90\linewidth}{
+      \centering
+      \textbf{TUNNELING CURRENT VS.\ TIP--SAMPLE DISTANCE}\\[7pt]
+      \textbf{PLOT PLACEHOLDER}\\[8pt]
+      Suggested axes: separation \(z\) and normalized tunneling current
+      \(I/I_0\). Show the expected exponential trend and identify whether the
+      curve is theoretical, simulated, or measured.
+    }}
+    \captionsetup{font=footnotesize}
+    \captionof{figure}{Needed for the tunneling-distance statement in the
+    abstract.}
+  \end{center}
+\end{minipage}
+\hfill
+\begin{minipage}[t]{0.48\textwidth}
+  \vspace{0pt}
+  \begin{center}
+    \fbox{\parbox[c][2.82in][c]{0.90\linewidth}{
+      \centering
+      \textbf{ADC TRANSFER AND CURRENT-CONVERSION CURVE}\\[7pt]
+      \textbf{PLOT PLACEHOLDER}\\[8pt]
+      Plot applied or calculated input voltage against ADC counts. Mark
+      \(N_0=131072\), the usable voltage range, and the preamplifier conversion
+      between tunneling current and voltage.
+    }}
+    \captionsetup{font=footnotesize}
+    \captionof{figure}{Needed for the ADC mapping described on Sheet~2.}
+  \end{center}
+\end{minipage}
+
+\vspace{10pt}
+
+\noindent
+\begin{minipage}[t]{0.48\textwidth}
+  \vspace{0pt}
+  \begin{center}
+    \fbox{\parbox[c][2.82in][c]{0.90\linewidth}{
+      \centering
+      \textbf{AUTOMATED-APPROACH SIGNAL TRACE}\\[7pt]
+      \textbf{PLOT PLACEHOLDER}\\[8pt]
+      Plot measured current or ADC counts against approach step or time. Mark
+      the positive and negative thresholds and the two consecutive detections
+      required before feedback begins.
+    }}
+    \captionsetup{font=footnotesize}
+    \captionof{figure}{Needed to document approach-signal confirmation.}
+  \end{center}
+\end{minipage}
+\hfill
+\begin{minipage}[t]{0.48\textwidth}
+  \vspace{0pt}
+  \begin{center}
+    \fbox{\parbox[c][2.82in][c]{0.90\linewidth}{
+      \centering
+      \textbf{PID SETPOINT AND RESPONSE}\\[7pt]
+      \textbf{PLOT PLACEHOLDER}\\[8pt]
+      Plot setpoint, measured input, error, and vertical correction against
+      time. Report \(K_P\), \(K_I\), \(K_D\), update interval, settling time,
+      overshoot, and any output limiting used.
+    }}
+    \captionsetup{font=footnotesize}
+    \captionof{figure}{Needed to support the feedback-performance discussion.}
+  \end{center}
+\end{minipage}
+
+\end{spacing}
 
 \clearpage
 
 % -------------------------------------------------
-% SHEET 11 OF 12 -- RESERVED
+% SHEET 11 OF 12 -- ADDITIONAL DIAGNOSTICS, CONCLUSION, AND ERROR ANALYSIS
 % -------------------------------------------------
-% Intentionally blank until the group chooses the final topic and content.
-\thispagestyle{empty}
-\null
+\section{Additional Diagnostics, Conclusion, and Error Analysis}
+
+\begin{spacing}{0.94}
+\footnotesize
+
+\noindent
+\begin{minipage}[t]{0.48\textwidth}
+  \vspace{0pt}
+  \begin{center}
+    \fbox{\parbox[c][2.05in][c]{0.90\linewidth}{
+      \centering
+      \textbf{SUBSYSTEM VALIDATION SUMMARY}\\[6pt]
+      \textbf{PLOT PLACEHOLDER}\\[6pt]
+      Combine measured \(+15\) V and \(-15\) V rail stability with relevant
+      preamplifier and ADC checks. Include expected values, measured values,
+      uncertainty, and pass/fail criteria.
+    }}
+    \captionsetup{font=scriptsize}
+    \captionof{figure}{Needed to support the subsystem-testing claims on
+    Sheets~1 and~3.}
+  \end{center}
+\end{minipage}
+\hfill
+\begin{minipage}[t]{0.48\textwidth}
+  \vspace{0pt}
+  \begin{center}
+    \fbox{\parbox[c][2.05in][c]{0.90\linewidth}{
+      \centering
+      \textbf{PIEZO DISPLACEMENT CALIBRATION}\\[6pt]
+      \textbf{PLOT PLACEHOLDER}\\[6pt]
+      Plot measured displacement against controller counts for the relevant
+      axis. Fit the calibration factor, show uncertainty or hysteresis, and
+      state the calibrated range.
+    }}
+    \captionsetup{font=scriptsize}
+    \captionof{figure}{Needed before converting controller counts to physical
+    height.}
+  \end{center}
+\end{minipage}
+
+\vspace{7pt}
+\hrule
+\vspace{7pt}
+
+\noindent
+\begin{minipage}[t]{0.47\textwidth}
+  \vspace{0pt}
+  \subsection{Overarching Conclusion}
+
+  The project integrates coarse positioning, piezoelectric motion, low-current
+  measurement, digital feedback, raster control, and a Python visualization
+  pipeline into one STM workflow. The hardware and software architecture are
+  documented, but atomic-resolution imaging must not be claimed until stable
+  tunneling, a complete scan, and calibrated surface reconstruction have been
+  demonstrated.
+
+  \vspace{5pt}
+  \textbf{Established:} documented hardware, firmware, data formats, and a
+  tested synthetic-data plotting workflow.
+
+  \textbf{Still required:} repeatable tunneling, one complete experimental
+  scan, directional agreement, and calibrated spatial scales.
+
+  \textbf{Success criterion:} reproducible surface structure that survives
+  forward/backward and repeated-scan comparison.
+
+  \vspace{5pt}
+  \noindent\fbox{\parbox[c][1.02in][c]{0.91\linewidth}{
+    \centering
+    \textbf{FINAL CONCLUSION EVIDENCE PLACEHOLDER}\\[4pt]
+    Add the strongest verified result, the principal limitation, and the next
+    experimental improvement after the final scan campaign.
+  }}
+\end{minipage}
+\hfill
+\begin{minipage}[t]{0.50\textwidth}
+  \vspace{0pt}
+  \subsection{Error Analysis}
+
+  \renewcommand{\arraystretch}{1.16}
+  \setlength{\tabcolsep}{2pt}
+  \scriptsize
+  \begin{tabular}{>{\raggedright\arraybackslash}p{0.24\linewidth}
+                  >{\raggedright\arraybackslash}p{0.35\linewidth}
+                  >{\raggedright\arraybackslash}p{0.31\linewidth}}
+    \toprule
+    Source & Likely effect & Evidence or estimate needed \\
+    \midrule
+    Mechanical vibration & Repeated or blurred spatial features &
+      Isolation comparison or frequency spectrum \\
+    Electrical noise & Current and height fluctuations &
+      Baseline RMS and peak-to-peak noise \\
+    Thermal drift and piezo creep & Image shear or slow positional shift &
+      Drift rate and repeated-scan comparison \\
+    Tip condition & Multiple-tip artifacts or reduced resolution &
+      Tip-preparation record and repeatability \\
+    Calibration & Incorrect lateral or vertical scale &
+      Fitted scale factors with uncertainty \\
+    Backward indexing & Invalid reverse-scan storage or comparison &
+      Corrected firmware and regression test \\
+    \bottomrule
+  \end{tabular}
+
+  \vspace{5pt}
+  Quantify uncertainty only from recorded measurements. Do not invent error
+  bars, calibration factors, or successful scan results.
+
+  \vspace{5pt}
+  \noindent\fbox{\parbox[c][0.72in][c]{0.91\linewidth}{
+    \centering
+    \textbf{QUANTITATIVE ERROR-BUDGET PLACEHOLDER}\\[3pt]
+    Insert measured contributions, propagation method, total uncertainty, and
+    the dominant error source.
+  }}
+\end{minipage}
+
+\end{spacing}
 
 \clearpage
 
