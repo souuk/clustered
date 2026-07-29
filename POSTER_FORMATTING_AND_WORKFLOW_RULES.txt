@@ -55,25 +55,25 @@ Sheet 3: Instrument Design and Construction.
 2.3
 The center panel uses landscape sheets in two columns:
 
-Hardware column:
+Left center column:
 Sheet 4: Hardware Architecture.
 Sheet 6: Reserved and intentionally blank.
-Sheet 8: Reserved and intentionally blank.
+Sheet 8: Data Output and Python Conversion.
 
-Software column:
+Right center column:
 Sheet 5: Control Software Architecture.
 Sheet 7: STM Control Logic and Scan Execution.
-Sheet 9: Data Output and Surface Reconstruction.
+Sheet 9: Surface Reconstruction and Visualization.
 
 2.4
-The populated software column should read from top to bottom as:
+The center-panel software and data narrative should read as:
 
-Architecture >> Execution >> Output
+Architecture >> Execution >> Conversion >> Reconstruction
 
 2.5
 The right panel contains:
 
-Sheet 10: Reserved and intentionally blank.
+Sheet 10: Results and Uncertainty Analysis.
 Sheet 11: Reserved and intentionally blank.
 Sheet 12: References and Acknowledgments.
 
@@ -254,11 +254,11 @@ Instrument Design and Construction explains what was physically built and how
 it was assembled.
 
 8.6
-Sheets 6 and 8 remain blank until their final topics and contents are chosen.
+Sheet 6 remains blank until its final topic and contents are chosen.
 
 8.7
-Do not add headings, placeholder tables, or figures to reserved sheets until
-the group decides what those sheets should contain.
+Do not add headings, placeholder tables, or figures to Sheet 6 or Sheet 11
+until the group decides what those sheets should contain.
 
 
 9. SOFTWARE COLUMN
@@ -292,19 +292,39 @@ completion, and file closing.
 Sheet 7 may use readable pseudocode instead of long direct code quotations.
 
 9.7
-Sheet 9, Data Output and Surface Reconstruction, answers:
+Sheet 8, Data Output and Python Conversion, answers:
 
-What does the STM save, and how does the program turn it into a surface?
+What files will the Python converter accept, how will it validate them, and
+what intermediate outputs will it create?
 
 9.8
-Sheet 9 explains the signed 16-bit correction values, separate forward and
-backward files, parameter information, matrix reshaping, direction alignment,
-calibration, comparison, and visualization.
+Sheet 8 shows the planned forward, backward, and parameter inputs; file-length
+and data-type checks; matrix reshaping; direction alignment; raw-data
+preservation; and implementation record.
 
 9.9
-Keep the populated software-column narrative in this order:
+Sheet 9, Surface Reconstruction and Visualization, answers:
 
-Architecture >> Execution >> Output
+How will the validated matrices become interpretable surface visualizations?
+
+9.10
+Sheet 9 shows the planned reconstruction stages, forward/backward comparison,
+calibration status, processing provenance, and final visual outputs.
+
+9.11
+Until the converter and real scan data exist, use clearly labeled placeholder
+frames rather than invented code screenshots, matrices, or surface maps.
+
+9.12
+Keep the center-panel narrative in this order:
+
+Architecture >> Execution >> Conversion >> Reconstruction
+
+9.13
+Sheet 10, Results and Uncertainty Analysis, is where completed scan maps,
+forward/backward comparisons, quantitative findings, uncertainty, and observed
+limitations are reported. Until real scans exist, keep each of these elements
+as an explicit placeholder and do not insert simulated results.
 
 
 10. CODE AND PSEUDOCODE

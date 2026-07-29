@@ -3,8 +3,11 @@
 % =================================================
 % Justin: content sharing one printed page can still use separate sections.
 %
-% Pages 6, 8, 10, and 11 are intentionally blank while their final topics
-% and contents are being decided.
+% Pages 8 and 9 now divide the planned Python conversion and surface-
+% reconstruction workflow. Page 10 is reserved for future scan results and
+% uncertainty analysis. Keep every item visibly marked as a placeholder until
+% the software and experimental data actually exist. Pages 6 and 11 remain
+% intentionally blank.
 %
 % Someone needs to check the components and materials table against
 % what we actually used. Do not leave guessed quantities in there.
@@ -52,8 +55,8 @@
 % We cannot call the vertical values actual height until we measure the
 % z-piezo calibration. Until then, call them relative correction or counts.
 %
-% Once the code works, fill in the blank scan table and replace all three
-% "Add about" sentences on Page 9 with the real settings, code, and results.
+% Once the code works, replace the Page 8 and Page 9 code, matrix, architecture,
+% provenance, and reconstruction placeholders with verified material.
 %
 % Make the final 2D Matplotlib surface map from the real data. A raised
 % 3D view is optional and should be called a visualization of the same
@@ -136,13 +139,13 @@
 % CENTER PANEL
 %   The top-center row remains empty in the assembled poster.
 %
-%   HARDWARE COLUMN             SOFTWARE COLUMN
+%   LEFT CENTER COLUMN          RIGHT CENTER COLUMN
 %   4. Hardware Architecture    5. Control Software Architecture
 %   6. Reserved                 7. Control Logic and Scan Execution
-%   8. Reserved                 9. Data Output and Surface Reconstruction
+%   8. Data + Python Conversion 9. Surface Reconstruction
 %
 % RIGHT PANEL
-%   10. Reserved
+%   10. Results and Uncertainty Analysis
 %   11. Reserved
 %   12. References and Acknowledgments, with GitHub QR code at top right
 
@@ -391,7 +394,7 @@ compared.\textsuperscript{[2]}
 \section{Instrument Design and Construction}
 
 % Talk about what we physically built and how we put it together here.
-% Save the testing stuff for Sheet 8.
+% Save detailed testing and measurement results for a later assigned section.
 
 \subsection{Components and Materials}
 
@@ -475,7 +478,7 @@ of the magnets. The stepper-motor assembly was then placed on the platform.
 \section{Hardware Architecture}
 
 % Explain what each electronic part does here. Keep the building details
-% on Sheet 3 and the measurements on Sheet 8.
+% on Sheet 3 and the detailed measurements out of this architecture sheet.
 % Insert one hardware block diagram here for future if this page has room.
 % It should go current -> preamp -> ADC -> Teensy -> DAC -> piezo.
 
@@ -805,145 +808,172 @@ if (pointcounter >= (2 * numpoints)) {
 \clearpage
 
 % -------------------------------------------------
-% CENTER ROW 3, HARDWARE COLUMN
-% SHEET 8 OF 12 -- RESERVED
+% CENTER ROW 3, DATA PROCESSING -- PART 1
+% SHEET 8 OF 12 -- DATA OUTPUT AND PYTHON CONVERSION
 % -------------------------------------------------
-% Intentionally blank until the group chooses the final topic and content.
-\thispagestyle{empty}
-\null
+\section{Data Output and Python Conversion}
 
-\clearpage
+\begin{spacing}{0.98}
+\small
 
-% -------------------------------------------------
-% CENTER ROW 3, SOFTWARE COLUMN
-% SHEET 9 OF 12 -- DATA OUTPUT AND SURFACE RECONSTRUCTION
-% -------------------------------------------------
-\section{Data Output and Surface Reconstruction}
-
-% Write this page like the reader is following the finished workflow. Leave the
-% real file names, settings, and results blank until we actually have them.
-\begin{spacing}{1.0}
-\footnotesize
-
-The controller produces a sequence of vertical feedback corrections as the tip
-moves across the sample. The reconstruction program reads the forward scan,
-backward scan, and parameter files; verifies their dimensions; reshapes the
-values into an \(x,y\) matrix; and converts the result into a surface map.
+\noindent
+\textbf{Current status:} The Python conversion program has not yet been
+written, and complete STM scan files are not yet available. This sheet defines
+the intended inputs, validation steps, and outputs; every visual and file path
+below is a placeholder for the finished implementation.
 
 \vspace{5pt}
 
-\noindent
-{\centering
-  % This is the overview image. If our real code skips or adds a processing
-  % step, update the PNG so the picture still matches the paragraphs.
-  \includegraphics[width=0.90\linewidth]{data-output-surface-reconstruction.png}
+\begin{center}
+  \fbox{\parbox[c][0.72in][c]{0.92\linewidth}{
+    \centering
+    \textbf{SMALL ARCHITECTURE IMAGE PLACEHOLDER}\\[3pt]
+    Forward scan + backward scan + parameter file
+    \(\longrightarrow\) Python converter
+    \(\longrightarrow\) validated matrices + metadata
+  }}
   \captionsetup{font=footnotesize}
-  \captionof{figure}{Processing workflow from the firmware-defined scan files
-  to a reconstructed surface map.\textsuperscript{[2]}}
-  \par
-}
+  \captionof{figure}{Placeholder for the final input--processing--output
+  architecture diagram. Replace it only after the converter's actual file
+  names, checks, and outputs are fixed.}
+\end{center}
 
 \vspace{4pt}
 
 \noindent
-\begin{minipage}[t]{0.47\linewidth}
+\begin{minipage}[t]{0.39\linewidth}
   \vspace{0pt}
+  \subsubsection{Planned Inputs}
 
-  \subsubsection{Interpreting the Data Output}
+  The converter is expected to accept three firmware outputs:
+  \begin{itemize}
+    \item a signed 16-bit forward-scan file;
+    \item a signed 16-bit backward-scan file; and
+    \item a parameter file containing scan dimensions and settings.
+  \end{itemize}
+  The exact filenames, byte order, header structure, and completion indicator
+  remain to be confirmed from real files. The Teensy write operations and
+  parameter fields are documented at lines 1188--1198 and
+  1248--1262.\textsuperscript{[2]}
 
-  In constant-current operation, the feedback loop continually changes the
-  vertical control signal to keep tunneling current near its setpoint. The
-  firmware stores this PID correction as a signed 16-bit value and writes the
-  forward and backward passes to separate files.\textsuperscript{[2]} These
-  numbers are controller corrections rather than photographs or automatically
-  calibrated surface heights.
+  \subsubsection{Planned Conversion Logic}
 
-  The reconstruction program also reads the parameter file, which records the
-  requested number of points \(N_x\), number of lines \(N_y\), bias, and
-  current setting.\textsuperscript{[2]} It checks that each scan contains
-  \(N_xN_y\) stored values before beginning reconstruction. A different file
-  length is identified as an incomplete or inconsistent scan rather than being
-  silently filled.
-
-  \noindent{\scriptsize\textit{Code reference:}
-  \nolinkurl{Teensy_STM11A_July_29_2025.ino}, lines
-  1188--1198 and 1248--1262.\textsuperscript{[2]}\par}
-
-  \subsubsection{From a Sequence to a Surface}
-
-  % This formula only explains how a flat file becomes rows and columns.
-  % Insert the actual Nx and Ny in the table on the right, not in this formula.
-  If \(q_k\) is the \(k\)-th stored correction, the program arranges the
-  one-dimensional sequence into a two-dimensional matrix:
-  \[
-    Q_{j,i}=q_{jN_x+i},
-    \qquad
-    0\leq i<N_x,\quad 0\leq j<N_y .
-  \]
-  Each matrix column represents an \(x\)-position and each row represents a
-  scan line. The program reverses backward lines into the same spatial
-  orientation as the forward lines before making a point-by-point comparison.
+  \begin{enumerate}
+    \item Read and validate the parameter values.
+    \item Load both binary scans with an explicit signed data type.
+    \item Compare each file length with \(N_xN_y\) expected samples.
+    \item Reshape each sequence into an \(N_y\times N_x\) matrix.
+    \item Reverse the backward direction for spatial comparison.
+    \item Preserve untouched raw matrices before further processing.
+  \end{enumerate}
 \end{minipage}
 \hfill
-\begin{minipage}[t]{0.50\linewidth}
+\begin{minipage}[t]{0.58\linewidth}
   \vspace{0pt}
-
-  \subsubsection{Calibration, Comparison, and Visualization}
-
-  % Alpha stays symbolic until we measure it. Do not put nm/count here just
-  % because it looks right; insert the measured value in the table later.
-  Before calibration, \(Q\) is plotted as relative vertical correction in DAC
-  or PID counts. A measured vertical-piezo calibration factor \(\alpha\),
-  expressed in distance per count, converts the relative values into height:
-  \[
-    z_{j,i}=\alpha\left(Q_{j,i}-Q_{\mathrm{ref}}\right).
-  \]
-  The reference \(Q_{\mathrm{ref}}\) sets the displayed zero level without
-  changing the measured height differences. The script displays the forward
-  and backward maps separately before combining them because disagreement can
-  reveal drift, feedback lag, vibration, or an incorrect line orientation.
-
-  % Insert the final Matplotlib settings here for future, especially any
-  % leveling, filtering, interpolation, or color limits that change the image.
-  The 2D reconstruction assigns position to the horizontal axes and relative
-  correction or calibrated height to color. The 3D view uses the same matrix
-  as its vertical coordinate. The program retains the unprocessed matrix before
-  applying plane subtraction, line leveling, or filtering, allowing processed
-  features to be checked against the original values.
-
-  \subsubsection{Scan and Reconstruction Record}
-
-  % DATA TABLE:
-  % Fill this in once we have a complete scan and the code is working.
-  % Make sure every physical value has its units.
   \begin{center}
-  \renewcommand{\arraystretch}{1.18}
-  \begin{tabular}{@{}p{0.46\linewidth}p{0.47\linewidth}@{}}
-    \toprule
-    \textbf{Record} & \textbf{Value} \\
-    \midrule
-    Forward-scan file & \rule{0.92\linewidth}{0.4pt} \\
-    Backward-scan file & \rule{0.92\linewidth}{0.4pt} \\
-    Parameter file & \rule{0.92\linewidth}{0.4pt} \\
-    Matrix size, \(N_x\times N_y\) & \rule{0.92\linewidth}{0.4pt} \\
-    Bias and current setpoint & \rule{0.92\linewidth}{0.4pt} \\
-    Vertical calibration, \(\alpha\) & \rule{0.92\linewidth}{0.4pt} \\
-    Processing code/version & \rule{0.92\linewidth}{0.4pt} \\
-    \bottomrule
-  \end{tabular}
+    \fbox{\parbox[c][2.35in][c]{0.92\linewidth}{
+      \centering
+      \textbf{LARGE IMAGE PLACEHOLDER 1}\\[5pt]
+      Future Python-code excerpt and example of a successfully parsed raw
+      matrix\\[5pt]
+      \textit{No converter or example output exists yet.}
+    }}
+    \captionsetup{font=footnotesize}
+    \captionof{figure}{Placeholder for the implemented conversion code and
+    its first verified intermediate output.}
   \end{center}
 
-  % Once we have the data, replace this with how we ran the scan, whether it
-  % finished, and anything weird that happened while collecting it.
-  \textit{Add about the collected data and scan conditions.}
+  \subsubsection{Implementation Record}
 
-  % Once the code works, replace this with what it checks, what processing we
-  % used, and where the script is in clustered.
-  \textit{Add about the reconstruction code and processing choices.}
+  \begin{tabular}{@{}>{\raggedright\arraybackslash}p{0.38\linewidth}
+                  p{0.56\linewidth}@{}}
+    Script and repository path & \rule{0.94\linewidth}{0.4pt} \\
+    Python and package versions & \rule{0.94\linewidth}{0.4pt} \\
+    Input data type / byte order & \rule{0.94\linewidth}{0.4pt} \\
+    Validation tests completed & \rule{0.94\linewidth}{0.4pt} \\
+    Saved intermediate outputs & \rule{0.94\linewidth}{0.4pt} \\
+  \end{tabular}
+\end{minipage}
 
-  % Once we have the final maps, replace this with how the forward and backward
-  % scans compare and what we can actually see in the surface.
-  \textit{Add about the reconstructed surface and scan agreement.}
+\end{spacing}
+
+\clearpage
+
+% -------------------------------------------------
+% CENTER ROW 3, DATA PROCESSING -- PART 2
+% SHEET 9 OF 12 -- SURFACE RECONSTRUCTION AND VISUALIZATION
+% -------------------------------------------------
+\section{Surface Reconstruction and Visualization}
+
+\begin{spacing}{0.98}
+\small
+
+\noindent
+\textbf{Current status:} No reconstruction program, calibrated height matrix,
+or completed surface visualization is available. This sheet is a layout for
+documenting how the finished Python program converts validated matrices into
+interpretable images.
+
+\vspace{5pt}
+
+\begin{center}
+  \fbox{\parbox[c][2.55in][c]{0.90\linewidth}{
+    \centering
+    \textbf{LARGE IMAGE PLACEHOLDER 2}\\[6pt]
+    Future side-by-side forward and backward maps, followed by the final
+    reconstructed surface visualization\\[5pt]
+    \textit{Add axes, units, color scale, scan direction, and processing
+    status when real outputs exist.}
+  }}
+  \captionsetup{font=footnotesize}
+  \captionof{figure}{Placeholder for the converter's principal reconstruction
+  output. No simulated surface is shown in place of experimental data.}
+\end{center}
+
+\vspace{5pt}
+
+\noindent
+\begin{minipage}[t]{0.48\linewidth}
+  \vspace{0pt}
+  \subsubsection{Planned Reconstruction Steps}
+
+  \begin{enumerate}
+    \item Display untouched forward and aligned backward matrices separately.
+    \item Compare corresponding pixels and report direction disagreement.
+    \item Apply only documented leveling, filtering, or interpolation.
+    \item Retain the unprocessed arrays beside every processed output.
+    \item Convert counts to height only after measuring a vertical-piezo
+    calibration factor.
+    \item Export publication figures with labeled axes, units, and scales.
+  \end{enumerate}
+
+  Until calibration exists, the vertical values must be labeled as relative
+  correction or controller counts rather than physical surface height.
+\end{minipage}
+\hfill
+\begin{minipage}[t]{0.48\linewidth}
+  \vspace{0pt}
+  \subsubsection{Reconstruction and Provenance Record}
+
+  \begin{tabular}{@{}>{\raggedright\arraybackslash}p{0.43\linewidth}
+                  p{0.52\linewidth}@{}}
+    Raw-data folder & \rule{0.94\linewidth}{0.4pt} \\
+    Converter script/version & \rule{0.94\linewidth}{0.4pt} \\
+    Matrix dimensions & \rule{0.94\linewidth}{0.4pt} \\
+    Direction-alignment method & \rule{0.94\linewidth}{0.4pt} \\
+    Leveling/filtering settings & \rule{0.94\linewidth}{0.4pt} \\
+    Vertical calibration & \rule{0.94\linewidth}{0.4pt} \\
+    Exported figure paths & \rule{0.94\linewidth}{0.4pt} \\
+  \end{tabular}
+
+  \subsubsection{Interpretation Placeholder}
+
+  \fbox{\parbox[c][0.62in][c]{0.92\linewidth}{
+    \centering
+    Add a concise explanation of visible surface features, forward/backward
+    agreement, artifacts, and processing choices after real scans are
+    reconstructed.
+  }}
 \end{minipage}
 
 \end{spacing}
@@ -955,11 +985,74 @@ values into an \(x,y\) matrix; and converts the result into a surface map.
 % =================================================
 
 % -------------------------------------------------
-% SHEET 10 OF 12 -- RESERVED
+% SHEET 10 OF 12 -- RESULTS AND UNCERTAINTY ANALYSIS
 % -------------------------------------------------
-% Intentionally blank until the group chooses the final topic and content.
-\thispagestyle{empty}
-\null
+\section{Results and Uncertainty Analysis}
+
+\begin{spacing}{1.0}
+\small
+
+\noindent
+\textbf{Current status:} Reserved for completed scanning results. No numerical
+result, surface feature, uncertainty, or performance claim should be entered
+until it is supported by saved raw data and documented processing.
+
+\vspace{8pt}
+
+\begin{center}
+  \fbox{\parbox[c][3.00in][c]{0.88\textwidth}{
+    \centering
+    \textbf{SCAN-RESULT FIGURE PLACEHOLDER}\\[6pt]
+    Insert the final scan map or forward/backward comparison here.\\[4pt]
+    Include axes, units, color scale, sample identity, scan settings, raw-data
+    path, and processing-code version.
+  }}
+  \captionsetup{font=small}
+  \captionof{figure}{Placeholder for the principal experimental scanning
+  result and its evidence trail.}
+\end{center}
+
+\subsection{Results Record}
+
+\begin{center}
+\renewcommand{\arraystretch}{1.20}
+\begin{tabular}{@{}>{\raggedright\arraybackslash}p{0.38\textwidth}
+                p{0.54\textwidth}@{}}
+  \toprule
+  Result field & Evidence or value \\
+  \midrule
+  Sample and scan identifier & \rule{0.94\linewidth}{0.4pt} \\
+  Scan dimensions and settings & \rule{0.94\linewidth}{0.4pt} \\
+  Main observed feature & \rule{0.94\linewidth}{0.4pt} \\
+  Forward/backward agreement & \rule{0.94\linewidth}{0.4pt} \\
+  Calibration status & \rule{0.94\linewidth}{0.4pt} \\
+  Quantitative result with units & \rule{0.94\linewidth}{0.4pt} \\
+  \bottomrule
+\end{tabular}
+\end{center}
+
+\subsection{Uncertainty and Limitations}
+
+\noindent
+\begin{minipage}[t]{0.47\textwidth}
+  \fbox{\parbox[c][1.05in][c]{0.91\linewidth}{
+    \centering
+    \textbf{UNCERTAINTY PLACEHOLDER}\\[3pt]
+    Add measured or bounded uncertainty, its calculation, units, and dominant
+    contributors.
+  }}
+\end{minipage}
+\hfill
+\begin{minipage}[t]{0.47\textwidth}
+  \fbox{\parbox[c][1.05in][c]{0.91\linewidth}{
+    \centering
+    \textbf{LIMITATIONS PLACEHOLDER}\\[3pt]
+    Add only limitations observed in the completed scans and connect each
+    proposed improvement to supporting evidence.
+  }}
+\end{minipage}
+
+\end{spacing}
 
 \clearpage
 
