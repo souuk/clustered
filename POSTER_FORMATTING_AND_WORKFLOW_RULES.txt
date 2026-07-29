@@ -63,17 +63,17 @@ Sheet 8: Data Output and Python Conversion.
 Right center column:
 Sheet 5: Control Software Architecture.
 Sheet 7: STM Control Logic and Scan Execution.
-Sheet 9: Surface Reconstruction and Visualization.
+Sheet 9: Reserved and intentionally blank.
 
 2.4
 The center-panel software and data narrative should read as:
 
-Architecture >> Execution >> Conversion >> Reconstruction
+Architecture >> Execution >> Conversion
 
 2.5
 The right panel contains:
 
-Sheet 10: Results and Uncertainty Analysis.
+Sheet 10: Reserved and intentionally blank.
 Sheet 11: Reserved and intentionally blank.
 Sheet 12: References and Acknowledgments.
 
@@ -254,11 +254,12 @@ Instrument Design and Construction explains what was physically built and how
 it was assembled.
 
 8.6
-Sheet 6 remains blank until its final topic and contents are chosen.
+Sheets 6, 9, 10, and 11 remain blank until their final topics and contents are
+chosen.
 
 8.7
-Do not add headings, placeholder tables, or figures to Sheet 6 or Sheet 11
-until the group decides what those sheets should contain.
+Do not add headings, placeholder tables, or figures to reserved sheets until
+the group decides what those sheets should contain.
 
 
 9. SOFTWARE COLUMN
@@ -305,30 +306,25 @@ placeholder text box for the conversion mathematics, tested Python excerpt,
 calibration value, validation results, and repository path.
 
 9.9
-Sheet 9, Surface Reconstruction and Visualization, answers:
-
-How will the validated matrices become interpretable surface visualizations?
+Sheets 9 and 10 are intentionally blank and have no assigned content.
 
 9.10
-Sheet 9 shows the planned reconstruction stages, forward/backward comparison,
-calibration status, processing provenance, and final visual outputs.
+Do not move Page 8 material onto Sheets 9 or 10 merely to fill space.
 
 9.11
 Until the converter and real scan data exist, use clearly labeled placeholder
-frames for the architecture figure, raw-data example, matrix output, Python
-snippet, calibration value, and surface maps. Do not invent code screenshots,
-matrices, calibration values, or results.
+frames on Sheet 8 for the architecture figure, raw-data example, matrix output,
+Python snippet, calibration value, and validation record. Do not invent code
+screenshots, matrices, calibration values, or results.
 
 9.12
 Keep the center-panel narrative in this order:
 
-Architecture >> Execution >> Conversion >> Reconstruction
+Architecture >> Execution >> Conversion
 
 9.13
-Sheet 10, Results and Uncertainty Analysis, is where completed scan maps,
-forward/backward comparisons, quantitative findings, uncertainty, and observed
-limitations are reported. Until real scans exist, keep each of these elements
-as an explicit placeholder and do not insert simulated results.
+Keep Sheets 9 and 10 blank until the group explicitly assigns their final
+topics.
 
 
 10. CODE AND PSEUDOCODE

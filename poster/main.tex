@@ -3,11 +3,9 @@
 % =================================================
 % Justin: content sharing one printed page can still use separate sections.
 %
-% Pages 8 and 9 now divide the planned Python conversion and surface-
-% reconstruction workflow. Page 10 is reserved for future scan results and
-% uncertainty analysis. Keep every item visibly marked as a placeholder until
-% the software and experimental data actually exist. Pages 6 and 11 remain
-% intentionally blank.
+% Page 8 holds the planned Python data-conversion workflow. Keep every item
+% visibly marked as a placeholder until the software and experimental data
+% actually exist. Pages 6, 9, 10, and 11 remain intentionally blank.
 %
 % Someone needs to check the components and materials table against
 % what we actually used. Do not leave guessed quantities in there.
@@ -142,10 +140,10 @@
 %   LEFT CENTER COLUMN          RIGHT CENTER COLUMN
 %   4. Hardware Architecture    5. Control Software Architecture
 %   6. Reserved                 7. Control Logic and Scan Execution
-%   8. Data + Python Conversion 9. Surface Reconstruction
+%   8. Data + Python Conversion 9. Reserved
 %
 % RIGHT PANEL
-%   10. Results and Uncertainty Analysis
+%   10. Reserved
 %   11. Reserved
 %   12. References and Acknowledgments, with GitHub QR code at top right
 
@@ -885,7 +883,7 @@ dataFileB.write(
   \end{center}
 \end{minipage}
 
-\vfill
+\vspace{8pt}
 
 \noindent
 \fbox{\parbox[c][1.35in][c]{0.96\linewidth}{
@@ -906,83 +904,12 @@ dataFileB.write(
 \clearpage
 
 % -------------------------------------------------
-% CENTER ROW 3, DATA PROCESSING -- PART 2
-% SHEET 9 OF 12 -- SURFACE RECONSTRUCTION AND VISUALIZATION
+% CENTER ROW 3, RIGHT CENTER COLUMN
+% SHEET 9 OF 12 -- RESERVED
 % -------------------------------------------------
-\section{Surface Reconstruction and Visualization}
-
-\begin{spacing}{0.98}
-\small
-
-\noindent
-\textbf{Current status:} No reconstruction program, calibrated height matrix,
-or completed surface visualization is available. This sheet is a layout for
-documenting how the finished Python program converts validated matrices into
-interpretable images.
-
-\vspace{5pt}
-
-\begin{center}
-  \fbox{\parbox[c][2.55in][c]{0.90\linewidth}{
-    \centering
-    \textbf{SURFACE-RECONSTRUCTION IMAGE PLACEHOLDER}\\[6pt]
-    Future side-by-side forward and backward maps, followed by the final
-    reconstructed surface visualization\\[5pt]
-    \textit{Add axes, units, color scale, scan direction, and processing
-    status when real outputs exist.}
-  }}
-  \captionsetup{font=footnotesize}
-  \captionof{figure}{Placeholder for the converter's principal reconstruction
-  output. No simulated surface is shown in place of experimental data.}
-\end{center}
-
-\vspace{5pt}
-
-\noindent
-\begin{minipage}[t]{0.48\linewidth}
-  \vspace{0pt}
-  \subsubsection{Planned Reconstruction Steps}
-
-  \begin{enumerate}
-    \item Display untouched forward and aligned backward matrices separately.
-    \item Compare corresponding pixels and report direction disagreement.
-    \item Apply only documented leveling, filtering, or interpolation.
-    \item Retain the unprocessed arrays beside every processed output.
-    \item Convert counts to height only after measuring a vertical-piezo
-    calibration factor.
-    \item Export publication figures with labeled axes, units, and scales.
-  \end{enumerate}
-
-  Until calibration exists, the vertical values must be labeled as relative
-  correction or controller counts rather than physical surface height.
-\end{minipage}
-\hfill
-\begin{minipage}[t]{0.48\linewidth}
-  \vspace{0pt}
-  \subsubsection{Reconstruction and Provenance Record}
-
-  \begin{tabular}{@{}>{\raggedright\arraybackslash}p{0.43\linewidth}
-                  p{0.52\linewidth}@{}}
-    Raw-data folder & \rule{0.94\linewidth}{0.4pt} \\
-    Converter script/version & \rule{0.94\linewidth}{0.4pt} \\
-    Matrix dimensions & \rule{0.94\linewidth}{0.4pt} \\
-    Direction-alignment method & \rule{0.94\linewidth}{0.4pt} \\
-    Leveling/filtering settings & \rule{0.94\linewidth}{0.4pt} \\
-    Vertical calibration & \rule{0.94\linewidth}{0.4pt} \\
-    Exported figure paths & \rule{0.94\linewidth}{0.4pt} \\
-  \end{tabular}
-
-  \subsubsection{Interpretation Placeholder}
-
-  \fbox{\parbox[c][0.62in][c]{0.92\linewidth}{
-    \centering
-    Add a concise explanation of visible surface features, forward/backward
-    agreement, artifacts, and processing choices after real scans are
-    reconstructed.
-  }}
-\end{minipage}
-
-\end{spacing}
+% Intentionally blank until the group chooses the final topic and content.
+\thispagestyle{empty}
+\null
 
 \end{landscape}
 
@@ -991,74 +918,11 @@ interpretable images.
 % =================================================
 
 % -------------------------------------------------
-% SHEET 10 OF 12 -- RESULTS AND UNCERTAINTY ANALYSIS
+% SHEET 10 OF 12 -- RESERVED
 % -------------------------------------------------
-\section{Results and Uncertainty Analysis}
-
-\begin{spacing}{1.0}
-\small
-
-\noindent
-\textbf{Current status:} Reserved for completed scanning results. No numerical
-result, surface feature, uncertainty, or performance claim should be entered
-until it is supported by saved raw data and documented processing.
-
-\vspace{8pt}
-
-\begin{center}
-  \fbox{\parbox[c][3.00in][c]{0.88\textwidth}{
-    \centering
-    \textbf{SCAN-RESULT FIGURE PLACEHOLDER}\\[6pt]
-    Insert the final scan map or forward/backward comparison here.\\[4pt]
-    Include axes, units, color scale, sample identity, scan settings, raw-data
-    path, and processing-code version.
-  }}
-  \captionsetup{font=small}
-  \captionof{figure}{Placeholder for the principal experimental scanning
-  result and its evidence trail.}
-\end{center}
-
-\subsection{Results Record}
-
-\begin{center}
-\renewcommand{\arraystretch}{1.20}
-\begin{tabular}{@{}>{\raggedright\arraybackslash}p{0.38\textwidth}
-                p{0.54\textwidth}@{}}
-  \toprule
-  Result field & Evidence or value \\
-  \midrule
-  Sample and scan identifier & \rule{0.94\linewidth}{0.4pt} \\
-  Scan dimensions and settings & \rule{0.94\linewidth}{0.4pt} \\
-  Main observed feature & \rule{0.94\linewidth}{0.4pt} \\
-  Forward/backward agreement & \rule{0.94\linewidth}{0.4pt} \\
-  Calibration status & \rule{0.94\linewidth}{0.4pt} \\
-  Quantitative result with units & \rule{0.94\linewidth}{0.4pt} \\
-  \bottomrule
-\end{tabular}
-\end{center}
-
-\subsection{Uncertainty and Limitations}
-
-\noindent
-\begin{minipage}[t]{0.47\textwidth}
-  \fbox{\parbox[c][1.05in][c]{0.91\linewidth}{
-    \centering
-    \textbf{UNCERTAINTY PLACEHOLDER}\\[3pt]
-    Add measured or bounded uncertainty, its calculation, units, and dominant
-    contributors.
-  }}
-\end{minipage}
-\hfill
-\begin{minipage}[t]{0.47\textwidth}
-  \fbox{\parbox[c][1.05in][c]{0.91\linewidth}{
-    \centering
-    \textbf{LIMITATIONS PLACEHOLDER}\\[3pt]
-    Add only limitations observed in the completed scans and connect each
-    proposed improvement to supporting evidence.
-  }}
-\end{minipage}
-
-\end{spacing}
+% Intentionally blank until the group chooses the final topic and content.
+\thispagestyle{empty}
+\null
 
 \clearpage
 
