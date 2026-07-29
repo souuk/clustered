@@ -885,53 +885,21 @@ dataFileB.write(
   \end{center}
 \end{minipage}
 
-\vspace{5pt}
+\vfill
 
 \noindent
-\begin{minipage}[t]{0.48\linewidth}
-  \vspace{0pt}
-  \subsubsection{Mathematics of Matrix Conversion}
-
-  If \(q_k\) is the \(k\)-th stored correction and the scan contains \(N_x\)
-  points per line, the planned converter maps the one-dimensional sequence
-  into rows and columns using
-  \[
-    Q_{j,i}=q_{jN_x+i},
-    \qquad
-    0\leq i<N_x,\quad 0\leq j<N_y .
-  \]
-  A measured vertical calibration factor \(\alpha\) would later convert
-  relative controller counts into height differences:
-  \[
-    \Delta z_{j,i}
-      =\alpha\left(Q_{j,i}-Q_{\mathrm{ref}}\right).
-  \]
-  \noindent\fbox{\parbox[c][0.40in][c]{0.92\linewidth}{
-    \centering
-    \textbf{CALIBRATION PLACEHOLDER:}
-    \(\alpha=\rule{0.28\linewidth}{0.4pt}\)
-    distance/count; source and method:
-    \(\rule{0.25\linewidth}{0.4pt}\)
-  }}
-\end{minipage}
-\hfill
-\begin{minipage}[t]{0.48\linewidth}
-  \vspace{0pt}
-  \subsubsection{Python Conversion Code}
-
-  \begin{center}
-    \fbox{\parbox[c][1.62in][c]{0.91\linewidth}{
-      \centering
-      \textbf{PYTHON CODE-SNIPPET PLACEHOLDER}\\[5pt]
-      Insert the tested file reader, length check, matrix reshape, backward
-      alignment, and raw-matrix save steps here.\\[5pt]
-      \textit{The conversion program has not yet been written.}
-    }}
-    \captionsetup{font=footnotesize}
-    \captionof{figure}{Placeholder for a readable excerpt from the completed
-    and repository-linked Python converter.}
-  \end{center}
-\end{minipage}
+\fbox{\parbox[c][1.35in][c]{0.96\linewidth}{
+  \centering
+  \textbf{CONVERSION METHOD TEXT PLACEHOLDER}\\[6pt]
+  Add the completed explanation of how the Python program reads the Teensy
+  files, validates their lengths and data type, maps the one-dimensional
+  sequence \(q_k\) into the matrix \(Q_{j,i}\), aligns backward lines, and
+  preserves the raw arrays. Include the tested code excerpt, repository path,
+  verification results, and the measured calibration factor \(\alpha\) before
+  converting controller counts into physical height.\\[6pt]
+  \textit{The conversion software, calibration value, and verified example
+  output do not yet exist.}
+}}
 
 \end{spacing}
 

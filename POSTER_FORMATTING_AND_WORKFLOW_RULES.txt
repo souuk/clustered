@@ -300,8 +300,9 @@ what intermediate outputs will it create?
 9.8
 Sheet 8 follows the approved sketch: a small input--conversion--matrix--output
 architecture figure at the top; a source-cited explanation and excerpt of the
-Teensy output code beside a raw-data-to-matrix example; and the matrix
-conversion mathematics beside a Python code excerpt.
+Teensy output code beside a raw-data-to-matrix example; and a full-width lower
+placeholder text box for the conversion mathematics, tested Python excerpt,
+calibration value, validation results, and repository path.
 
 9.9
 Sheet 9, Surface Reconstruction and Visualization, answers:
