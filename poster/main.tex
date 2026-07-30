@@ -78,6 +78,7 @@
 \usepackage{newtxtext}
 \usepackage{newtxmath}
 \usepackage{pdflscape}
+\usepackage{animate}
 \usepackage[hidelinks]{hyperref}
 \usepackage{qrcode}
 
@@ -1126,16 +1127,42 @@ stated explicitly.
 \begin{minipage}[t]{0.48\textwidth}
   \vspace{0pt}
   \begin{center}
-    \fbox{\parbox[c][2.82in][c]{0.90\linewidth}{
-      \centering
-      \textbf{AUTOMATED-APPROACH SIGNAL TRACE}\\[7pt]
-      \textbf{PLOT PLACEHOLDER}\\[8pt]
-      Plot measured current or ADC counts against approach step or time. Mark
-      the positive and negative thresholds and the two consecutive detections
-      required before feedback begins.
-    }}
+    \animategraphics[
+      autoplay,
+      loop,
+      poster=last,
+      width=0.82\linewidth
+    ]{4}{scan-pattern-frame-}{00}{19}
+
+    \vspace{2pt}
+    \begin{minipage}{0.94\linewidth}
+      \textbf{Abridged Python scan model}
+      \begin{lstlisting}[
+        language=Python,
+        basicstyle=\ttfamily\tiny,
+        aboveskip=2pt,
+        belowskip=2pt
+      ]
+for line in range(lines):
+    for pointcounter in range(points):
+        ...
+        x += step_size
+    for pointcounter in range(points, 2 * points):
+        ...
+        x -= step_size
+    y += step_size
+    x = initial_x
+      \end{lstlisting}
+      \scriptsize
+      Source: \href{https://github.com/souuk/clustered/blob/main/animate_scan_pattern.py\#L83-L117}
+      {\nolinkurl{animate_scan_pattern.py}, lines 83--117}. The corresponding
+      Teensy behavior is in
+      \nolinkurl{Teensy_STM12_July_29_2026_v1.ino}, lines 1504--1544.
+    \end{minipage}
     \captionsetup{font=footnotesize}
-    \captionof{figure}{Needed to document approach-signal confirmation.}
+    \captionof{figure}{Forward \(+X\), backward \(-X\), X reset, and Y increment
+    in the modeled bidirectional raster. The PDF animates in compatible
+    viewers; the completed frame remains visible in print.}
   \end{center}
 \end{minipage}
 \hfill
