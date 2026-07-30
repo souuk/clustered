@@ -1,0 +1,33 @@
+__pycache__/
+*.py[cod]
+.mplconfig/
+
+# Private or generated project material
+data/
+synthetic_data/
+tunnelpy/output/
+tunnelpy/scan_inventory*.txt
+
+# Keep public asset directories empty
+poster/*
+!poster/.gitkeep
+documents/*
+!documents/.gitkeep
+images/*
+!images/.gitkeep
+hardware-visualizations/*
+!hardware-visualizations/.gitkeep
+
+# Prevent accidental publication of working documents and media
+*.tex
+*.pdf
+*.doc
+*.docx
+*.ppt
+*.pptx
+*.zip
+*.png
+*.jpg
+*.jpeg
+*.gif
+*.svg

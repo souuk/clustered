@@ -1,0 +1,58 @@
+STM POSTER CITATION SOURCE LOCATIONS
+====================================
+
+The paths below show where each cited course source appears within the
+supplied course-material ZIP.
+
+[1] S. Chiang, "Additional Quantum Mechanics Discussion"
+
+    In the supplied course-material ZIP:
+    Computation
+    >> QMnotes1.pdf
+
+[2] S. Chiang, Teensy STM11A controller source code
+
+    In the supplied course-material ZIP:
+    Experiments
+    >> STM Project
+    >> Teensy_STM11A_July_29_2025.ino
+
+    Relevant scan-control locations in the supplied source copy:
+    Lines 155-157: signed 16-bit forward and backward scan arrays
+    Lines 838-857: image-scan initialization and Timer2Service startup
+    Lines 1178-1203: forward/backward X sampling and direction change
+    Lines 1203-1229: X reset, Y increment, line trigger, and line advance
+    Lines 1248-1262: parameter-file fields
+
+[3] B. Beauregard, Arduino PID Library, timer-interrupt modification
+    by S. Chiang
+
+    In the supplied course-material ZIP:
+    Experiments
+    >> STM Project
+    >> PID_vInt.zip
+    >> PID_vInt
+    >> PID_vInt.cpp
+
+[4] souuk, "clustered: STM Project Files and Citation-Source Paths"
+
+    This citation points to the clustered GitHub repository itself:
+    https://github.com/souuk/clustered
+
+    It was not part of the supplied course-material ZIP, so it does not
+    have a path inside that archive.
+
+[5] S. Chiang, Teensy STM12 controller source code
+
+    In the supplied course-material ZIP:
+    Experiments
+    >> STM Project
+    >> Teensy_STM12_July_29_2026_v1.ino
+
+    Relevant locations in the supplied source copy:
+    Lines 178-180: signed 16-bit forward and backward Q arrays
+    Lines 917-940: scan initialization and output-file opening
+    Lines 989-1001: square scan-dimension, step-size, and interval command
+    Lines 1113-1131: matched F/B/P filename construction
+    Lines 1500-1544: raster acquisition and corrected backward index
+    Lines 1583-1596: six-line parameter-file record
