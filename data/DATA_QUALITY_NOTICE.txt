@@ -1,0 +1,20 @@
+REFERENCE STM DATA - OTHER GROUP
+================================
+
+STMF1.hex, STMB1.hex, and STMP1.txt were supplied by another group as one
+STM12-format reference scan. Keep the three files together and unchanged.
+
+TunnelPy confirms that the files are readable signed-int16 PID-output Q data
+with a requested 64 x 64 matrix. The backward file contains all 4,096 samples.
+The forward file contains 4,088 samples and is missing its final eight values,
+even though the parameter file reports completion. The firmware does not check
+the return value of each SD write, so its loop-completion counters do not prove
+that every byte reached the file.
+
+This reference scan is useful for testing the real-data reconstruction path,
+but it is not group-owned data and is not an exact complete triplet. It does
+not establish tunneling, atomic resolution, sample identity, or calibrated
+height. See ..\results\reference-scan-1\ for the validation report and figures.
+
+The clearly labeled files in ..\synthetic_data\ remain deterministic software
+fixtures rather than microscope measurements.

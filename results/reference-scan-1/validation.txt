@@ -1,0 +1,32 @@
+TUNNELPY STM12 VALIDATION REPORT
+================================
+
+Files: STMF1.hex, STMB1.hex, STMP1.txt
+Requested matrix: 64 x 64 = 4096 samples/direction
+Coverage: F 4088/4096, B 4096/4096, paired 4088/4096
+Binary completeness: FAIL
+Parameter completion record: complete; DISAGREES with binary lengths
+
+STM12 source-contract checks:
+- Reference: source.zip, Teensy_STM12_July_29_2026_v1.ino.
+- Values decode as little-endian signed 16-bit PID-output Q counts.
+- Forward and backward samples reshape in acquisition order.
+- Backward rows are reversed in X for spatial comparison.
+- Firmware completion counters track the scan loop, not confirmed file bytes.
+- Per-sample SD write return values are not checked by the firmware.
+- Missing samples remain masked; TunnelPy does not synthesize replacements.
+
+Forward range: -15980 to -577 counts
+Backward range: -15994 to -344 counts
+Paired F/B correlation after spatial alignment: 0.631515
+Paired F/B RMSE after spatial alignment: 1452.779 counts
+High-spread forward rows (zero-based): 13, 14, 15, 16, 17, 18, 19, 20, 21, 30, 31, 32, 33
+High-spread backward rows (zero-based): 13, 14, 15, 16, 17, 18, 19, 20, 21, 30, 31
+
+Conclusion:
+- The file format and reconstruction path are usable.
+- Several rows have unusually large within-row variation and should be reviewed as acquisition artifacts.
+- This triplet is not an exact complete scan because at least one binary direction is short.
+- The P-file completion counters contradict the stored binary length.
+- These checks do not establish tunneling, atomic resolution, or physical height.
+- Physical Z units require an independently measured counts-to-displacement calibration.

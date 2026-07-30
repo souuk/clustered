@@ -50,31 +50,32 @@ The left panel contains:
 
 Sheet 1: Abstract, Introduction and Motivation, and the data notice.
 Sheet 2: Theoretical and Technical Background.
-Sheet 3: Instrument Design and Construction.
+Sheet 3: Instrument Design, Construction, and Hardware Architecture.
 
 2.3
 The center panel uses landscape sheets in two columns:
 
 Left center column:
-Sheet 4: Hardware Architecture.
-Sheet 6: Reserved and intentionally blank.
-Sheet 8: Data Output and Python Conversion.
+Sheet 4: Instrument Design, Construction, and Hardware Architecture, continued.
+Sheet 6: STM Control Logic and Scan Execution.
+Sheet 8: Python Conversion Results and Generated Visualizations.
 
 Right center column:
 Sheet 5: Control Software Architecture.
-Sheet 7: STM Control Logic and Scan Execution.
-Sheet 9: Reserved and intentionally blank.
+Sheet 7: Data Output and Python Conversion.
+Sheet 9: Computational Experiments and Low-Level STM Models.
 
 2.4
 The center-panel software and data narrative should read as:
 
-Architecture >> Execution >> Conversion
+Architecture >> Execution >> Conversion >> Results
 
 2.5
 The right panel contains:
 
-Sheet 10: Reserved and intentionally blank.
-Sheet 11: Reserved and intentionally blank.
+Sheet 10: Supplementary Plots and Validation Figures.
+Sheet 11: Additional Diagnostics and Project Conclusions, including a
+full-width conclusion followed by brief Error Analysis and Future Work.
 Sheet 12: References and Acknowledgments.
 
 2.6
@@ -254,12 +255,12 @@ Instrument Design and Construction explains what was physically built and how
 it was assembled.
 
 8.6
-Sheets 6, 9, 10, and 11 remain blank until their final topics and contents are
-chosen.
+Sheets 6, 9, 10, and 11 now have assigned topics and should follow the layout
+map in Section 2.
 
 8.7
-Do not add headings, placeholder tables, or figures to reserved sheets until
-the group decides what those sheets should contain.
+Keep unfinished measurements visibly marked TBM. Do not replace them with
+invented experimental values.
 
 
 9. SOFTWARE COLUMN
@@ -293,38 +294,52 @@ completion, and file closing.
 Sheet 7 may use readable pseudocode instead of long direct code quotations.
 
 9.7
-Sheet 8, Data Output and Python Conversion, answers:
+Sheet 7, Data Output and Python Conversion, answers:
 
-What files will the Python converter accept, how will it validate them, and
-what intermediate outputs will it create?
+What files does the Python converter accept, how does it validate them, and
+what intermediate outputs does it create?
 
 9.8
-Sheet 8 follows the approved sketch: a small input--conversion--matrix--output
+Sheet 7 follows the approved sketch: a small input--conversion--matrix--output
 architecture figure at the top; a source-cited explanation and excerpt of the
 Teensy output code beside a raw-data-to-matrix example; and a full-width lower
-placeholder text box for the conversion mathematics, tested Python excerpt,
-calibration value, validation results, and repository path.
+box explaining the implemented conversion mathematics, validation behavior,
+and calibration limitation.
 
 9.9
-Sheets 9 and 10 are intentionally blank and have no assigned content.
+Sheet 8 shows the current synthetic four-panel PID-output Q demonstration.
 
 9.10
-Do not move Page 8 material onto Sheets 9 or 10 merely to fill space.
+Sheet 8 is frozen. Do not revise it until the group obtains a good, complete
+scan from its own STM. At that point replace the synthetic input triplet,
+four-panel figure, caption, and summary together.
 
 9.11
-Until the converter and real scan data exist, use clearly labeled placeholder
-frames on Sheet 8 for the architecture figure, raw-data example, matrix output,
-Python snippet, calibration value, and validation record. Do not invent code
-screenshots, matrices, calibration values, or results.
+The converter, schema check, raw-data-to-matrix figure, and synthetic
+four-panel output now exist. Keep all synthetic material labeled
+"SYNTHETIC -- NOT EXPERIMENTAL" and continue reporting Q as PID-output counts.
 
 9.12
 Keep the center-panel narrative in this order:
 
-Architecture >> Execution >> Conversion
+Architecture >> Execution >> Conversion >> Results
 
 9.13
-Keep Sheets 9 and 10 blank until the group explicitly assigns their final
-topics.
+Sheet 9 contains the completed tight-binding and noise/leveling computational
+experiments (Figures #3 and #6). Sheets 10 and 11 contain the remaining Figures
+#1, #2, #4, #5, and #7 TBM plus the conclusion, brief error analysis, and
+future work.
+
+9.14
+Freeze all of Sheet 10 until the group has actual experimental data for its
+validation plots. Do not revise its placeholders, captions, or surrounding
+claims in advance of those measurements.
+
+9.15
+Freeze the diagnostic top half of Sheet 11 until actual subsystem and
+piezo-calibration measurements exist. This freeze ends at the horizontal rule.
+The Overarching Conclusion and Error Analysis and Future Work below the rule may
+still be edited as the documented project status changes.
 
 
 10. CODE AND PSEUDOCODE
@@ -459,9 +474,10 @@ The current poster references are:
 [2] S. Chiang, Teensy STM11A controller source code.
 [3] B. Beauregard, Arduino PID Library, modified by S. Chiang.
 [4] souuk, clustered GitHub repository.
+[5] S. Chiang, Teensy STM12 controller source code.
 
 14.4
-References [1]-[3] came from the supplied course-material ZIP.
+References [1]-[3] and [5] came from the supplied course-material ZIP.
 
 14.5
 Reference [4] is the GitHub repository itself and does not have a path inside
@@ -476,7 +492,7 @@ Record archive locations using readable paths such as:
 In the supplied course-material ZIP:
 Experiments
 >> STM Project
->> Teensy_STM11A_July_29_2025.ino
+>> Teensy_STM12_July_29_2026_v1.ino
 
 14.8
 Keep the complete citation-to-path list in CITATION_SOURCE_PATHS.txt.
@@ -508,17 +524,23 @@ works.
 Do not present invented scan files, fake measurements, or demonstration plots
 as real experimental results.
 
+15.4a
+Clearly labeled synthetic firmware-format data may be used to test and explain
+the software pipeline. It must remain separate from experimental data and may
+not support claims of tunneling, resolution, calibration, or surface identity.
+
 15.5
-The poster may explain the complete reconstruction workflow in normal present
-tense, but data-specific fields stay blank until real values exist.
+The poster may explain the implemented conversion workflow in normal present
+tense. Experimental fields remain blank or TBM until real values exist;
+synthetic values may appear only when their status is unmistakable.
 
 15.6
 Use visible "Add about ______" placeholders where real data, code performance,
 calibration, or results are still missing.
 
 15.7
-When the real pipeline works, preserve the raw files, processed files, code,
-settings, calibration, and final figures.
+When reliable experimental data are obtained, preserve the raw files,
+processed files, code, settings, calibration, and final figures.
 
 15.8
 Upload those items to clustered so someone else can inspect the transformation.
@@ -605,7 +627,8 @@ The repository is:
 https://github.com/souuk/clustered
 
 18.2
-Keep README.md accurate about what is complete and what remains a placeholder.
+Keep README.md accurate about what is implemented, frozen, TBM, or still
+awaiting measurements.
 
 18.3
 Keep the poster directory synchronized with the upload-ready transform folder
@@ -615,7 +638,9 @@ after important poster revisions.
 Keep CITATION_SOURCE_PATHS.txt synchronized with the numbered Works Cited list.
 
 18.5
-Add raw data and working processing code only when they are real and usable.
+Keep group-owned experimental data separate from borrowed or synthetic data.
+Working processing code and clearly labeled synthetic fixtures may remain in
+the repository for reproducibility.
 
 18.6
 Use clear commit messages that describe the actual update.
@@ -623,6 +648,10 @@ Use clear commit messages that describe the actual update.
 18.7
 Do not say the remote repository was updated until the commit is visible on
 GitHub.
+
+18.8
+Keep current edits local until the group explicitly requests the next combined
+push. When requested, push directly to main; do not create a branch.
 
 
 19. FINAL QUALITY CHECK

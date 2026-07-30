@@ -2,8 +2,10 @@
 """Read the binary scan files written by the Teensy STM firmware.
 
 The ``.hex`` files are not hexadecimal text.  They contain consecutive
-little-endian signed 16-bit integers, two bytes per sample.  A scan normally
-has three files:
+little-endian signed 16-bit integers, two bytes per sample.  In the STM12
+firmware each value is the PID output Q that is also sent to the Z DAC; it is
+not the ADC-current input or calibrated physical height.  A scan normally has
+three files:
 
 ``<prefix>F<number>.hex``
     Forward samples in left-to-right acquisition order.
@@ -34,6 +36,8 @@ INT16_LE = np.dtype("<i2")
 NUMBER_RE = re.compile(r"[-+]?(?:\d+(?:\.\d*)?|\.\d+)(?:[eE][-+]?\d+)?")
 RECORD_START_RE = re.compile(r"^\s*\d+\s+number\s+of\s+points\s*$", re.I)
 SegmentMode = Literal["reject", "start", "end"]
+PartialMode = Literal["pad", "rows"]
+ScanMatrix = npt.NDArray[np.int16] | npt.NDArray[np.float64]
 
 
 @dataclass(frozen=True)
@@ -69,9 +73,9 @@ class ScanSet:
     """One selected parameter record and its spatially comparable matrices."""
 
     parameters: ParameterRecord
-    forward: npt.NDArray[np.int16]
-    backward_acquisition: npt.NDArray[np.int16]
-    backward_aligned: npt.NDArray[np.int16]
+    forward: ScanMatrix
+    backward_acquisition: ScanMatrix
+    backward_aligned: ScanMatrix
     forward_path: Path
     backward_path: Path
     parameter_path: Path
@@ -81,6 +85,22 @@ class ScanSet:
     @property
     def actual_lines(self) -> int:
         return int(self.forward.shape[0])
+
+    @property
+    def forward_valid_samples(self) -> int:
+        return int(np.count_nonzero(np.isfinite(self.forward)))
+
+    @property
+    def backward_valid_samples(self) -> int:
+        return int(np.count_nonzero(np.isfinite(self.backward_acquisition)))
+
+    @property
+    def paired_valid_samples(self) -> int:
+        return int(
+            np.count_nonzero(
+                np.isfinite(self.forward) & np.isfinite(self.backward_aligned)
+            )
+        )
 
 
 def _first_number(line: str, field_name: str) -> float:
@@ -224,7 +244,8 @@ def _extract_matrix(
     parameters: ParameterRecord,
     allow_partial: bool,
     segment: SegmentMode,
-) -> tuple[npt.NDArray[np.int16], bool, tuple[str, ...]]:
+    partial_mode: PartialMode,
+) -> tuple[ScanMatrix, bool, tuple[str, ...]]:
     expected = parameters.expected_samples
     actual = int(values.size)
     warnings: list[str] = []
@@ -254,6 +275,17 @@ def _extract_matrix(
             "only complete rows."
         )
 
+    if partial_mode == "pad":
+        matrix = np.full(
+            (parameters.lines, parameters.points), np.nan, dtype=np.float64
+        )
+        matrix.ravel()[:actual] = values
+        warnings.append(
+            f"{path.name}: retained {actual}/{expected} samples and masked "
+            f"{expected - actual} missing sample(s)"
+        )
+        return matrix, True, tuple(warnings)
+
     complete_lines = actual // parameters.points
     if complete_lines < 1:
         raise ValueError(
@@ -273,7 +305,7 @@ def _extract_matrix(
 
 def align_backward(
     backward_acquisition: npt.ArrayLike,
-) -> npt.NDArray[np.int16]:
+) -> ScanMatrix:
     """Reverse every backward row into the forward spatial orientation."""
 
     matrix = np.asarray(backward_acquisition)
@@ -290,11 +322,14 @@ def load_scan_set(
     parameter_record: int = -1,
     allow_partial: bool = False,
     segment: SegmentMode = "reject",
+    partial_mode: PartialMode = "pad",
 ) -> ScanSet:
     """Load forward/backward files and make their spatial dimensions agree."""
 
     if segment not in ("reject", "start", "end"):
         raise ValueError(f"Unsupported segment mode: {segment}")
+    if partial_mode not in ("pad", "rows"):
+        raise ValueError(f"Unsupported partial mode: {partial_mode}")
 
     forward_path, backward_path, parameter_path = scan_paths(
         directory, prefix=prefix, scan_number=scan_number
@@ -309,6 +344,7 @@ def load_scan_set(
         parameters=parameters,
         allow_partial=allow_partial,
         segment=segment,
+        partial_mode=partial_mode,
     )
     backward, backward_partial, backward_warnings = _extract_matrix(
         _read_int16(backward_path),
@@ -316,6 +352,7 @@ def load_scan_set(
         parameters=parameters,
         allow_partial=allow_partial,
         segment=segment,
+        partial_mode=partial_mode,
     )
 
     warnings = list(forward_warnings + backward_warnings)
@@ -342,6 +379,11 @@ def load_scan_set(
             "Selected parameter record reports an early/incomplete scan "
             f"(point counter {parameters.completed_points}, "
             f"line counter {parameters.completed_lines})"
+        )
+    elif forward_partial or backward_partial:
+        warnings.append(
+            "Parameter record reports completion, but the binary sample count "
+            "is short; the completion record and stored data disagree"
         )
 
     return ScanSet(

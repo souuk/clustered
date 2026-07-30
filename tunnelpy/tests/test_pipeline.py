@@ -10,6 +10,7 @@ os.environ.setdefault("MPLBACKEND", "Agg")
 import numpy as np
 
 from tunnelpy.plot_stm import level_matrix, plot_scan_set
+from tunnelpy.quality import assess_scan, format_quality_report
 from tunnelpy.stm_io import load_scan_set, parse_parameter_records
 
 
@@ -86,9 +87,34 @@ class TunnelPipelineTests(unittest.TestCase):
                 prefix="STM1",
                 scan_number=0,
                 allow_partial=True,
+                partial_mode="rows",
             )
             self.assertEqual(scan.forward.shape, (3, 5))
             self.assertEqual(scan.backward_aligned.shape, (3, 5))
+            self.assertTrue(scan.partial)
+
+    def test_masked_partial_scan_preserves_all_valid_samples(self) -> None:
+        with tempfile.TemporaryDirectory() as temporary:
+            directory = Path(temporary)
+            forward = np.arange(20, dtype=np.int16).reshape(4, 5)
+            backward = np.fliplr(forward)
+            write_fixture(directory, forward, backward)
+            (directory / "STM1F0.hex").write_bytes(
+                (directory / "STM1F0.hex").read_bytes()[:-3 * 2]
+            )
+
+            scan = load_scan_set(
+                directory,
+                prefix="STM1",
+                scan_number=0,
+                allow_partial=True,
+            )
+            self.assertEqual(scan.forward.shape, (4, 5))
+            self.assertEqual(scan.backward_aligned.shape, (4, 5))
+            self.assertEqual(scan.forward_valid_samples, 17)
+            self.assertEqual(scan.backward_valid_samples, 20)
+            self.assertEqual(scan.paired_valid_samples, 17)
+            self.assertTrue(np.all(np.isnan(scan.forward[-1, -3:])))
             self.assertTrue(scan.partial)
 
     def test_appended_file_requires_explicit_segment(self) -> None:
@@ -128,6 +154,26 @@ class TunnelPipelineTests(unittest.TestCase):
         yy, xx = np.indices((8, 10), dtype=float)
         plane = 3.0 * xx - 2.0 * yy + 9.0
         self.assertLess(float(np.max(np.abs(level_matrix(plane, "plane")))), 1e-10)
+
+    def test_quality_report_records_binary_completion_mismatch(self) -> None:
+        with tempfile.TemporaryDirectory() as temporary:
+            directory = Path(temporary)
+            forward = np.arange(20, dtype=np.int16).reshape(4, 5)
+            write_fixture(directory, forward, np.fliplr(forward))
+            (directory / "STM1F0.hex").write_bytes(
+                (directory / "STM1F0.hex").read_bytes()[:-2]
+            )
+            scan = load_scan_set(
+                directory,
+                prefix="STM1",
+                scan_number=0,
+                allow_partial=True,
+            )
+            quality = assess_scan(scan)
+            report = format_quality_report(scan, quality)
+            self.assertEqual(quality.forward_valid_samples, 19)
+            self.assertIn("Binary completeness: FAIL", report)
+            self.assertIn("DISAGREES with binary lengths", report)
 
 
 if __name__ == "__main__":

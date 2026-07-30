@@ -1,0 +1,6 @@
+64 number of points
+64 number of lines
+If Image finished early. 0 number of points
+64 number of lines
+2282 V, sample voltage
+1.00 nA, tunneling current

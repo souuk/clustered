@@ -23,6 +23,7 @@ def main() -> None:
     parser.add_argument("input_dir", type=Path)
     parser.add_argument("--output-dir", type=Path, default=Path(__file__).parent / "output")
     parser.add_argument("--allow-partial", action="store_true")
+    parser.add_argument("--partial-mode", choices=("pad", "rows"), default="pad")
     parser.add_argument("--segment", choices=("reject", "start", "end"), default="reject")
     parser.add_argument("--level", choices=LEVEL_MODES, default="none")
     parser.add_argument("--dpi", type=int, default=180)
@@ -44,6 +45,7 @@ def main() -> None:
                 scan_number=number,
                 allow_partial=args.allow_partial,
                 segment=args.segment,
+                partial_mode=args.partial_mode,
             )
             output = args.output_dir / f"{prefix}-scan-{number}-four-panel.png"
             plot_scan_set(scan, output, level=args.level, dpi=args.dpi)

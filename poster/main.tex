@@ -2,19 +2,35 @@
 % SHEEPLE TO DO BOARD AND NOTES
 % =================================================
 %
-% Sheets 3 and 4 now form one continuous instrument-design section.
-% Sheet 3 covers construction and materials; Sheet 4 continues with the
-% electronic signal chain and reserved locations for circuit-board visuals.
+% Sheets 3 and 4 are one continuous instrument-design and hardware section.
+% Sheet 5 explains the software architecture, and Sheet 6 explains the actual
+% approach, feedback, and raster sequence.
 %
-% IDK what slide 6 should be ngl...
+% Sheet 7 now has the implemented file reader, schema check, conversion method,
+% firmware-format synthetic data, and the raw-data-to-matrix figure.
 %
-% 8 is data output.
+% Sheet 8 now shows the tested synthetic four-panel Q output. LEAVE SHEET 8
+% ALONE until we obtain a good, complete scan from our own STM. When that
+% happens, replace the synthetic triplet, figure, caption, and summary together.
 %
-% 9/10/11 is blank, need to brainstorm what to add for those as well.
-% Realistically, 9/10 might be for the output as well.
+% LEAVE ALL OF SHEET 10 AND THE TOP HALF OF SHEET 11 ALONE until we have our
+% own actual measurements. On Sheet 11, this freeze ends at the horizontal rule;
+% the conclusion and Error Analysis and Future Work below it may still be edited.
 %
-% 11 could be conclusion I guess, and misc. graphs, or 10 could be misc.
-% graphs and 11 could be conclusion
+% Sheet 9 contains two completed, clearly labeled simulations: the tight-binding
+% eigenvalue/eigenvector calculation and the noise/leveling robustness sweep.
+% Sheets 10 and 11 hold the remaining numbered TBM plots, then the conclusion
+% and brief error analysis and future work.
+%
+% Main things still to do:
+% - Get repeatable tunneling and one complete forward/backward scan of our own.
+% - Measure the Z-piezo calibration before calling Q physical height.
+% - Make remaining Figures #1, #2, #4, #5, and #7 with real measurements or
+%   clearly labeled calculations. Figures #3 and #6 are now on Sheet 9.
+% - Add final subsystem values, uncertainty, strongest result, and conclusion.
+% - Verify the remaining hardware photos/labels and compile all 12 pages in
+%   Overleaf to catch overflow.
+% - Keep changes local for now. Do one GitHub push only when the group asks.
 %
 % =================================================
 % FORMATTING NOTES
@@ -48,14 +64,13 @@
 %   The top-center row remains empty in the assembled poster.
 %
 %   LEFT CENTER COLUMN          RIGHT CENTER COLUMN
-%   4. Instrument Hardware      5. Control Software Architecture
-%      (continued)
-%   6. Reserved                 7. Control Logic and Scan Execution
-%   8. Data + Python Conversion 9. Reserved
+%   4. Hardware continuation    5. Control Software Architecture
+%   6. Control Logic + Scan     7. Data Output + Python Conversion
+%   8. Python Results (FROZEN)  9. Computational Experiments
 %
 % RIGHT PANEL
-%   10. Reserved
-%   11. Reserved
+%   10. Supplementary Plots and Validation Figures (FROZEN)
+%   11. Diagnostics (TOP HALF FROZEN), Conclusion, Error Analysis + Future Work
 %   12. References and Acknowledgments, with GitHub QR code at top right
 
 \documentclass[9pt,oneside]{report}
@@ -78,7 +93,7 @@
 \usepackage{newtxtext}
 \usepackage{newtxmath}
 \usepackage{pdflscape}
-\usepackage{animate}
+\usepackage{xcolor}
 \usepackage[hidelinks]{hyperref}
 \usepackage{qrcode}
 
@@ -95,8 +110,16 @@
 % Use this only between two completely different sections on the same sheet.
 % Subsection spacing is already handled below.
 \newcommand{\categorygap}{\par\vspace{2cm}}
-\newcommand{\figureneeded}{%
-  \textsuperscript{\mbox{\tiny\bfseries FIGURE NEEDED}}%
+\newcommand{\figuretbm}[1]{%
+  \textsuperscript{\mbox{\tiny\bfseries FIGURE \##1 TBM}}%
+}
+% Keep this directly below every synthetic/calculated plot for now.
+% Remove it only when that plot is replaced by verified experimental data.
+\newcommand{\temporarysyntheticnotice}{%
+  \par\vspace{1pt}%
+  {\color{red}\tiny\bfseries
+  TEMPORARY --- SYNTHETIC, NOT EXPERIMENTAL.}%
+  \par
 }
 
 \setcounter{secnumdepth}{0}
@@ -170,7 +193,7 @@ sample at the nanoscale. An STM operates by applying a voltage bias between a
 sharp metallic tip and the sample. When the tip is brought within a few
 angstroms of the surface, electrons quantum mechanically tunnel across the
 gap, producing a current that varies exponentially with tip--sample
-distance.\figureneeded{}
+distance.\figuretbm{1}
 
 The instrument combines a piezoelectric scanner, coarse-positioning stepper
 motor, current preamplifier, analog-to-digital converter, dual-rail power
@@ -180,7 +203,7 @@ tip. By maintaining a nearly constant current while scanning laterally, the
 system can relate the required tip motion to changes in surface height.
 
 Subsystem testing is being used to evaluate the power supply, preamplifier,
-and analog-to-digital conversion stages.\figureneeded{} The final performance
+and analog-to-digital conversion stages.\figuretbm{2} The final performance
 of the STM is limited by mechanical vibration, electrical noise, thermal
 drift, tip sharpness, and calibration accuracy. These tests establish the
 operating principles of the instrument and identify the improvements needed
@@ -210,8 +233,8 @@ together.\textsuperscript{[1--3]}
 
 % Keep this notice even after the conversion code works. It makes it clear that
 % the final map is processed data and not a photograph from the microscope.
-% Insert the exact raw-data and code paths here for future once they are in
-% clustered.
+% The converter and synthetic-data paths now exist in clustered. Add the exact
+% group-owned raw-data path only after we obtain a reliable experimental scan.
 The values recorded by the STM are the instrument's original measurement
 output. Any surface image or three-dimensional rendering shown later is a
 processed visualization produced by passing those measurements through a
@@ -244,7 +267,7 @@ sites, the wavefunction is a vector with one component for each site. The
 squared magnitude of a component gives the probability of finding the
 electron at that location.\textsuperscript{[1]} A Hamiltonian matrix describes
 the system's energy, and its eigenvalues and eigenvectors determine how the
-state changes with time.\textsuperscript{[1]}\figureneeded{}
+state changes with time.\textsuperscript{[1]}\figuretbm{3}
 \[
   P(j)=\lvert\psi_j\rvert^2,
   \qquad
@@ -270,7 +293,7 @@ data.\textsuperscript{[2]} Its preamplifier uses a
 current of \(1\) nA.\textsuperscript{[2]} An 18-bit ADS8691
 analog-to-digital converter maps voltages from \(-12.288\) to \(+12.288\) V
 into integer values from \(0\) to \(262143\), with zero volts at
-\(N_0=131072\).\textsuperscript{[2]}\figureneeded{} The controller converts
+\(N_0=131072\).\textsuperscript{[2]}\figuretbm{4} The controller converts
 each ADC reading \(N\) back into a voltage using
 \[
   V_{\mathrm{ADC}}
@@ -285,19 +308,19 @@ counts.\textsuperscript{[2]}
 \subsection{Approach, Feedback, and Topographic Mapping}
 
 % This paragraph connects the physics to what the program actually does.
-% Insert our final approach threshold and PID settings here for future if they
-% end up being different from the supplied defaults.
+% Our measured approach threshold and final PID settings are still TBM. Replace
+% the supplied defaults only after the final operating values are recorded.
 During the automated approach, the program gradually extends the \(z\)-piezo
 and repeatedly measures the current. A reading greater than \(0.2\) nA in
 magnitude must be detected twice before the approach stops and feedback is
 enabled.\textsuperscript{[2]} This repeated check helps prevent a single noisy
 reading from being treated as a tunneling
-signal.\textsuperscript{[2]}\figureneeded{}
+signal.\textsuperscript{[2]}\figuretbm{5}
 
 Once feedback is active, the included PID routine compares the measured ADC
 value with the chosen current setpoint. It updates the \(z\)-piezo output
 every \(100\,\mu\mathrm{s}\), using proportional, integral, and derivative
-terms to reduce the error.\textsuperscript{[2,3]}\figureneeded{} During imaging,
+terms to reduce the error.\textsuperscript{[2,3]}\figuretbm{5} During imaging,
 a second timer records points while the DAC moves through the \(x\) and \(y\)
 coordinates.\textsuperscript{[2]} The program stores forward and backward scan
 lines separately so the two directions can be
@@ -339,7 +362,7 @@ Sheet~4.
   electronics. Components were soldered to the provided circuit board and
   installed in a 3D-printed enclosure. The outputs were checked relative to
   ground with a multimeter, and the trimmer potentiometers were adjusted to
-  the target rail voltages.\figureneeded{}
+  the target rail voltages.\figuretbm{2}
 
   \subsubsection{Coarse-Approach Mechanism}
 
@@ -371,10 +394,14 @@ Sheet~4.
 
 % Keep this selected list unchanged until the group verifies the final bill of
 % materials.
-\begin{table}[H]
+\noindent
+\begin{minipage}[t]{0.57\textwidth}
+  \vspace{0pt}
   \centering
-  \footnotesize
-  \begin{tabular}{>{\raggedright\arraybackslash}p{0.78\textwidth}r}
+  \scriptsize
+  \setlength{\tabcolsep}{2pt}
+  \begin{tabular}{>{\raggedright\arraybackslash}p{0.78\linewidth}
+                  >{\raggedleft\arraybackslash}p{0.16\linewidth}}
     \toprule
     Component & Quantity \\
     \midrule
@@ -383,23 +410,28 @@ Sheet~4.
     \(1\,\mu\mathrm{F}\), 35 V tantalum capacitors & 2 \\
     General-purpose rectifier diodes & 4 \\
     \(1\,\mathrm{k}\Omega\) and \(180\,\Omega\) resistors & 1 and 2 \\
+    LED uni-color red & 1\\
+    Fast-acting glass fuse & 1\\
     \(2.5\,\mathrm{k}\Omega\) trimmer potentiometers & 2 \\
     12.6 V center-tapped transformer & 1 \\
+    Custom PCB & 1\\
     TO-220 heat sinks & 2 \\
     Machine screws, lock washers, and hex nuts & As required \\
     \bottomrule
   \end{tabular}
-  \caption{Selected power-supply and mechanical components.}
-\end{table}
-
-\vspace{4pt}
-
-\begin{center}
-  \includegraphics[height=2.55in]{dual-rail-psu.png}
-  \captionsetup{font=footnotesize}
-  \captionof{figure}{Functional overview of the dual-rail supply, simplified
-  from the supplied JE215 schematic and component-layout handouts.}
-\end{center}
+  \captionsetup{font=scriptsize}
+  \captionof{table}{Selected power-supply and mechanical components.}
+\end{minipage}
+\hfill
+\begin{minipage}[t]{0.40\textwidth}
+  \vspace{0pt}
+  \centering
+  \includegraphics[width=\linewidth]{dual-rail-psu.png}
+  \captionsetup{font=scriptsize}
+  \captionof{figure}{Dual-rail supply functional overview, simplified from the
+  supplied JE215 handouts. Sheet~4 continues the electronic signal and control
+  path.}
+\end{minipage}
 
 \end{spacing}
 \endgroup
@@ -417,23 +449,28 @@ Sheet~4.
 
 % -------------------------------------------------
 % CENTER ROW 1, HARDWARE COLUMN
-% SHEET 4 OF 12 -- INSTRUMENT HARDWARE, CONTINUED
+% SHEET 4 OF 12 -- INSTRUMENT DESIGN, CONSTRUCTION,
+%                  AND HARDWARE ARCHITECTURE, CONTINUED
 % -------------------------------------------------
-\section{Instrument Hardware Architecture (Continued)}
+\section{Instrument Design, Construction, and Hardware Architecture
+  (Continued)}
 
 \begin{spacing}{0.98}
 \small
 
-Sheet~3 describes the physical assembly and power supply. The remaining
-hardware path is
+Continuing directly from Sheet~3, the physical scanner, coarse-approach
+assembly, isolation platform, and dual-rail supply connect to the electronic
+measurement-and-control chain. Starting at the tip--sample junction, this path
+is
 sample and tip \(\longrightarrow\) preamplifier
 \(\longrightarrow\) ADS8691 ADC
 \(\longrightarrow\) Teensy 4.1
 \(\longrightarrow\) DAC8734
 \(\longrightarrow\) piezo drive amplifier
-\(\longrightarrow\) scanner and sample bias. The diagram below expands the
-controller's STM-specific interfaces, channel assignments, storage path, and
-separate power domains.\textsuperscript{[2]}
+\(\longrightarrow\) scanner and sample bias. This completes the instrument
+overview begun on Sheet~3. The diagram below expands the controller's
+STM-specific interfaces, channel assignments, storage path, and separate power
+domains.\textsuperscript{[2]}
 
 \vspace{5pt}
 
@@ -579,7 +616,7 @@ required conditions have been satisfied.\textsuperscript{[2,3]}
   \subsubsection{Timer 1: Constant-Current Feedback}
 
   % This is simplified PID math so visitors can understand the idea without
-  % reading the full library. Insert our final Kp, Ki, and Kd here for future.
+  % reading the full library. Our final measured Kp, Ki, and Kd are still TBM.
   After confirmation, Timer~1 executes every \(100\,\mu\mathrm{s}\). It reads
   the ADC, calculates a new PID output, and writes that correction to DAC
   channel~0.\textsuperscript{[2]} The supplied PID routine uses
@@ -671,7 +708,8 @@ SetDAC(0, Value);
   \subsubsection{Operating Sequence in Pseudocode}
 
   % This is not copied code. It is just the logic rewritten so people can read
-  % it quickly. Insert any final shutdown or error-handling step here for future.
+  % it quickly. Add any group-specific shutdown or error-handling step after
+  % final instrument operation is verified.
   The pseudocode summarizes the conditions that move the controller from one
   state to the next.
 
@@ -728,7 +766,7 @@ if (pointcounter >= (2 * numpoints)) {
   relying on the default 512-point scan data.\textsuperscript{[2]}\par}
 
   \vspace{2pt}
-  \noindent{\tiny\textit{Companion animation:}
+  \noindent{\tiny\textit{Companion scan model:}
   \href{https://github.com/souuk/clustered/blob/main/animate_scan_pattern.py}
   {\nolinkurl{animate_scan_pattern.py}} reproduces the firmware's forward
   pass, backward pass, \(x\) reset, and \(y\) step using the cited timer
@@ -746,92 +784,99 @@ if (pointcounter >= (2 * numpoints)) {
 % -------------------------------------------------
 \section{Data Output and Python Conversion}
 
-\begin{spacing}{0.98}
+\begin{spacing}{0.90}
 \footnotesize
 
 \begin{center}
-  \fbox{\parbox[c][0.72in][c]{0.92\linewidth}{
-    \centering
-    \textbf{SMALL ARCHITECTURE IMAGE PLACEHOLDER}\\[3pt]
-    Teensy output files \textit{(input)}
-    \(\longrightarrow\) Python conversion
-    \(\longrightarrow\) matrix
-    \(\longrightarrow\) Matplotlib figure \textit{(output)}
-  }}
-  \captionsetup{font=footnotesize}
-  \captionof{figure}{Placeholder for the final data-conversion architecture
-  figure. Replace it after the converter's actual inputs, processing stages,
-  and outputs are fixed.}
+  \includegraphics[
+    width=0.90\linewidth,
+    height=0.82in,
+    keepaspectratio
+  ]{data-conversion-architecture.png}
+  \captionsetup{font=scriptsize,skip=2pt}
+  \captionof{figure}{Data-conversion architecture implemented by
+  \nolinkurl{tunnelpy}: matched files are validated, decoded, reshaped into
+  signed \(Q\) matrices, aligned, and rendered.\textsuperscript{[4]}}
 \end{center}
 
-\vspace{3pt}
+\vspace{1pt}
 
 \noindent
 \begin{minipage}[t]{0.52\linewidth}
   \vspace{0pt}
   \subsubsection{What the Teensy Outputs}
 
-  The firmware declares separate signed 16-bit arrays for forward and backward
-  samples. During scanning, it casts the feedback output to
-  \texttt{int16\_t} and writes two bytes for each stored value. A separate
-  text parameter file records the requested point and line counts, completion
-  counters, sample bias, and tunneling-current setting.\textsuperscript{[2]}
+  The firmware stores PID output \(Q\), also sent to the \(z\)-axis DAC, as
+  two-byte \texttt{int16\_t} values in separate forward and backward files.
+  These are signed correction counts, not ADC-current samples or physical
+  height. A text file records dimensions, completion counters, bias, and
+  current settings.\textsuperscript{[5]}
 
-  \begin{lstlisting}[basicstyle=\ttfamily\tiny]
+  \begin{lstlisting}[
+    basicstyle=\ttfamily\tiny,
+    aboveskip=2pt,
+    belowskip=2pt
+  ]
 DataArray1F[linenumber][pointcounter] =
     (int16_t)Output;
 dataFileF.write(
     &(DataArray1F[linenumber][pointcounter]), 2);
 
-DataArray1B[linenumber][pointcounter] =
+DataArray1B[linenumber][pointcounter-numpoints] =
     (int16_t)Output;
 dataFileB.write(
-    &(DataArray1B[linenumber][pointcounter]), 2);
+    &(DataArray1B[linenumber][pointcounter-numpoints]), 2);
   \end{lstlisting}
   \noindent{\tiny\textit{Source:}
-  \nolinkurl{Teensy_STM11A_July_29_2025.ino}, array declarations at lines
-  155--157, data writes at lines 1188--1198, and parameter output at lines
-  1248--1262.\textsuperscript{[2]}\par}
+  \nolinkurl{Teensy_STM12_July_29_2026_v1.ino}, array declarations at lines
+  178--180, data writes at lines 1509--1523, and parameter output at lines
+  1583--1596.\textsuperscript{[5]}\par}
 
-  \vspace{3pt}
-  \noindent\fbox{\parbox[c][0.42in][c]{0.92\linewidth}{
-    \centering
-    \textbf{PENDING FILE-SCHEMA CHECK:} confirm actual filenames, byte order,
-    completed-scan lengths, and a valid backward file before implementing the
-    reader.
-  }}
+  \vspace{1pt}
+  \begin{center}
+    \includegraphics[
+      width=0.90\linewidth,
+      height=0.58in,
+      keepaspectratio
+    ]{file-schema-validation.png}\\[-2pt]
+    {\tiny A pass establishes file-structure consistency only; it does not
+    establish tunneling, calibration, or experimental validity.}
+  \end{center}
 \end{minipage}
 \hfill
 \begin{minipage}[t]{0.45\linewidth}
   \vspace{0pt}
   \begin{center}
-    \fbox{\parbox[c][2.28in][c]{0.90\linewidth}{
-      \centering
-      \textbf{RAW-DATA-TO-MATRIX IMAGE PLACEHOLDER}\\[5pt]
-      Future example showing a real Teensy output sequence translated into its
-      \(N_y\times N_x\) matrix\\[5pt]
-      \textit{No complete scan or converted matrix is available yet.}
-    }}
-    \captionsetup{font=footnotesize}
-    \captionof{figure}{Placeholder for a verified example of raw scan values
-    before and after matrix conversion.}
+    \includegraphics[
+      width=0.90\linewidth,
+      height=1.78in,
+      keepaspectratio
+    ]{raw-data-to-matrix.png}
+    \captionsetup{font=scriptsize,skip=2pt}
+    \captionof{figure}{Synthetic PID-output sequence decoded and reshaped into
+    a \(64\times64\) matrix. It tests tilt, drift, feedback lag, noise, and
+    corrugation; it is not STM data or calibrated height.\textsuperscript{[5]}}
+    \temporarysyntheticnotice
   \end{center}
 \end{minipage}
 
-\vspace{8pt}
+\vspace{2pt}
 
 \noindent
-\fbox{\parbox[c][1.35in][c]{0.96\linewidth}{
-  \centering
-  \textbf{CONVERSION METHOD TEXT PLACEHOLDER}\\[6pt]
-  Add the completed explanation of how the Python program reads the Teensy
-  files, validates their lengths and data type, maps the one-dimensional
-  sequence \(q_k\) into the matrix \(Q_{j,i}\), aligns backward lines, and
-  preserves the raw arrays. Include the tested code excerpt, repository path,
-  verification results, and the measured calibration factor \(\alpha\) before
-  converting controller counts into physical height.\\[6pt]
-  \textit{The conversion software, calibration value, and verified example
-  output do not yet exist.}
+\fbox{\parbox[c][1.10in][c]{0.95\linewidth}{
+  \scriptsize
+  \raggedright
+  \textbf{Conversion Method.}
+  The reader matches \texttt{F/B/P} files by prefix and scan number, obtains
+  \(N_x,N_y\) from the parameter record, decodes each binary \texttt{.hex} file
+  as little-endian signed \texttt{int16}, and requires \(N_xN_y\) samples
+  (\(2N_xN_y\) bytes). Empty, odd, truncated, or unexpectedly appended files
+  are rejected unless recovery is requested explicitly.\textsuperscript{[4,5]}
+  It forms \(Q_F=\operatorname{reshape}(q_F,N_y,N_x)\) and
+  \(Q_B=\operatorname{fliplr}[\operatorname{reshape}(q_B,N_y,N_x)]\), preserving
+  both directions before calculating their mean and difference. Values remain
+  uncalibrated PID-output counts; no \(Q_{\mathrm{ref}}\) subtraction or
+  \(\alpha\) factor is applied.\textsuperscript{[4]}
 }}
 
 \end{spacing}
@@ -841,97 +886,49 @@ dataFileB.write(
 % -------------------------------------------------
 % CENTER ROW 3, DATA PROCESSING -- PART 2
 % SHEET 8 OF 12 -- PYTHON CONVERSION RESULTS
+% FROZEN: do not revise this sheet again until our group obtains good,
+% complete experimental data. Replace every synthetic value on this sheet
+% together so the figure, caption, and summary always describe one scan.
 % -------------------------------------------------
 \section{Python Conversion Results and Generated Visualizations}
 
-\begin{spacing}{0.96}
+\begin{spacing}{0.90}
 \footnotesize
 
-After validating the file lengths and reshaping the samples, the Python
-plotter can render four separate, printer-friendly heatmaps. Each panel below
-reserves one verified output from the same scan. Until real tunneling data are
-available, any inserted development figure must remain labeled
+After validating file lengths and reshaping the samples, the Python plotter
+renders four printer-friendly heatmaps from one matched scan. Until real
+tunneling data exist, the development output remains labeled
 \textbf{SYNTHETIC -- NOT EXPERIMENTAL}.
 
-\vspace{5pt}
-
-\noindent
-\begin{minipage}[t]{0.49\linewidth}
-  \vspace{0pt}
-  \begin{center}
-    \fbox{\parbox[c][1.72in][c]{0.92\linewidth}{
-      \centering
-      \textbf{FORWARD-SCAN HEATMAP PLACEHOLDER}\\[6pt]
-      Primary image generated with \texttt{--view forward}.\\[4pt]
-      Insert the validated \(N_y\times N_x\) matrix with \(x\)-point and
-      \(y\)-line axes and a controller-count color scale.
-    }}
-  \end{center}
-\end{minipage}
-\hfill
-\begin{minipage}[t]{0.49\linewidth}
-  \vspace{0pt}
-  \begin{center}
-    \fbox{\parbox[c][1.72in][c]{0.92\linewidth}{
-      \centering
-      \textbf{BACKWARD-SCAN HEATMAP PLACEHOLDER}\\[6pt]
-      Spatially aligned image generated with \texttt{--view backward}.\\[4pt]
-      Use only after the firmware indexing defect is corrected and the
-      backward file passes length and orientation checks.
-    }}
-  \end{center}
-\end{minipage}
-
-\vspace{7pt}
-
-\noindent
-\begin{minipage}[t]{0.49\linewidth}
-  \vspace{0pt}
-  \begin{center}
-    \fbox{\parbox[c][1.72in][c]{0.92\linewidth}{
-      \centering
-      \textbf{FORWARD/BACKWARD AVERAGE PLACEHOLDER}\\[6pt]
-      Combined image generated with \texttt{--view average}.\\[4pt]
-      Compare this result with both directional scans before interpreting
-      repeated surface features.
-    }}
-  \end{center}
-\end{minipage}
-\hfill
-\begin{minipage}[t]{0.49\linewidth}
-  \vspace{0pt}
-  \begin{center}
-    \fbox{\parbox[c][1.72in][c]{0.92\linewidth}{
-      \centering
-      \textbf{FORWARD-MINUS-BACKWARD PLACEHOLDER}\\[6pt]
-      Diagnostic image generated with \texttt{--view difference}.\\[4pt]
-      A near-uniform result supports directional agreement; structured
-      residuals can reveal drift, hysteresis, or alignment errors.
-    }}
-  \end{center}
-\end{minipage}
-
-\vspace{4pt}
+\vspace{2pt}
 
 \begin{center}
-  \captionsetup{font=footnotesize}
-  \captionof{figure}{Reserved layout for the four heatmap views currently
-  supported by \nolinkurl{notunnelpy/plot_stm.py}. Replace all four panels with
-  outputs from one verified scan and state every processing option used.}
+  \includegraphics[
+    width=0.90\linewidth,
+    height=3.72in,
+    keepaspectratio
+  ]{synthetic-q-four-panel.png}
+  \captionsetup{font=scriptsize,skip=2pt}
+  \captionof{figure}{Synthetic \nolinkurl{SYNF1/SYNB1/SYNP1} output showing
+  forward \(Q\), aligned backward \(Q\), their mean, and their difference.
+  Leveling is off; grayscale uses the 2nd--98th percentiles. This is a software
+  test, not an STM result.}
+  \temporarysyntheticnotice
 \end{center}
 
-\vspace{4pt}
+\vspace{2pt}
 
 \noindent
-\fbox{\parbox[c][0.78in][c]{0.96\linewidth}{
-  \textbf{RESULTS SUMMARY PLACEHOLDER}\hfill
-  \texttt{Input type: [pending]}\quad
-  \texttt{Matrix: [\(N_y\times N_x\)]}\quad
-  \texttt{Bytes/direction: [pending]}\\[4pt]
-  Record the selected leveling mode, display limits, backward-file validation
-  status, and a forward/backward difference metric. Report vertical values as
-  controller counts until a measured piezo calibration supports conversion to
-  physical height.\figureneeded{}
+\fbox{\parbox[c][0.62in][c]{0.95\linewidth}{
+  \scriptsize
+  \textbf{Synthetic Pipeline Summary}\hfill
+  \texttt{Input: little-endian int16 \(Q\)}\quad
+  \texttt{Matrix: \(64\times64\)}\quad
+  \texttt{8,192 bytes/direction}\\[2pt]
+  Both files pass exact-size and completion checks. After alignment:
+  correlation \(0.989\), mean absolute difference \(138\) counts, and range
+  \(4954\)--\(9841\) counts. These values validate only the simulator and
+  converter; physical-height calibration remains TBM.\figuretbm{7}
 }}
 
 \end{spacing}
@@ -944,22 +941,21 @@ available, any inserted development figure must remain labeled
 % -------------------------------------------------
 \section{Computational Experiments and Low-Level STM Models}
 
-\begin{spacing}{0.94}
+\begin{spacing}{0.88}
 \footnotesize
 
-Computational experiments help at two distinct levels. An offline quantum
-model can solve for electron states and visualize probability distributions.
-The operating STM does not solve that eigenvalue problem in real time; its
+Computational experiments operate at two distinct levels. An offline quantum
+model predicts electron states and probability distributions, whereas the STM
 controller converts measurements, updates feedback, advances the raster, and
-stores scan values. Likewise, the Hamiltonian \(H\) and the measured scan
-matrix \(Q\) are different objects with different purposes.
+stores \(Q\). The Hamiltonian \(H\) and measured scan matrix \(Q\) therefore
+serve different purposes.
 
-\vspace{4pt}
+\vspace{2pt}
 
 \begin{center}
-  \fbox{\parbox[c][0.67in][c]{0.95\linewidth}{
+  \fbox{\parbox[c][0.44in][c]{0.95\linewidth}{
     \centering
-    \textbf{TWO COMPUTATIONAL PATHS}\\[3pt]
+    \textbf{TWO COMPUTATIONAL PATHS}\\[2pt]
     Quantum model:
     \(H\rightarrow\{E_n,\phi_n\}\rightarrow
     |\phi_n(j)|^2\rightarrow\) predicted spatial behavior
@@ -968,42 +964,31 @@ matrix \(Q\) are different objects with different purposes.
     ADC samples \(\rightarrow\) PID and raster logic
     \(\rightarrow Q_{j,i}\rightarrow\) validated heatmap
   }}
-  \captionsetup{font=scriptsize}
+  \captionsetup{font=tiny,skip=2pt}
   \captionof{figure}{Conceptual separation between an offline quantum-state
   calculation and the instrument's measurement-and-control computation.}
 \end{center}
 
-\vspace{3pt}
+\vspace{1pt}
 
 \noindent
 \begin{minipage}[t]{0.49\linewidth}
   \vspace{0pt}
   \subsection{Experiment 1: Hamiltonian Eigenstates}
 
-  For a finite model, choose a Hamiltonian \(H\) and solve
-  \[
-    H\phi_n=E_n\phi_n,
-    \qquad
-    P_n(j)=|\phi_n(j)|^2.
-  \]
-  Each eigenvalue \(E_n\) is an allowed energy of the model, while the
-  components of eigenvector \(\phi_n\) describe the spatial amplitude of that
-  state. Plotting \(P_n(j)\) shows where the simulated state is concentrated.
-  Changing coupling strengths, site energies, or boundaries reveals how the
-  spectrum and spatial patterns respond.\textsuperscript{[1]}
+  For a finite Hamiltonian, solve \(H\phi_n=E_n\phi_n\) and plot
+  \(P_n(j)=|\phi_n(j)|^2\). Each \(E_n\) is an allowed model energy, while
+  \(\phi_n\) describes its spatial amplitude. Changing coupling, site energy,
+  or boundaries reveals how the spectrum and state localization
+  respond.\textsuperscript{[1]}
 
   \begin{center}
-    \fbox{\parbox[c][1.78in][c]{0.91\linewidth}{
-      \centering
-      \textbf{EIGENVALUE SPECTRUM AND EIGENVECTOR}\\
-      \textbf{PROBABILITY PLACEHOLDER}\\[6pt]
-      Include an energy-level or eigenvalue plot beside one
-      \( |\phi_n(j)|^2 \) spatial map. State the Hamiltonian, parameters,
-      boundary conditions, and selected state.
-    }}
-    \captionsetup{font=scriptsize}
-    \captionof{figure}{Offline quantum-model result. It must not be labeled as
-    an experimental STM image.}
+    \includegraphics[width=0.88\linewidth]{eigenvalue-spectrum.png}
+    \captionsetup{font=tiny,skip=2pt}
+    \captionof{figure}{Figure \#3: calculated spectrum and selected-state
+    probability for an \(11\times11\) tight-binding model with open boundaries
+    and one central defect. It is not an STM measurement.}
+    \temporarysyntheticnotice
   \end{center}
 \end{minipage}
 \hfill
@@ -1011,15 +996,16 @@ matrix \(Q\) are different objects with different purposes.
   \vspace{0pt}
   \subsection{Experiment 2: Data-Pipeline Robustness}
 
-  The current Python pipeline performs no eigendecomposition. It checks the
-  signed 16-bit binary contract, rejects incomplete data, reshapes samples,
-  aligns backward rows, and produces separate heatmap views. Optional plane
-  leveling fits \(q(x,y)=ax+by+c\) by least squares and subtracts that fitted
-  background; this changes image presentation, not the underlying raw
-  files.\textsuperscript{[4]}
+  The Python pipeline checks the signed 16-bit contract, rejects incomplete
+  data, reshapes samples, aligns backward rows, and plots heatmaps. Optional
+  plane leveling fits and subtracts \(q(x,y)=ax+by+c\); it changes the
+  presentation, not the raw files.\textsuperscript{[4]}
 
-  \vspace{2pt}
+\vspace{1pt}
 
+\scriptsize
+\renewcommand{\arraystretch}{0.94}
+\setlength{\tabcolsep}{2pt}
   \begin{tabular}{>{\raggedright\arraybackslash}p{0.34\linewidth}
                   >{\raggedright\arraybackslash}p{0.57\linewidth}}
     \toprule
@@ -1034,35 +1020,21 @@ matrix \(Q\) are different objects with different purposes.
     \bottomrule
   \end{tabular}
 
-  \vspace{3pt}
-  \noindent{\scriptsize\textbf{Current local regression check:} six of six
+\vspace{2pt}
+  \noindent{\tiny\textbf{Current local regression check:} six of six
   tests pass using the repository's declared plotting dependencies. These are
   software tests with synthetic fixtures, not evidence of tunneling or STM
   resolution.\textsuperscript{[4]}\par}
 
   \begin{center}
-    \fbox{\parbox[c][1.18in][c]{0.91\linewidth}{
-      \centering
-      \textbf{NOISE AND LEVELING SWEEP PLACEHOLDER}\\[4pt]
-      Compare the same synthetic matrix with no leveling, line leveling, and
-      plane leveling. Report noise amplitude and a quantitative recovery or
-      residual metric.
-    }}
+    \includegraphics[width=0.70\linewidth]{noise-leveling-sweep.png}
+    \captionsetup{font=tiny,skip=2pt}
+    \captionof{figure}{Figure \#6: fixed-seed synthetic noise and leveling
+    test. Heatmaps compare no, line-median, and plane leveling; the curve
+    reports recovery RMSE. Not experimental data.}
+    \temporarysyntheticnotice
   \end{center}
 \end{minipage}
-
-\vspace{4pt}
-
-\noindent
-\fbox{\parbox[c][0.78in][c]{0.96\linewidth}{
-  \textbf{EXPERIMENT 3 -- PLANNED CONTROLLER-IN-THE-LOOP SIMULATION}\hfill
-  \textit{Not yet implemented}\\[3pt]
-  Feed a known synthetic surface or current trace through a numerical model of
-  ADC conversion, setpoint error, limited PID correction, raster stepping, and
-  file output. Verify stable response, correct scan dimensions, recovery of
-  known features, and forward/backward agreement. Add a compact block diagram
-  here; place the resulting response plots on Sheets~10--11.
-}}
 
 \end{spacing}
 
@@ -1074,16 +1046,19 @@ matrix \(Q\) are different objects with different purposes.
 
 % -------------------------------------------------
 % SHEET 10 OF 12 -- SUPPLEMENTARY PLOTS AND VALIDATION FIGURES
+% FROZEN: do not edit this sheet until our group obtains the actual experimental
+% data needed for its validation plots. Replace placeholders only with figures
+% derived from our own recorded measurements and documented processing.
 % -------------------------------------------------
 \section{Supplementary Plots and Validation Figures}
 
-\begin{spacing}{0.96}
+\begin{spacing}{0.92}
 \footnotesize
 
-The placeholders on Sheets~9--11 correspond to the
-\figureneeded{} markers in the main text. Replace each box only with a measured,
-simulated, or calculated result whose provenance and processing steps are
-stated explicitly.
+The placeholders on Sheets~9--11 correspond to the numbered
+\textsuperscript{\mbox{\tiny\bfseries FIGURE \#n TBM}} markers in the main
+text. Replace each box only with a measured, simulated, or calculated result
+whose provenance and processing steps are stated explicitly.
 
 \vspace{6pt}
 
@@ -1091,8 +1066,9 @@ stated explicitly.
 \begin{minipage}[t]{0.48\textwidth}
   \vspace{0pt}
   \begin{center}
-    \fbox{\parbox[c][2.82in][c]{0.90\linewidth}{
+    \fbox{\parbox[c][2.30in][c]{0.90\linewidth}{
       \centering
+      \textbf{FIGURE \#1 TBM}\\[3pt]
       \textbf{TUNNELING CURRENT VS.\ TIP--SAMPLE DISTANCE}\\[7pt]
       \textbf{PLOT PLACEHOLDER}\\[8pt]
       Suggested axes: separation \(z\) and normalized tunneling current
@@ -1108,8 +1084,9 @@ stated explicitly.
 \begin{minipage}[t]{0.48\textwidth}
   \vspace{0pt}
   \begin{center}
-    \fbox{\parbox[c][2.82in][c]{0.90\linewidth}{
+    \fbox{\parbox[c][2.30in][c]{0.90\linewidth}{
       \centering
+      \textbf{FIGURE \#4 TBM}\\[3pt]
       \textbf{ADC TRANSFER AND CURRENT-CONVERSION CURVE}\\[7pt]
       \textbf{PLOT PLACEHOLDER}\\[8pt]
       Plot applied or calculated input voltage against ADC counts. Mark
@@ -1121,21 +1098,43 @@ stated explicitly.
   \end{center}
 \end{minipage}
 
-\vspace{10pt}
+\vspace{5pt}
 
 \noindent
 \begin{minipage}[t]{0.48\textwidth}
   \vspace{0pt}
   \begin{center}
-    \animategraphics[
-      autoplay,
-      loop,
-      poster=last,
-      width=0.82\linewidth
-    ]{4}{scan-pattern-frame-}{00}{19}
+    \begin{minipage}{0.80\linewidth}
+      \centering
+      \begin{minipage}[t]{0.48\linewidth}
+        \centering
+        \includegraphics[width=\linewidth]{scan-pattern-quad-1.png}\\[-1pt]
+        {\tiny\bfseries 1. Forward \(+X\)}
+      \end{minipage}
+      \hfill
+      \begin{minipage}[t]{0.48\linewidth}
+        \centering
+        \includegraphics[width=\linewidth]{scan-pattern-quad-2.png}\\[-1pt]
+        {\tiny\bfseries 2. Backward \(-X\)}
+      \end{minipage}
+
+      \vspace{2pt}
+
+      \begin{minipage}[t]{0.48\linewidth}
+        \centering
+        \includegraphics[width=\linewidth]{scan-pattern-quad-3.png}\\[-1pt]
+        {\tiny\bfseries 3. X reset; Y step}
+      \end{minipage}
+      \hfill
+      \begin{minipage}[t]{0.48\linewidth}
+        \centering
+        \includegraphics[width=\linewidth]{scan-pattern-quad-4.png}\\[-1pt]
+        {\tiny\bfseries 4. Accumulated raster}
+      \end{minipage}
+    \end{minipage}
 
     \vspace{2pt}
-    \begin{minipage}{0.94\linewidth}
+    \begin{minipage}{0.90\linewidth}
       \textbf{Abridged Python scan model}
       \begin{lstlisting}[
         language=Python,
@@ -1160,21 +1159,23 @@ for line in range(lines):
       \nolinkurl{Teensy_STM12_July_29_2026_v1.ino}, lines 1504--1544.
     \end{minipage}
     \captionsetup{font=footnotesize}
-    \captionof{figure}{Forward \(+X\), backward \(-X\), X reset, and Y increment
-    in the modeled bidirectional raster. The PDF animates in compatible
-    viewers; the completed frame remains visible in print.}
+    \captionof{figure}{Four static stages of the modeled bidirectional raster:
+    forward \(+X\), backward \(-X\), X reset with Y increment, and accumulated
+    scan progress.}
   \end{center}
 \end{minipage}
 \hfill
 \begin{minipage}[t]{0.48\textwidth}
   \vspace{0pt}
   \begin{center}
-    \fbox{\parbox[c][2.82in][c]{0.90\linewidth}{
+    \fbox{\parbox[c][2.30in][c]{0.90\linewidth}{
       \centering
-      \textbf{PID SETPOINT AND RESPONSE}\\[7pt]
+      \textbf{FIGURE \#5 TBM}\\[3pt]
+      \textbf{APPROACH THRESHOLD AND PID RESPONSE}\\[7pt]
       \textbf{PLOT PLACEHOLDER}\\[8pt]
-      Plot setpoint, measured input, error, and vertical correction against
-      time. Report \(K_P\), \(K_I\), \(K_D\), update interval, settling time,
+      Show the two-sample tunneling-threshold confirmation, then plot PID
+      setpoint, measured input, error, and vertical correction against time.
+      Report \(K_P\), \(K_I\), \(K_D\), update interval, settling time,
       overshoot, and any output limiting used.
     }}
     \captionsetup{font=footnotesize}
@@ -1187,19 +1188,24 @@ for line in range(lines):
 \clearpage
 
 % -------------------------------------------------
-% SHEET 11 OF 12 -- ADDITIONAL DIAGNOSTICS, CONCLUSION, AND ERROR ANALYSIS
+% SHEET 11 OF 12 -- ADDITIONAL DIAGNOSTICS, CONCLUSION, ERROR, AND FUTURE WORK
+% TOP HALF FROZEN: do not edit the two diagnostic placeholders or their captions
+% until our group obtains actual subsystem and piezo-calibration measurements.
+% The freeze ends at the horizontal rule below; the conclusion and brief error
+% analysis/future-work section remain editable.
 % -------------------------------------------------
-\section{Additional Diagnostics, Conclusion, and Error Analysis}
+\section{Additional Diagnostics and Project Conclusions}
 
-\begin{spacing}{0.94}
+\begin{spacing}{0.90}
 \footnotesize
 
 \noindent
 \begin{minipage}[t]{0.48\textwidth}
   \vspace{0pt}
   \begin{center}
-    \fbox{\parbox[c][2.05in][c]{0.90\linewidth}{
+    \fbox{\parbox[c][1.82in][c]{0.90\linewidth}{
       \centering
+      \textbf{FIGURE \#2 TBM}\\[3pt]
       \textbf{SUBSYSTEM VALIDATION SUMMARY}\\[6pt]
       \textbf{PLOT PLACEHOLDER}\\[6pt]
       Combine measured \(+15\) V and \(-15\) V rail stability with relevant
@@ -1215,8 +1221,9 @@ for line in range(lines):
 \begin{minipage}[t]{0.48\textwidth}
   \vspace{0pt}
   \begin{center}
-    \fbox{\parbox[c][2.05in][c]{0.90\linewidth}{
+    \fbox{\parbox[c][1.82in][c]{0.90\linewidth}{
       \centering
+      \textbf{FIGURE \#7 TBM}\\[3pt]
       \textbf{PIEZO DISPLACEMENT CALIBRATION}\\[6pt]
       \textbf{PLOT PLACEHOLDER}\\[6pt]
       Plot measured displacement against controller counts for the relevant
@@ -1229,81 +1236,74 @@ for line in range(lines):
   \end{center}
 \end{minipage}
 
-\vspace{7pt}
+\vspace{4pt}
 \hrule
-\vspace{7pt}
+\vspace{4pt}
 
-\noindent
-\begin{minipage}[t]{0.47\textwidth}
-  \vspace{0pt}
-  \subsection{Overarching Conclusion}
+% END OF FROZEN TOP HALF OF SHEET 11.
 
-  The project integrates coarse positioning, piezoelectric motion, low-current
-  measurement, digital feedback, raster control, and a Python visualization
-  pipeline into one STM workflow. The hardware and software architecture are
-  documented, but atomic-resolution imaging must not be claimed until stable
-  tunneling, a complete scan, and calibrated surface reconstruction have been
-  demonstrated.
+\subsection{Overarching Conclusion}
 
-  \vspace{5pt}
-  \textbf{Established:} documented hardware, firmware, data formats, and a
-  tested synthetic-data plotting workflow.
+This project establishes an end-to-end framework for scanning tunneling
+microscopy: coarse approach brings the sample toward the tip, piezoelectric
+actuation supplies fine three-axis motion, the preamplifier and ADC measure the
+low-current response, the Teensy executes feedback and bidirectional raster
+logic, and the Python pipeline validates and visualizes the recorded output.
+Treating these elements as one traceable measurement chain is a central result
+of the project. It makes the origin, orientation, and limitations of every
+plotted value explicit rather than treating the final heatmap as an isolated
+image.
 
-  \textbf{Still required:} repeatable tunneling, one complete experimental
-  scan, directional agreement, and calibrated spatial scales.
+The completed work documents the instrument architecture, identifies the
+firmware's signed 16-bit \(Q\)-output format, corrects the interpretation of
+backward acquisition, and tests file validation, matrix reconstruction,
+leveling, and plotting with clearly labeled synthetic fixtures. These
+computational results demonstrate that the analysis workflow can reject
+truncated or ambiguous files and preserve the distinction between raw
+controller counts and calibrated physical height. They validate the software
+path, but they do not establish tunneling or atomic resolution.
 
-  \textbf{Success criterion:} reproducible surface structure that survives
-  forward/backward and repeated-scan comparison.
+The remaining scientific milestone is a stable, group-owned experimental scan.
+A defensible STM result will require repeatable tunneling, a complete
+forward/backward file set, agreement between opposite scan directions,
+calibrated lateral and vertical scales, and recognizable structure that
+persists across repeated scans. Meeting those criteria would convert the
+presently documented and tested framework into a quantitative surface
+measurement.
 
-  \vspace{5pt}
-  \noindent\fbox{\parbox[c][1.02in][c]{0.91\linewidth}{
-    \centering
-    \textbf{FINAL CONCLUSION EVIDENCE PLACEHOLDER}\\[4pt]
-    Add the strongest verified result, the principal limitation, and the next
-    experimental improvement after the final scan campaign.
-  }}
-\end{minipage}
-\hfill
-\begin{minipage}[t]{0.50\textwidth}
-  \vspace{0pt}
-  \subsection{Error Analysis}
+\vspace{5pt}
+\subsection{Error Analysis and Future Work}
 
-  \renewcommand{\arraystretch}{1.16}
-  \setlength{\tabcolsep}{2pt}
-  \scriptsize
-  \begin{tabular}{>{\raggedright\arraybackslash}p{0.24\linewidth}
-                  >{\raggedright\arraybackslash}p{0.35\linewidth}
-                  >{\raggedright\arraybackslash}p{0.31\linewidth}}
-    \toprule
-    Source & Likely effect & Evidence or estimate needed \\
-    \midrule
-    Mechanical vibration & Repeated or blurred spatial features &
-      Isolation comparison or frequency spectrum \\
-    Electrical noise & Current and height fluctuations &
-      Baseline RMS and peak-to-peak noise \\
-    Thermal drift and piezo creep & Image shear or slow positional shift &
-      Drift rate and repeated-scan comparison \\
-    Tip condition & Multiple-tip artifacts or reduced resolution &
-      Tip-preparation record and repeatability \\
-    Calibration & Incorrect lateral or vertical scale &
-      Fitted scale factors with uncertainty \\
-    Backward indexing & Invalid reverse-scan storage or comparison &
-      Corrected firmware and regression test \\
-    \bottomrule
-  \end{tabular}
+\renewcommand{\arraystretch}{1.08}
+\setlength{\tabcolsep}{3pt}
+\scriptsize
+\begin{tabular}{>{\raggedright\arraybackslash}p{0.21\linewidth}
+                >{\raggedright\arraybackslash}p{0.34\linewidth}
+                >{\raggedright\arraybackslash}p{0.37\linewidth}}
+  \toprule
+  Source & Likely effect & Measurement needed \\
+  \midrule
+  Mechanical vibration & Blurred or repeated spatial features &
+    Isolation comparison or vibration spectrum \\
+  Electrical noise & Fluctuating current and \(Q\) output &
+    Baseline RMS and peak-to-peak noise \\
+  Thermal drift and piezo creep & Image shear or positional offset &
+    Drift rate and repeated-scan comparison \\
+  Tip and tunneling stability & Double-tip artifacts or incomplete scans &
+    Tip record, current trace, and scan repeatability \\
+  Calibration and indexing & Incorrect scale or directional mismatch &
+    Fitted scale factors and forward/backward regression tests \\
+  \bottomrule
+\end{tabular}
 
-  \vspace{5pt}
-  Quantify uncertainty only from recorded measurements. Do not invent error
-  bars, calibration factors, or successful scan results.
-
-  \vspace{5pt}
-  \noindent\fbox{\parbox[c][0.72in][c]{0.91\linewidth}{
-    \centering
-    \textbf{QUANTITATIVE ERROR-BUDGET PLACEHOLDER}\\[3pt]
-    Insert measured contributions, propagation method, total uncertainty, and
-    the dominant error source.
-  }}
-\end{minipage}
+\vspace{4pt}
+\noindent\footnotesize
+Future work should first stabilize tunneling and record one complete scan from
+our instrument, then quantify the tabled contributions, calibrate all plotted
+axes, and repeat the scan in both directions. Until those measurements exist,
+the uncertainty assessment must remain qualitative; no error bars, calibration
+factors, or successful imaging claims should be inferred from the synthetic
+tests.
 
 \end{spacing}
 
@@ -1338,11 +1338,17 @@ for line in range(lines):
     \item souuk, \textit{clustered: STM Project Files and Citation-Source
     Paths}, GitHub repository, 2026. Available:
     \href{https://github.com/souuk/clustered}{github.com/souuk/clustered}.
-    The repository includes \nolinkurl{animate_scan_pattern.py} and
-    \nolinkurl{scan-pattern-preview.gif}; source locations within the supplied
+    The repository includes \nolinkurl{animate_scan_pattern.py} and four static
+    poster frames named \nolinkurl{scan-pattern-quad-1.png} through
+    \nolinkurl{scan-pattern-quad-4.png}; source locations within the supplied
     course archive are listed in the repository's
     \href{https://github.com/souuk/clustered\#citation-path-index}
     {citation path index}.
+
+    \item S. Chiang, \textit{Teensy STM12}, STM controller source file
+    \nolinkurl{Teensy_STM12_July_29_2026_v1.ino}, University of California,
+    Davis, 2026. Cited portions include lines 178--180, 989--1001,
+    1113--1131, 1500--1544, and 1583--1596.
   \end{enumerate}
 \end{minipage}
 \hfill

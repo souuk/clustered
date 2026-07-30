@@ -1,0 +1,17 @@
+SYNTHETIC STM FORMAT DEMO - NOT EXPERIMENTAL DATA
+
+Firmware-format files:
+  SYNF1.hex: 4096 signed int16 samples
+  SYNB1.hex: 4096 signed int16 samples
+  SYNP1.txt: six-line text parameter record
+
+First 16 forward samples (decimal controller counts):
+  9273 9244 9214 9173 9251 9313 9383 9393 9323 9236 9192 9142 9219 9324 9467 9444
+
+First 8 forward samples as little-endian bytes (hex display only):
+  39 24 1C 24 FE 23 D5 23 23 24 61 24 A7 24 B1 24
+
+Generation model: signed PID correction Q with scanner tilt,
+line drift, first-order feedback lag, hard output limits,
+deterministic noise, and a known synthetic lattice. It does not
+claim tunneling, calibration, or atomic resolution by the instrument.

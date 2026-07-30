@@ -72,13 +72,24 @@ def inventory(directory: Path | str) -> list[InventoryRow]:
             elif any(value == 0 for value in counts):
                 status = "empty"
             elif all(value == expected for value in counts):
-                status = "exact size"
+                status = (
+                    "exact size"
+                    if selected.firmware_reports_complete
+                    else "exact size; completion counter disagrees"
+                )
             elif any(value > expected for value in counts):
                 status = "appended/ambiguous"
             else:
                 shared = min(value for value in counts if value is not None)
                 complete_lines = shared // selected.points
-                status = f"partial; {complete_lines}/{selected.lines} shared rows"
+                missing_f = expected - int(forward_samples or 0)
+                missing_b = expected - int(backward_samples or 0)
+                status = (
+                    f"partial; {complete_lines}/{selected.lines} complete shared rows; "
+                    f"missing F={max(missing_f, 0)}, B={max(missing_b, 0)}"
+                )
+                if selected.firmware_reports_complete:
+                    status += "; completion record disagrees"
         except (OSError, ValueError) as exc:
             dimensions = "unknown"
             record_label = "0"
@@ -110,10 +121,14 @@ def format_inventory(rows: list[InventoryRow], directory: Path | str) -> str:
         for index in range(len(headers))
     ]
     lines = [f"STM scan inventory: {Path(directory).resolve()}", ""]
-    lines.append("  ".join(header.ljust(width) for header, width in zip(headers, widths)))
-    lines.append("  ".join("-" * width for width in widths))
+    lines.append(
+        "  ".join(
+            header.ljust(width) for header, width in zip(headers, widths)
+        ).rstrip()
+    )
+    lines.append("  ".join("-" * width for width in widths).rstrip())
     lines.extend(
-        "  ".join(value.ljust(width) for value, width in zip(row, widths))
+        "  ".join(value.ljust(width) for value, width in zip(row, widths)).rstrip()
         for row in values
     )
     lines.extend(
@@ -122,7 +137,9 @@ def format_inventory(rows: list[InventoryRow], directory: Path | str) -> str:
             "Notes:",
             "- Sample counts are signed 16-bit values, not bytes.",
             "- 'Appended/ambiguous' means the firmware reused a filename; choose a segment only with evidence.",
-            "- 'Partial' can be plotted with --allow-partial; the output remains unverified and uncalibrated.",
+            "- 'Partial' can be plotted with --allow-partial; masked reconstruction preserves valid samples.",
+            "- A completion-record disagreement means the P file says complete but a binary file is short.",
+            "- Stored values remain uncalibrated PID-output Q counts.",
         )
     )
     return "\n".join(lines) + "\n"

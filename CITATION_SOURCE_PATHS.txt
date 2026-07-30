@@ -41,3 +41,18 @@ supplied course-material ZIP.
 
     It was not part of the supplied course-material ZIP, so it does not
     have a path inside that archive.
+
+[5] S. Chiang, Teensy STM12 controller source code
+
+    In the supplied course-material ZIP:
+    Experiments
+    >> STM Project
+    >> Teensy_STM12_July_29_2026_v1.ino
+
+    Relevant locations in the supplied source copy:
+    Lines 178-180: signed 16-bit forward and backward Q arrays
+    Lines 917-940: scan initialization and output-file opening
+    Lines 989-1001: square scan-dimension, step-size, and interval command
+    Lines 1113-1131: matched F/B/P filename construction
+    Lines 1500-1544: raster acquisition and corrected backward index
+    Lines 1583-1596: six-line parameter-file record

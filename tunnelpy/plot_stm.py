@@ -45,20 +45,37 @@ def level_matrix(
     if mode == "none":
         return values.copy()
     if mode == "mean":
-        return values - np.mean(values)
+        return values - np.nanmean(values)
     if mode == "line":
-        return values - np.median(values, axis=1, keepdims=True)
+        row_medians = np.array(
+            [
+                np.median(row[np.isfinite(row)])
+                if np.any(np.isfinite(row))
+                else np.nan
+                for row in values
+            ],
+            dtype=np.float64,
+        )
+        return values - row_medians[:, np.newaxis]
     if mode == "plane":
         rows, columns = values.shape
         yy, xx = np.indices((rows, columns), dtype=np.float64)
         design = np.column_stack((xx.ravel(), yy.ravel(), np.ones(values.size)))
-        coefficients, *_ = np.linalg.lstsq(design, values.ravel(), rcond=None)
+        valid = np.isfinite(values.ravel())
+        if np.count_nonzero(valid) < 3:
+            raise ValueError("At least three finite samples are required for plane leveling")
+        coefficients, *_ = np.linalg.lstsq(
+            design[valid], values.ravel()[valid], rcond=None
+        )
         return values - (design @ coefficients).reshape(values.shape)
     raise ValueError(f"Unsupported leveling mode: {mode}")
 
 
 def _limits(values: npt.ArrayLike, robust: bool) -> tuple[float, float]:
     array = np.asarray(values, dtype=np.float64)
+    array = array[np.isfinite(array)]
+    if array.size == 0:
+        raise ValueError("Plot input does not contain any finite samples")
     if robust:
         low, high = np.percentile(array, (2.0, 98.0))
     else:
@@ -75,11 +92,11 @@ def _printer_colormaps(plt):
     signal = ListedColormap(
         plt.colormaps["Greys"](np.linspace(0.06, 0.90, 256)),
         name="printer_signal_grayscale",
-    )
+    ).with_extremes(bad="#f4b6b6")
     difference = ListedColormap(
         plt.colormaps["Greys"](np.linspace(0.02, 0.98, 256)),
         name="printer_difference_grayscale",
-    )
+    ).with_extremes(bad="#f4b6b6")
     return signal, difference
 
 
@@ -111,37 +128,46 @@ def plot_scan_set(
         np.concatenate((forward.ravel(), backward.ravel(), average.ravel())),
         robust_limits,
     )
-    if robust_limits:
-        difference_limit = float(np.percentile(np.abs(difference), 98.0))
+    finite_difference = np.abs(difference[np.isfinite(difference)])
+    if finite_difference.size == 0:
+        difference_limit = 1.0
+    elif robust_limits:
+        difference_limit = float(np.percentile(finite_difference, 98.0))
     else:
-        difference_limit = float(np.max(np.abs(difference)))
+        difference_limit = float(np.max(finite_difference))
     if np.isclose(difference_limit, 0.0):
         difference_limit = 1.0
 
     signal_cmap, difference_cmap = _printer_colormaps(plt)
     figure, axes = plt.subplots(2, 2, figsize=(15.5, 11.2))
     panels = (
-        (forward, "Forward scan", signal_cmap, signal_limits, "Controller output (counts)"),
         (
-            backward,
-            "Backward scan (spatially aligned)",
+            forward,
+            "Forward PID output Q",
             signal_cmap,
             signal_limits,
-            "Controller output (counts)",
+            "PID output Q (counts)",
+        ),
+        (
+            backward,
+            "Backward PID output Q (spatially aligned)",
+            signal_cmap,
+            signal_limits,
+            "PID output Q (counts)",
         ),
         (
             average,
-            "Forward/backward average",
+            "Forward/backward mean Q",
             signal_cmap,
             signal_limits,
-            "Average output (counts)",
+            "Mean PID output Q (counts)",
         ),
         (
             difference,
-            "Forward minus backward",
+            "Forward Q minus backward Q",
             difference_cmap,
             (-difference_limit, difference_limit),
-            "Difference (counts)",
+            "Directional difference (counts)",
         ),
     )
 
@@ -165,7 +191,15 @@ def plot_scan_set(
         colorbar.set_label(colorbar_label)
         colorbar.outline.set_linewidth(0.6)
 
-    status = "PARTIAL / UNVERIFIED" if scan.partial else "COMPLETE / UNCALIBRATED"
+    is_synthetic = scan.parameter_path.name.upper().startswith("SYN")
+    if is_synthetic:
+        status = "SYNTHETIC / NOT EXPERIMENTAL"
+    else:
+        status = (
+            "PARTIAL / MASKED / UNCALIBRATED"
+            if scan.partial
+            else "COMPLETE / UNCALIBRATED"
+        )
     figure.suptitle(
         f"STM FOUR-PANEL SCAN DIAGNOSTIC — {status}",
         fontsize=19,
@@ -173,12 +207,18 @@ def plot_scan_set(
         y=0.982,
     )
     parameter = scan.parameters
+    provenance_note = (
+        "Synthetic PID-output Q demonstration; not ADC current, microscope data, or calibrated height."
+        if is_synthetic
+        else "Values are signed PID-output Q counts, not ADC current or calibrated height."
+    )
     figure.text(
         0.5,
         0.947,
         (
             f"{parameter.points} X points × {scan.actual_lines} plotted Y lines "
             f"(requested {parameter.lines})  |  leveling: {level}  |  "
+            f"paired coverage: {scan.paired_valid_samples}/{parameter.expected_samples}  |  "
             f"parameter record {parameter.record_index + 1}/{parameter.record_count}"
         ),
         ha="center",
@@ -191,7 +231,7 @@ def plot_scan_set(
         (
             f"Parameters: {scan.parameter_path.name}  |  "
             f"Forward: {scan.forward_path.name}  |  Backward: {scan.backward_path.name}\n"
-            "Vertical values are signed controller counts, not calibrated physical height."
+            f"{provenance_note}"
         ),
         ha="center",
         va="bottom",
@@ -217,8 +257,8 @@ def build_parser() -> argparse.ArgumentParser:
         )
     )
     parser.add_argument("input_dir", type=Path)
-    parser.add_argument("--prefix", default="STM1")
-    parser.add_argument("--scan-number", type=nonnegative_int, default=8)
+    parser.add_argument("--prefix", default="STM")
+    parser.add_argument("--scan-number", type=nonnegative_int, default=1)
     parser.add_argument(
         "--parameter-record",
         type=int,
@@ -235,6 +275,15 @@ def build_parser() -> argparse.ArgumentParser:
         choices=("reject", "start", "end"),
         default="reject",
         help="how to handle a binary file larger than the selected record",
+    )
+    parser.add_argument(
+        "--partial-mode",
+        choices=("pad", "rows"),
+        default="pad",
+        help=(
+            "pad keeps the requested matrix shape and marks missing samples as "
+            "NaN; rows keeps only complete shared rows"
+        ),
     )
     parser.add_argument("--level", choices=LEVEL_MODES, default="none")
     parser.add_argument(
@@ -257,6 +306,7 @@ def main() -> None:
         parameter_record=args.parameter_record,
         allow_partial=args.allow_partial,
         segment=args.segment,
+        partial_mode=args.partial_mode,
     )
     output = args.output or (
         Path(__file__).resolve().parent
@@ -273,7 +323,19 @@ def main() -> None:
     )
 
     print(f"Plotted matrix: {scan.forward.shape[1]} x {scan.forward.shape[0]}")
-    print(f"Status: {'partial/unverified' if scan.partial else 'complete/uncalibrated'}")
+    print(
+        "Coverage: "
+        f"F {scan.forward_valid_samples}/{scan.parameters.expected_samples}, "
+        f"B {scan.backward_valid_samples}/{scan.parameters.expected_samples}, "
+        f"paired {scan.paired_valid_samples}/{scan.parameters.expected_samples}"
+    )
+    if scan.parameter_path.name.upper().startswith("SYN"):
+        print("Status: synthetic/not experimental")
+    else:
+        print(
+            "Status: "
+            f"{'partial/masked/uncalibrated' if scan.partial else 'complete/uncalibrated'}"
+        )
     for warning in scan.warnings:
         print(f"WARNING: {warning}")
     print(f"Saved four-panel figure: {rendered.resolve()}")
