@@ -1,0 +1,126 @@
+TEENSY STM FOUR-PANEL PLOTTER
+================================
+
+WHAT TO USE AS INPUT
+--------------------
+Each scan requires all three matching files from the data folder:
+
+  <prefix>F<number>.hex   forward binary samples
+  <prefix>B<number>.hex   backward binary samples
+  <prefix>P<number>.txt   dimensions and scan settings
+
+For example, scan STM1 number 8 uses:
+
+  data\STM1F8.hex
+  data\STM1B8.hex
+  data\STM1P8.txt
+
+The .hex files are raw binary signed 16-bit integers, not hexadecimal text.
+The P file is ordinary text. Do not convert the .hex files to .txt before
+plotting.
+
+FIRST: INSPECT THE AVAILABLE DATA
+---------------------------------
+From the "cosmos presentation" directory:
+
+  python -m tunnelpy.inspect_scans data --output tunnelpy\scan_inventory.txt
+
+PLOT THE CURRENT MOST-RECOVERABLE SCAN
+--------------------------------------
+The supplied STM1 scan 8 files are slightly short. This command recovers only
+the complete rows shared by the forward and backward files:
+
+  python -m tunnelpy.plot_stm data --prefix STM1 --scan-number 8 --allow-partial
+
+The default image is:
+
+  tunnelpy\output\STM1-scan-8-four-panel.png
+
+The title deliberately says PARTIAL / UNVERIFIED, and the color values remain
+controller counts rather than calibrated physical height.
+
+FOR A FUTURE COMPLETE SCAN
+--------------------------
+If the files contain exactly points × lines samples:
+
+  python -m tunnelpy.plot_stm data --prefix STM1 --scan-number 9
+
+FOUR PANELS
+-----------
+1. Forward scan: values acquired while X moves forward.
+2. Backward scan (spatially aligned): each backward row is reversed so the
+   same X location appears in the same column as the forward scan.
+3. Forward/backward average: emphasizes repeatable structure.
+4. Forward minus backward: exposes drift, hysteresis, line offsets, noise, and
+   disagreement between directions.
+
+All panels use grayscale so the figures remain legible when printed in black
+and white. In the difference panel, negative values are light, zero is
+mid-gray, and positive values are dark.
+
+OPTIONS
+-------
+  --level none    preserve raw counts (default)
+  --level mean    subtract the overall mean
+  --level line    subtract each row's median
+  --level plane   subtract a least-squares background plane
+  --full-range    use extrema instead of robust percentile color limits
+  --dpi 300       create a higher-resolution image for printing
+  --show          open the Matplotlib window after rendering
+
+APPENDED FILE WARNING
+---------------------
+The firmware uses append mode. Some supplied filenames contain several scans.
+The program rejects these by default because the binary files contain no
+reliable separators. If external evidence identifies the wanted record, select
+the matching parameter record and explicitly choose the start or end:
+
+  --parameter-record 0 --segment start
+  --parameter-record -1 --segment end
+
+Do not treat this selection as verified merely because it produces a picture.
+
+BATCH MODE
+----------
+This attempts every parameter-file set and skips unsafe or unusable inputs:
+
+  python -m tunnelpy.plot_all_scans data --allow-partial
+
+SOURCE CONTRACT
+---------------
+The reader follows the newer firmware in source.zip:
+
+  Experiments\STM Project\Teensy_STM12_July_29_2026_v1.ino
+
+That source writes signed two-byte values to the F/B files and text settings to
+the P file. It also uses file append mode, which is why oversized scans are not
+silently accepted.
+
+KNOWN Z-CALIBRATION PROBLEM
+---------------------------
+The firmware stores the PID output count Q directly. It does not define or
+subtract a Q_ref, and it does not contain a measured conversion from controller
+counts to nanometers or angstroms.
+
+The source provides only an electrical DAC conversion:
+
+  32767 counts = +14.376 V
+  alpha_V = 14.376 / 32767 = 0.000438734 V/count
+
+There is a minor inconsistency because the default-bias comment uses 14.356 V
+instead of 14.376 V. This should be verified experimentally.
+
+Two reference counts appear in the source:
+
+  Q_ref = 0       electrical zero volts
+  Q_ref = 32767   fully retracted Z command
+
+Neither is automatically subtracted from the saved scan. A physical conversion
+would require:
+
+  delta_z = alpha_z * (Q - Q_ref)
+  alpha_z = alpha_V * Z-amplifier gain * piezo displacement sensitivity
+
+The Z-amplifier gain and piezo displacement sensitivity are not defined in the
+Teensy source. Until they are measured and their sign is verified, all plots
+must remain labeled as controller counts rather than physical height.

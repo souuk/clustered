@@ -1,0 +1,21 @@
+STM scan inventory: C:\Users\xling\OneDrive\Desktop\cosmos presentation\data
+
+scan         selected size  P records  F samples  B samples  status                                                                 
+-----------  -------------  ---------  ---------  ---------  -----------------------------------------------------------------------
+STM1 scan 0  256x256        4          131874     131819     appended/ambiguous                                                     
+STM1 scan 1  256x256        2          0          0          empty                                                                  
+STM1 scan 2  256x256        3          67888      67738      appended/ambiguous                                                     
+STM1 scan 3  256x256        3          130948     130949     appended/ambiguous                                                     
+STM1 scan 4  256x256        2          3134       2953       partial; 11/256 shared rows                                            
+STM1 scan 5  256x256        1          0          0          empty                                                                  
+STM1 scan 6  256x256        1          4082       3842       partial; 15/256 shared rows                                            
+STM1 scan 7  256x256        1          0          0          empty                                                                  
+STM1 scan 8  256x256        1          65431      65428      partial; 255/256 shared rows                                           
+STM scan 1   512x512        1          18372      17926      partial; 35/512 shared rows                                            
+STM scan 2   unknown        0          537        511        invalid parameters: No Teensy parameter records found in data\STMP2.txt
+STM scan 4   unknown        0          0          0          invalid parameters: No Teensy parameter records found in data\STMP4.txt
+
+Notes:
+- Sample counts are signed 16-bit values, not bytes.
+- 'Appended/ambiguous' means the firmware reused a filename; choose a segment only with evidence.
+- 'Partial' can be plotted with --allow-partial; the output remains unverified and uncalibrated.
